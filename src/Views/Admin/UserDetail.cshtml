@@ -1,0 +1,25 @@
+﻿@model ServerING.Models.User
+
+@{
+    ViewBag.Title = Model.Login;
+}
+
+@*<style>
+    input[type=radio] {
+    border: 0px;
+    width: 50%;
+    height: 1em;
+}
+</style>*@
+
+<h2><b>User:</b> @Model.Login</h2>
+
+<h4><b>User Role</b></h4>
+
+<form asp-action="UserDetail" method="post" class="form-check">
+    
+    <p><input type="hidden" name="id" value="@Model.Id" /></p>
+    <p><input asp-for="Role" type="radio" value="Admin"  class="form-cotrol"/>Admin</p>
+    <p><input asp-for="Role" type="radio" value="User" class="form-cotrol-sm"/>User</p>
+    <p><input class="btn btn-success" type="submit" value="Submit" /></p>
+</form>

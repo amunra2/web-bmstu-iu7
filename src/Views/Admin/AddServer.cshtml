@@ -1,0 +1,63 @@
+﻿@model ServerING.ViewModels.InfoServerViewModel
+
+@{
+    ViewData["Title"] = "Add Server";
+}
+
+
+<h3><b>Server Adding</b></h3>
+
+<form asp-action="AddServer" method="post" class="form-horizontal">
+    <div class="form-group">
+        <label class="font-weight-bold" asp-for="Name"></label>
+
+        <div class="col-md-5">
+            <input asp-for="Name" class="form-control-sm" /> 
+            <span asp-validation-for="Name" class="text-danger"></span> 
+        </div>
+    </div>
+
+        <div class="form-group">
+        <label class="font-weight-bold" asp-for="Ip"></label>
+
+        <div class="col-md-5">
+            <input asp-for="Ip" class="form-cotrol-sm" />
+            <span asp-validation-for="Ip" class="text-danger"></span>
+        </div>
+    </div>
+
+        <div class="form-group">
+        <label class="font-weight-bold" asp-for="GameVersion"></label>
+
+        <div class="col-md-5">
+                <input asp-for="GameVersion" class="form-cotrol-sm" />
+            <span asp-validation-for="GameVersion" class="text-danger"></span>
+        </div>
+    </div>
+
+        <div class="form-group">
+        <label class="font-weight-bold" asp-for="PlatformId"></label>
+
+        <div class="col-md-5">
+            @*<input asp-for="PlatformId" class="form-cotrol" /> *@
+            <select asp-for="PlatformId" asp-items="ViewBag.Platforms" class="form-control-sm"></select>
+            <span asp-validation-for="PlatformId" class="text-danger"></span>
+        </div>
+    </div>
+
+        <div class="form-group">
+        <label class="font-weight-bold" asp-for="WebHostingId"></label>
+
+        <div class="col-md-5">
+            <select asp-for="WebHostingId" asp-items="ViewBag.WebHostings" class="form-control-sm"></select>
+            <span asp-validation-for="WebHostingId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <br /><br />
+
+    <input class="btn btn-success" type="submit" value="Submit" />
+</form>
+
+
+
