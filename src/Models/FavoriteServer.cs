@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ServerING.Models {
     public class FavoriteServer {
-
         [Key]
         public int Id { get; set; }
 

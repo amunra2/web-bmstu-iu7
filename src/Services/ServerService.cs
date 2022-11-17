@@ -52,7 +52,7 @@ namespace ServerING.Services {
             return serverRepository.GetAll()
                 .Any(item =>
                     item.Name == server.Name &&
-                    item.GameVersion == server.GameVersion &&
+                    item.GameName == server.GameName &&
                     item.HostingID == server.HostingID &&
                     item.PlatformID == server.PlatformID
                     );
@@ -125,7 +125,7 @@ namespace ServerING.Services {
                                           (s, p) => new {
                                               Id = s.Id,
                                               ServerName = s.Name,
-                                              GameVersion = s.GameVersion,
+                                              GameVersion = s.GameName,
                                               Ip = s.Ip,
                                               PlatformId = s.PlatformID,
                                               WebHostingId = s.HostingID,
@@ -138,7 +138,7 @@ namespace ServerING.Services {
                     .Select(j => new Server {
                         Id = j.Id,
                         Name = j.ServerName,
-                        GameVersion = j.GameVersion,
+                        GameName = j.GameVersion,
                         Ip = j.Ip,
                         HostingID = j.WebHostingId,
                         PlatformID = j.PlatformId,
@@ -167,11 +167,11 @@ namespace ServerING.Services {
             else if (sortOrder == ServerSortState.IPDesc) {
                 filteredServers = servers.OrderByDescending(s => s.Ip);
             }
-            else if (sortOrder == ServerSortState.GameVersionAsc) {
-                filteredServers = servers.OrderBy(s => s.GameVersion);
+            else if (sortOrder == ServerSortState.GameNameAsc) {
+                filteredServers = servers.OrderBy(s => s.GameName);
             }
-            else if (sortOrder == ServerSortState.GameVersionDesc) {
-                filteredServers = servers.OrderByDescending(s => s.GameVersion);
+            else if (sortOrder == ServerSortState.GameNameDesc) {
+                filteredServers = servers.OrderByDescending(s => s.GameName);
             }
             else if (sortOrder == ServerSortState.RatingAsc) {
                 filteredServers = servers.OrderBy(s => s.Rating);
@@ -188,7 +188,7 @@ namespace ServerING.Services {
                                           (s, p) => new {
                                               Id = s.Id,
                                               ServerName = s.Name,
-                                              GameVersion = s.GameVersion,
+                                              GameVersion = s.GameName,
                                               Ip = s.Ip,
                                               PlatformId = s.PlatformID,
                                               WebHostingId = s.HostingID,
@@ -201,7 +201,7 @@ namespace ServerING.Services {
                     .Select(j => new Server {
                         Id = j.Id,
                         Name = j.ServerName,
-                        GameVersion = j.GameVersion,
+                        GameName = j.GameVersion,
                         Ip = j.Ip,
                         HostingID = j.WebHostingId,
                         PlatformID = j.PlatformId,
@@ -215,7 +215,7 @@ namespace ServerING.Services {
                                           (s, p) => new {
                                               Id = s.Id,
                                               ServerName = s.Name,
-                                              GameVersion = s.GameVersion,
+                                              GameVersion = s.GameName,
                                               Ip = s.Ip,
                                               PlatformId = s.PlatformID,
                                               WebHostingId = s.HostingID,
@@ -228,7 +228,7 @@ namespace ServerING.Services {
                     .Select(j => new Server {
                         Id = j.Id,
                         Name = j.ServerName,
-                        GameVersion = j.GameVersion,
+                        GameName = j.GameVersion,
                         Ip = j.Ip,
                         HostingID = j.WebHostingId,
                         PlatformID = j.PlatformId,

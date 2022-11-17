@@ -19,11 +19,9 @@ namespace ServerING.Controllers {
     public class AccountController : Controller {
 
         IUserService userService;
-        private readonly ILogger<AccountController> _logger;
 
         public AccountController(IUserService userService, ILogger<AccountController> logger) {
             this.userService = userService;
-            this._logger = logger;
         }
 
         [HttpGet]
@@ -43,21 +41,11 @@ namespace ServerING.Controllers {
                     };
 
                     userService.AddUser(user);
-
                     await Authenticate(user);
-
-                    _logger.Log(LogLevel.Information, "User: login = {0}; in method = {1}",
-                        User.Identity.Name,
-                        MethodBase.GetCurrentMethod().Name);
 
                     return RedirectToAction("Index", "Home");
 
                 } catch (Exception ex) {
-                    _logger.Log(LogLevel.Information, "User: login = {0}; in method = {1} - Exception: {2}",
-                        User.Identity.Name,
-                        MethodBase.GetCurrentMethod().Name,
-                        ex.Message);
-
                     ModelState.AddModelError("", "Логин занят");
                 }
 
@@ -82,17 +70,8 @@ namespace ServerING.Controllers {
                 if (user != null) {
                     await Authenticate(user); // аутентификация
 
-                    _logger.Log(LogLevel.Information, "User: login = {0}; in method = {1}",
-                        User.Identity.Name,
-                        MethodBase.GetCurrentMethod().Name);
-
                     return RedirectToAction("Index", "Home");
                 }
-
-                _logger.Log(LogLevel.Information, "User: login = {0}; in method = {1} - Exception: {2}",
-                        User.Identity.Name,
-                        MethodBase.GetCurrentMethod().Name,
-                        "Incorrect Login or Password");
 
                 ModelState.AddModelError("", "Incorrect Login or Password");
 
@@ -103,10 +82,6 @@ namespace ServerING.Controllers {
         }
 
         public async Task<IActionResult> Logout() {
-            _logger.Log(LogLevel.Information, "User: login = {0}; in method = {1}",
-                        User.Identity.Name,
-                        MethodBase.GetCurrentMethod().Name);
-
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }

@@ -2,8 +2,7 @@
 
 namespace ServerING.Models 
 {
-    public class User 
-    {
+    public class User {
         [Key]
         public int Id { get; set; }
 
@@ -16,7 +15,6 @@ namespace ServerING.Models
         [Required]
         public string Role{ get; set; }
     }
-
 
     public enum UserSortState {
         LoginAsc,       // по логину по возрастанию

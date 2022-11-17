@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using ServerING.Models;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ServerING.ViewModels {
     public class InfoServerViewModel {
-
         [Required]
         public int Id { get; set; }
 
@@ -20,10 +15,14 @@ namespace ServerING.ViewModels {
         [Required(ErrorMessage = "Must be")]
         public string Ip { get; set; }
 
-        [Display(Name = "Game Version")]
+        [Display(Name = "Game Name")]
         [StringLength(20)]
         [Required(ErrorMessage = "Must be")]
-        public string GameVersion { get; set; }
+        public string GameName { get; set; }
+
+        [Display(Name = "Country")]
+        [Required(ErrorMessage = "Must be")]
+        public int CountryId { get; set; }
 
         [Display(Name = "Platform")]
         [Required(ErrorMessage = "Must be")]

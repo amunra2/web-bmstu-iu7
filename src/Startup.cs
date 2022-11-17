@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +11,7 @@ using ServerING.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ServerING.Services;
 using ServerING.Interfaces;
-using ServerING.Mocks;
 using ServerING.Repository;
-using System.IO;
-using ServerING.Logger;
 
 namespace ServerING {
     public class Startup {
@@ -39,7 +32,6 @@ namespace ServerING {
                 options => _ = provider switch {
                     "Postgres" => options.UseNpgsql(
                         _configuration.GetConnectionString("DefaultConnection")
-                        /*x => x.MigrationsAssembly("PostgresMigrations")*/
                         ),
                     _ => throw new Exception($"Unsupported provider: {provider}")
                 }
@@ -58,6 +50,7 @@ namespace ServerING {
             services.AddTransient<IPlatformService, PlatformService>();
             services.AddTransient<IWebHostingService, WebHostingService>();
             services.AddTransient<IPlayerService, PlayerService>();
+            services.AddTransient<ICountryService, CountryService>();
 
 
             // Repositories
@@ -66,6 +59,7 @@ namespace ServerING {
             services.AddTransient<IWebHostingRepository, WebHostingRepository>();
             services.AddTransient<IPlatformRepository, PlatformRepository>();
             services.AddTransient<IPlayerRepository, PlayerRepository>();
+            services.AddTransient<ICountryRepository, CountryRepository>();
 
             // MVC
             services.AddControllersWithViews();
@@ -82,13 +76,12 @@ namespace ServerING {
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             // Logger
-            loggerFactory.AddFile(Path.Combine(Directory.GetCurrentDirectory(), "logs"));
+            // loggerFactory.AddFile(Path.Combine(Directory.GetCurrentDirectory(), "logs"));
 
             // Authentication
             app.UseAuthentication();

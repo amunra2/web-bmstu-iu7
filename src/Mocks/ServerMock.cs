@@ -38,7 +38,7 @@ namespace ServerING.Mocks {
         }
 
         public IEnumerable<Server> GetByGameVersion(string gameVersion) {
-            return _servers.Where(x => x.GameVersion == gameVersion);
+            return _servers.Where(x => x.GameName == gameVersion);
         }
 
         public Server GetByID(int id) {
@@ -106,7 +106,7 @@ namespace ServerING.Mocks {
 
             server.Name = model.Name;
             server.Ip = model.Ip;
-            server.GameVersion = model.GameVersion;
+            server.GameName = model.GameName;
             server.PlatformID = model.PlatformID;
             server.HostingID = model.HostingID;
 

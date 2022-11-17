@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ServerING.Models {
     public class Server {
-
         [Key]
         public int Id { get; set; }
 
@@ -14,10 +13,13 @@ namespace ServerING.Models {
         public string Ip { get; set; }
 
         [Required, MaxLength(30)]
-        public string GameVersion { get; set; }
+        public string GameName { get; set; }
 
         /*[Required]*/
         public int Rating{ get; set; }
+
+        [Required]
+        public ServerStatus Status {get; set;}
 
         [ForeignKey("WebHosting")]
         public int HostingID { get; set; }
@@ -34,13 +36,20 @@ namespace ServerING.Models {
     }
 
 
+    public enum ServerStatus {
+        Accepted, // принят
+        Pending,  // не проверен
+        Rejected  // отклонен
+    }
+
+
     public enum ServerSortState {
         NameAsc,            // по имени по возрастанию
         NameDesc,           // по имени по убыванию
         IPAsc,              // по IP по возрастанию
         IPDesc,             // по IP по убыванию
-        GameVersionAsc,     // по версии игры по возрастанию
-        GameVersionDesc,    // по версии игры по убыванию
+        GameNameAsc,        // по названию игры по возрастанию
+        GameNameDesc,       // по названию игры по убыванию
         RatingAsc,          // по платформе по возрастанию
         RatingDesc,         // по платформе по убыванию
         PlatformAsc,        // по платформе по возрастанию

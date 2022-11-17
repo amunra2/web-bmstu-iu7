@@ -2,7 +2,6 @@
 
 namespace ServerING.Models {
     public class WebHosting {
-
         [Key]
         public int Id { get; set; }
 

@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 namespace ServerING.Models {
     public class AppDBContent : DbContext {
 
-        public AppDBContent(DbContextOptions<AppDBContent> options) : base(options) {
-
-        }
+        public AppDBContent(DbContextOptions<AppDBContent> options) : base(options) { }
 
         public DbSet<User> User { get; set; }
         public DbSet<Platform> Platform { get; set; }

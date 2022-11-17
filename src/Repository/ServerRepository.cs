@@ -72,7 +72,7 @@ namespace ServerING.Repository {
         }
 
         public IEnumerable<Server> GetByGameVersion(string gameVersion) {
-            return appDBContent.Server.Where(s => s.GameVersion == gameVersion).ToList();
+            return appDBContent.Server.Where(s => s.GameName == gameVersion).ToList();
         }
 
         public Server GetByIP(string ip) {

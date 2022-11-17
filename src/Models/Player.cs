@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ServerING.Models {
     public class Player {
-
         [Key]
         public int Id { get; set; }
 

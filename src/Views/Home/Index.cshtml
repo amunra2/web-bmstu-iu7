@@ -47,11 +47,11 @@
             </th>
             <th>
                 <a asp-action="Index" 
-                    asp-route-sortOrder="@(Model.SortViewModel.GVSort)"
+                    asp-route-sortOrder="@(Model.SortViewModel.GameNameSort)"
                     asp-route-name="@(Model.FilterViewModel.SelectedName)"
                     asp-route-platformId="@(Model.FilterViewModel.SelectedPlatform)">
 
-                    Game Version
+                    Game Name
                 </a>
             </th>
             <th>
@@ -89,7 +89,7 @@
             <tr>
                 <td>@server.Name</td>
                 <td>@server.Ip</td>
-                <td>@server.GameVersion</td>
+                <td>@server.GameName</td>
                 <td>@Model.Platforms.FirstOrDefault(p => p.Id == server.PlatformID)?.Name</td>
                 <td>
                     <div class="badge bg-info text-wrap">

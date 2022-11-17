@@ -12,7 +12,7 @@ namespace ServerING.Mocks {
                 Id = 1,
                 Name = "Server1",
                 Ip = "IP1",
-                GameVersion = "GV1",
+                GameName = "GV1",
                 HostingID = 1,
                 PlatformID = 1
             },
@@ -20,7 +20,7 @@ namespace ServerING.Mocks {
                 Id = 2,
                 Name = "Server2",
                 Ip = "IP2",
-                GameVersion = "GV2",
+                GameName = "GV2",
                 HostingID = 2,
                 PlatformID = 2
             },
@@ -28,7 +28,7 @@ namespace ServerING.Mocks {
                 Id = 3,
                 Name = "Server3",
                 Ip = "IP3",
-                GameVersion = "GV3",
+                GameName = "GV3",
                 HostingID = 3,
                 PlatformID = 3
             },
@@ -36,7 +36,7 @@ namespace ServerING.Mocks {
                 Id = 4,
                 Name = "Server4",
                 Ip = "IP4",
-                GameVersion = "GV4",
+                GameName = "GV4",
                 HostingID = 4,
                 PlatformID = 1
             },
@@ -44,7 +44,7 @@ namespace ServerING.Mocks {
                 Id = 5,
                 Name = "Server5",
                 Ip = "IP5",
-                GameVersion = "GV5",
+                GameName = "GV5",
                 HostingID = 5,
                 PlatformID = 2
             },
@@ -52,7 +52,7 @@ namespace ServerING.Mocks {
                 Id = 6,
                 Name = "Server6",
                 Ip = "IP6",
-                GameVersion = "GV6",
+                GameName = "GV6",
                 HostingID = 6,
                 PlatformID = 3
             }
@@ -159,31 +159,31 @@ namespace ServerING.Mocks {
                 Id = 1,
                 Login = "Login1",
                 Password = "12345",
-                Role = "User1"
+                Role = "user"
             },
             new User {
                 Id = 2,
                 Login = "Login2",
                 Password = "12345",
-                Role = "User2"
+                Role = "user"
             },
             new User {
                 Id = 3,
                 Login = "Login3",
                 Password = "12345",
-                Role = "User3"
+                Role = "user"
             },
             new User {
                 Id = 4,
                 Login = "admin",
                 Password = "1234",
-                Role = "Admin"
+                Role = "admin"
             },
             new User {
                 Id = 5,
                 Login = "user",
                 Password = "1234",
-                Role = "User"
+                Role = "user"
             }
         };
     }

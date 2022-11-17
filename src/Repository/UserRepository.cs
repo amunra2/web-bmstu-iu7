@@ -17,7 +17,6 @@ namespace ServerING.Repository {
         ///
 
         public void Add(User user) {
-
             try {
                 appDBContent.User.Add(user);
                 appDBContent.SaveChanges();
@@ -29,7 +28,6 @@ namespace ServerING.Repository {
         }
 
         public User Delete(int id) {
-            
             try {
                 User user = appDBContent.User.Find(id);
 
@@ -50,7 +48,6 @@ namespace ServerING.Repository {
         }
 
         public void Update(User user) {
-
             try {
                 var curUser = appDBContent.User.FirstOrDefault(x => x.Id == user.Id);
                 appDBContent.Entry(curUser).CurrentValues.SetValues(user);
