@@ -37,13 +37,6 @@ namespace ServerING {
                 }
             );
 
-            // Authentication path
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-                    options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-                });
-
             // Services
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IServerService, ServerService>();
@@ -62,7 +55,8 @@ namespace ServerING {
             services.AddTransient<ICountryRepository, CountryRepository>();
 
             // MVC
-            services.AddControllersWithViews();
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
 
             // Swagger
             services.AddSwaggerGen();
@@ -75,27 +69,16 @@ namespace ServerING {
                 app.UseSwaggerUI();
                 app.UseDeveloperExceptionPage();
             }
-            else {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            // app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseRouting();
-
-            // Logger
-            // loggerFactory.AddFile(Path.Combine(Directory.GetCurrentDirectory(), "logs"));
 
             // Authentication
-            app.UseAuthentication();
+            // app.UseAuthentication();
+            app.UseRouting();
             app.UseAuthorization();
+            app.UseHttpsRedirection();
 
-            app.UseEndpoints(endpoints => {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();     // нет определенных маршрутов
             });
         }
     }
