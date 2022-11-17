@@ -63,11 +63,16 @@ namespace ServerING {
 
             // MVC
             services.AddControllersWithViews();
+
+            // Swagger
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
             if (env.IsDevelopment()) {
+                app.UseSwagger();
+                app.UseSwaggerUI();
                 app.UseDeveloperExceptionPage();
             }
             else {
