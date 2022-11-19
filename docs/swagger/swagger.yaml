@@ -1,0 +1,761 @@
+openapi: 3.0.0
+
+info:
+  version: "1.0.0"
+  title: ServerING API
+  description: The API for the ServerING project
+
+paths:
+  '/api/v1/server':
+    get:
+      tags:
+          - Server
+      description: Returns All Servers with Filtration, Sorting and Paging
+
+      parameters:
+        - in: query
+          name: Name
+          required: false
+          schema:
+            type: string
+          description: Name for filter Servers
+
+        - in: query
+          name: PlatformName
+          required: false
+          schema:
+            type: string
+          description: Platform Name for filter Servers
+
+        - in: query
+          name: SortState
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+          description: SortState for sorting Servers
+
+        - in: query
+          name: Page
+          required: true
+          schema:
+            type: integer
+          description: Page number for paging Servers
+
+        - in: query
+          name: Status
+          required: false
+          schema:
+            type: integer
+            enum: [accepted, pending, rejected]
+          description: Server status
+
+      responses:
+        '200':
+          description: All servers
+
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: MineStrike
+                  ip:
+                    type: string
+                    example: 127.0.0.1
+                  gameName:
+                    type: string
+                    example: Minecraft
+                  rating:
+                    type: integer
+                    example: 23
+                  status:
+                    type: integer
+                    example: 0
+                  hostingId:
+                    type: integer
+                    example: 1
+                  countryId:
+                    type: integer
+                    example: 1
+                  platformId:
+                    type: integer
+                    example: 1
+                  hosting:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Heroku
+                      pricePerMonth:
+                        type: integer
+                        example: 5000
+                      subMonths:
+                        type: integer
+                        example: 12
+                  country:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Russia
+                      levelOfInterest:
+                        type: integer
+                        example: 100
+                      overallPlayers:
+                        type: integer
+                        example: 15000
+                  platform:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Play Station 5
+                      price:
+                        type: integer
+                        example: 60000
+                      popularity:
+                        type: integer
+                        example: 100
+
+    post:
+      security:
+        - bearerAuth: []      
+
+      tags:
+        - Server
+      description: Post Server
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: NewServer
+                ip:
+                  type: string
+                  example: 192.168.1.1
+                gameName:
+                  type: string
+                  example: Skyrim
+                hostingId:
+                  type: integer
+                  example: 1
+                countryId:
+                  type: integer
+                  example: 1
+                platformId:
+                  type: integer
+                  example: 1
+
+      responses:
+        '201':
+          description: Saved Server
+
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 2
+                  name:
+                    type: string
+                    example: NewServer
+                  ip:
+                    type: string
+                    example: 192.168.1.1
+                  gameName:
+                    type: string
+                    example: Skyrim
+                  rating:
+                    type: integer
+                    example: 0
+                  status:
+                    type: integer
+                    example: 0
+                  hostingId:
+                    type: integer
+                    example: 1
+                  countryId:
+                    type: integer
+                    example: 1
+                  platformId:
+                    type: integer
+                    example: 1
+                  hosting:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Heroku
+                      pricePerMonth:
+                        type: integer
+                        example: 5000
+                      subMonths:
+                        type: integer
+                        example: 12
+                  country:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Russia
+                      levelOfInterest:
+                        type: integer
+                        example: 100
+                      overallPlayers:
+                        type: integer
+                        example: 15000
+                  platform:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Play Station 5
+                      price:
+                        type: integer
+                        example: 60000
+                      popularity:
+                        type: integer
+                        example: 100
+                
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: "Not enough rights for this"
+         
+  '/api/v1/server/{id}':
+    get:
+      tags:
+          - Server
+      description: Return Server by Id
+
+      parameters:
+          - in: path
+            required: true
+            name: id
+            schema:
+              type: integer
+            description: Server Id
+
+      responses:
+        '200':
+          description: Server by Id
+
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: MineStrike
+                  ip:
+                    type: string
+                    example: 127.0.0.1
+                  gameName:
+                    type: string
+                    example: Minecraft
+                  rating:
+                    type: integer
+                    example: 23
+                  status:
+                    type: integer
+                    example: 0
+                  hostingId:
+                    type: integer
+                    example: 1
+                  countryId:
+                    type: integer
+                    example: 1
+                  platformId:
+                    type: integer
+                    example: 1
+                  hosting:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Heroku
+                      pricePerMonth:
+                        type: integer
+                        example: 5000
+                      subMonths:
+                        type: integer
+                        example: 12
+                  country:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Russia
+                      levelOfInterest:
+                        type: integer
+                        example: 100
+                      overallPlayers:
+                        type: integer
+                        example: 15000
+                  platform:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Play Station 5
+                      price:
+                        type: integer
+                        example: 60000
+                      popularity:
+                        type: integer
+                        example: 100
+        
+        '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string
+                      example: "No server with id: '5'"
+
+    put:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - Server
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Server Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: SkyFly
+                  ip:
+                    type: string
+                    example: 192.168.1.1
+                  gameName:
+                    type: string
+                    example: Skyrim
+                  hostingId:
+                    type: integer
+                    example: 1
+                  countryId:
+                    type: integer
+                    example: 1
+                  platformId:
+                    type: integer
+                    example: 1
+
+        responses:
+          '201':
+            description: Updated Server
+
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    name:
+                      type: string
+                      example: SkyFly
+                    ip:
+                      type: string
+                      example: 192.168.1.1
+                    gameName:
+                      type: string
+                      example: Skyrim
+                    rating:
+                      type: integer
+                      example: 0
+                    status:
+                      type: integer
+                      example: 0
+                    hostingId:
+                      type: integer
+                      example: 1
+                    countryId:
+                      type: integer
+                      example: 1
+                    platformId:
+                      type: integer
+                      example: 1
+                    hosting:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Heroku
+                        pricePerMonth:
+                          type: integer
+                          example: 5000
+                        subMonths:
+                          type: integer
+                          example: 12
+                    country:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Russia
+                        levelOfInterest:
+                          type: integer
+                          example: 100
+                        overallPlayers:
+                          type: integer
+                          example: 15000
+                    platform:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Play Station 5
+                        price:
+                          type: integer
+                          example: 60000
+                        popularity:
+                          type: integer
+                          example: 100        
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string
+                      example: "Not enough rights for this"
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string
+                      example: "No server with id: '5'"
+
+    patch:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - Server
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Server Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: BestSkyrimServer
+
+        responses:
+          '201':
+            description: Updated Server
+
+            content: 
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    name:
+                      type: string
+                      example: BestSkyrimServer
+                    ip:
+                      type: string
+                      example: 192.168.1.1
+                    gameName:
+                      type: string
+                      example: Skyrim
+                    rating:
+                      type: integer
+                      example: 0
+                    status:
+                      type: integer
+                      example: 0
+                    hostingId:
+                      type: integer
+                      example: 1
+                    countryId:
+                      type: integer
+                      example: 1
+                    platformId:
+                      type: integer
+                      example: 1
+                    hosting:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Heroku
+                        pricePerMonth:
+                          type: integer
+                          example: 5000
+                        subMonths:
+                          type: integer
+                          example: 12
+                    country:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Russia
+                        levelOfInterest:
+                          type: integer
+                          example: 100
+                        overallPlayers:
+                          type: integer
+                          example: 15000
+                    platform:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Play Station 5
+                        price:
+                          type: integer
+                          example: 60000
+                        popularity:
+                          type: integer
+                          example: 100        
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string
+                      example: "Not enough rights for this"
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string
+                      example: "No server with id: '5'"
+
+    delete:
+        security:
+          - bearerAuth: []
+
+        tags:
+          - Server
+        description: Delete Server by Id
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+    
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Server Id
+                
+        responses:
+          '200':
+            description: Server removed
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Server deleted successfully!"
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string
+                      example: "Not enough rights for this"
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string
+                      example: "No server with id: '5'"
+                      
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # только для документации
+                  
+
+        
