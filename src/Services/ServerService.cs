@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-
+using ServerING.DTO;
 
 namespace ServerING.Services {
 
@@ -15,7 +15,7 @@ namespace ServerING.Services {
         void UpdateServer(Server server);
 
         Server GetServerByID(int id);
-        IEnumerable<Server> GetAllServers();
+        IEnumerable<Server> GetAllServers(ServerFilterDto filter, ServerSortState sortState, int page);
 
         Server GetServerByName(string name);
         Server GetServerByIP(string ip);
@@ -40,11 +40,16 @@ namespace ServerING.Services {
         private readonly IServerRepository serverRepository;
         private readonly IPlatformRepository platformRepository;
         private readonly IUserRepository userRepository;
+        private readonly IWebHostingRepository hostingRepository;
 
-        public ServerService(IServerRepository serverRepository, IPlatformRepository platformRepository, IUserRepository userRepository) {
+        public ServerService(IServerRepository serverRepository, 
+                IPlatformRepository platformRepository, 
+                IUserRepository userRepository,
+                IWebHostingRepository hostingRepository) {
             this.serverRepository = serverRepository;
             this.platformRepository = platformRepository;
             this.userRepository = userRepository;
+            this.hostingRepository = hostingRepository;
         }
 
 
@@ -58,11 +63,9 @@ namespace ServerING.Services {
                     );
         }
 
-
         private bool IsExistById(int id) {
             return serverRepository.GetByID(id) != null;
         }
-
 
         public void AddServer(Server server) {
             if (IsExist(server))
@@ -78,8 +81,30 @@ namespace ServerING.Services {
             return serverRepository.Delete(server.Id);
         }
 
-        public IEnumerable<Server> GetAllServers() {
-            return serverRepository.GetAll();
+        public IEnumerable<Server> GetAllServers(ServerFilterDto filter, 
+                ServerSortState sortState,
+                int page) {
+            var servers = serverRepository.GetAll();
+
+            if (!String.IsNullOrEmpty(filter.Name)) {
+                servers = servers.Where(p => p.Name.Contains(filter.Name));
+            }
+
+            if (!String.IsNullOrEmpty(filter.PlatformName)) {
+                var platform = platformRepository.GetByName(filter.PlatformName);
+
+                if (platform != null)
+                    servers = servers.Where(p => p.PlatformID == platform.Id);
+                else
+                    servers = new List<Server>();
+            }
+
+            servers = SortServersByOption(servers, sortState);
+
+            var pageSize = 5;
+            servers = PaginationServers(servers, page, pageSize);
+
+            return servers;
         }
 
         public Server GetServerByIP(string ip) {
@@ -179,61 +204,11 @@ namespace ServerING.Services {
             else if (sortOrder == ServerSortState.RatingDesc) {
                 filteredServers = servers.OrderByDescending(s => s.Rating);
             }
-            // Нужна ли вообще эта сортировка?
-            else if (sortOrder == ServerSortState.PlatformAsc) { // особая сортировка (сортировка одной таблицы, относительно другой)
-
-                var joinedServerPlatformAsc = servers.Join(platformRepository.GetAll(),
-                                          s => s.PlatformID,
-                                          p => p.Id,
-                                          (s, p) => new {
-                                              Id = s.Id,
-                                              ServerName = s.Name,
-                                              GameVersion = s.GameName,
-                                              Ip = s.Ip,
-                                              PlatformId = s.PlatformID,
-                                              WebHostingId = s.HostingID,
-                                              PlatformName = p.Name,
-                                              Rating = s.Rating
-                                          });
-
-                filteredServers = joinedServerPlatformAsc
-                    .OrderBy(j => j.PlatformName)
-                    .Select(j => new Server {
-                        Id = j.Id,
-                        Name = j.ServerName,
-                        GameName = j.GameVersion,
-                        Ip = j.Ip,
-                        HostingID = j.WebHostingId,
-                        PlatformID = j.PlatformId,
-                        Rating = j.Rating
-                    });
+            else if (sortOrder == ServerSortState.PlatformAsc) {
+                filteredServers = servers.OrderBy(s => s.Platform.Name);
             }
-            else if (sortOrder == ServerSortState.PlatformDesc) { // особая сортировка (сортировка одной таблицы, относительно другой)
-                var joinedServerPlatformDesc = servers.Join(platformRepository.GetAll(),
-                                          s => s.PlatformID,
-                                          p => p.Id,
-                                          (s, p) => new {
-                                              Id = s.Id,
-                                              ServerName = s.Name,
-                                              GameVersion = s.GameName,
-                                              Ip = s.Ip,
-                                              PlatformId = s.PlatformID,
-                                              WebHostingId = s.HostingID,
-                                              PlatformName = p.Name,
-                                              Rating = s.Rating
-                                          });
-
-                filteredServers = joinedServerPlatformDesc
-                    .OrderByDescending(j => j.PlatformName)
-                    .Select(j => new Server {
-                        Id = j.Id,
-                        Name = j.ServerName,
-                        GameName = j.GameVersion,
-                        Ip = j.Ip,
-                        HostingID = j.WebHostingId,
-                        PlatformID = j.PlatformId,
-                        Rating = j.Rating
-                    });
+            else if (sortOrder == ServerSortState.PlatformDesc) {
+                filteredServers = servers.OrderByDescending(s => s.Platform.Name);
             }
             else {
                 filteredServers = servers.OrderBy(s => s.Name);
@@ -352,3 +327,64 @@ namespace ServerING.Services {
         }
     }
 }
+
+
+
+
+
+// // Нужна ли вообще эта сортировка?
+//             else if (sortOrder == ServerSortState.PlatformAsc) { // особая сортировка (сортировка одной таблицы, относительно другой)
+
+//                 var joinedServerPlatformAsc = servers.Join(platformRepository.GetAll(),
+//                                           s => s.PlatformID,
+//                                           p => p.Id,
+//                                           (s, p) => new {
+//                                               Id = s.Id,
+//                                               ServerName = s.Name,
+//                                               GameVersion = s.GameName,
+//                                               Ip = s.Ip,
+//                                               PlatformId = s.PlatformID,
+//                                               WebHostingId = s.HostingID,
+//                                               PlatformName = p.Name,
+//                                               Rating = s.Rating
+//                                           });
+
+//                 filteredServers = joinedServerPlatformAsc
+//                     .OrderBy(j => j.PlatformName)
+//                     .Select(j => new Server {
+//                         Id = j.Id,
+//                         Name = j.ServerName,
+//                         GameName = j.GameVersion,
+//                         Ip = j.Ip,
+//                         HostingID = j.WebHostingId,
+//                         PlatformID = j.PlatformId,
+//                         Rating = j.Rating
+//                     });
+//             }
+//             else if (sortOrder == ServerSortState.PlatformDesc) { // особая сортировка (сортировка одной таблицы, относительно другой)
+//                 var joinedServerPlatformDesc = servers.Join(platformRepository.GetAll(),
+//                                           s => s.PlatformID,
+//                                           p => p.Id,
+//                                           (s, p) => new {
+//                                               Id = s.Id,
+//                                               ServerName = s.Name,
+//                                               GameVersion = s.GameName,
+//                                               Ip = s.Ip,
+//                                               PlatformId = s.PlatformID,
+//                                               WebHostingId = s.HostingID,
+//                                               PlatformName = p.Name,
+//                                               Rating = s.Rating
+//                                           });
+
+//                 filteredServers = joinedServerPlatformDesc
+//                     .OrderByDescending(j => j.PlatformName)
+//                     .Select(j => new Server {
+//                         Id = j.Id,
+//                         Name = j.ServerName,
+//                         GameName = j.GameVersion,
+//                         Ip = j.Ip,
+//                         HostingID = j.WebHostingId,
+//                         PlatformID = j.PlatformId,
+//                         Rating = j.Rating
+//                     });
+//             }

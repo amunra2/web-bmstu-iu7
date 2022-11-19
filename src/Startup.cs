@@ -76,8 +76,7 @@ namespace ServerING {
             app.UseAuthorization();
             app.UseHttpsRedirection();
 
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();     // нет определенных маршрутов
             });
         }

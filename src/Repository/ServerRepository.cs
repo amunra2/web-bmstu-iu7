@@ -64,7 +64,12 @@ namespace ServerING.Repository {
         }
 
         public IEnumerable<Server> GetAll() {
-            return appDBContent.Server.ToList();
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .ToList();
         }
 
         public Server GetByID(int id) {
