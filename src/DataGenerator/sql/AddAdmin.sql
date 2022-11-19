@@ -1,3 +1,3 @@
 INSERT INTO public."User"(
 	"Login", "Password", "Role")
-	VALUES ('admin', 'admin', 'Admin');
+	VALUES ('admin', 'admin', 'admin');
