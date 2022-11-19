@@ -69,35 +69,80 @@ namespace ServerING.Repository {
                 .Include(s => s.Country)
                 .Include(s => s.Platform)
                 .Include(s => s.Hosting)
+                .Include(s => s.Owner)
                 .ToList();
         }
 
         public Server GetByID(int id) {
-            return appDBContent.Server.Find(id);
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .FirstOrDefault(s => s.Id == id);
         }
 
         public IEnumerable<Server> GetByGameVersion(string gameVersion) {
-            return appDBContent.Server.Where(s => s.GameName == gameVersion).ToList();
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .Where(s => s.GameName == gameVersion)
+                .ToList();
         }
 
         public Server GetByIP(string ip) {
-            return appDBContent.Server.FirstOrDefault(s => s.Ip == ip);
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .FirstOrDefault(s => s.Ip == ip);
         }
 
         public Server GetByName(string name) {
-            return appDBContent.Server.FirstOrDefault(s => s.Name == name);
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .FirstOrDefault(s => s.Name == name);
         }
 
         public IEnumerable<Server> GetByPlatformID(int id) {
-            return appDBContent.Server.Where(s => s.PlatformID == id).ToList();
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .Where(s => s.PlatformID == id)
+                .ToList();
         }
 
         public IEnumerable<Server> GetByWebHostingID(int id) {
-            return appDBContent.Server.Where(s => s.HostingID == id).ToList();
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .Where(s => s.HostingID == id).ToList();
         }
 
         public IEnumerable<Player> GetPlayersByServerID(int id) {
-            Server server = appDBContent.Server.FirstOrDefault(s => s.Id == id);
+            Server server = appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .FirstOrDefault(s => s.Id == id);
 
             if (server != null) {
                 var playersOnServerIds = appDBContent.ServerPlayer.Where(x => x.ServerID == id).Select(x => x.PlayerID).ToList();
@@ -113,7 +158,13 @@ namespace ServerING.Repository {
         public WebHosting GetWebHostingByServerId(int id) {
 
             if (id > 0) {
-                Server server = appDBContent.Server.FirstOrDefault(s => s.Id == id);
+                Server server = appDBContent
+                    .Server
+                    .Include(s => s.Country)
+                    .Include(s => s.Platform)
+                    .Include(s => s.Hosting)
+                    .Include(s => s.Owner)
+                    .FirstOrDefault(s => s.Id == id);
 
                 if (server != null) {
                     return appDBContent.WebHosting.FirstOrDefault(w => w.Id == server.HostingID);
@@ -124,7 +175,14 @@ namespace ServerING.Repository {
         }
 
         public IEnumerable<Server> GetByRating(int rating) {
-            return appDBContent.Server.Where(x => x.Rating == rating).ToList();
+            return appDBContent
+                .Server
+                .Include(s => s.Country)
+                .Include(s => s.Platform)
+                .Include(s => s.Hosting)
+                .Include(s => s.Owner)
+                .Where(x => x.Rating == rating)
+                .ToList();
         }
 
         public IEnumerable<FavoriteServer> GetByUserID(int id) {
