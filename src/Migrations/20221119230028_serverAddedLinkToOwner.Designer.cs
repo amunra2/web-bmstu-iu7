@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ServerING.Models;
@@ -11,9 +12,10 @@ using ServerING.Models;
 namespace ServerING.Migrations
 {
     [DbContext(typeof(AppDBContent))]
-    partial class AppDBContentModelSnapshot : ModelSnapshot
+    [Migration("20221119230028_serverAddedLinkToOwner")]
+    partial class serverAddedLinkToOwner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

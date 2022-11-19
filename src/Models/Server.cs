@@ -29,10 +29,14 @@ namespace ServerING.Models {
 
         [ForeignKey("Country")]
         public int CountryID { get; set; }
+
+        [ForeignKey("Owner")]
+        public int OwnerID { get; set; }
         
         public virtual WebHosting Hosting { get; set; }
         public virtual Platform Platform { get; set; }
         public virtual Country Country { get; set; }
+        public virtual User Owner { get; set; }
     }
 
 

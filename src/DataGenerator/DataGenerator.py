@@ -72,8 +72,11 @@ def generateServerData():
         hostingId = randint(1, MAX_WEBHOSTINGS)
         platformId = randint(1, MAX_PLATFORMS)
         countryId = randint(1, MAX_COUNTRIES)
+        ownerId = 1
 
-        line = "{0};{1};{2};{3};{4};{5};{6};{7}\n".format(serverName, ip, gameName, rating, status, hostingId, platformId, countryId)
+        line = "{0};{1};{2};{3};{4};{5};{6};{7};{8}\n" \
+            .format(serverName, ip, gameName, rating, status, 
+                hostingId, platformId, countryId, ownerId)
 
         f.write(line)
 
@@ -103,7 +106,10 @@ def generateUserData():
     f = open(USER_DATA, "w")
     faker = Faker()
 
-    for _ in range(0, MAX_USERS):
+    adminLine = "{0};{1};{2}\n".format("admin", "admin", "admin")
+    f.write(adminLine)
+
+    for _ in range(0, MAX_USERS - 1):
         nickname = faker.unique.user_name()
         password = faker.password(length=12)
         role = "user"
