@@ -6,13 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ServerING.DTO;
+using ServerING.Exceptions;
 
 namespace ServerING.Services {
 
     public interface IServerService {
-        void AddServer(Server server);
-        Server DeleteServer(Server server);
-        void UpdateServer(Server server);
+        Server AddServer(ServerAddDto server);
+        Server DeleteServer(int id);
+        Server PutServer(int id, ServerUpdateDto server);
+        Server PatchServer(int id, ServerUpdateDto server);
 
         Server GetServerByID(int id);
         IEnumerable<Server> GetAllServers(ServerFilterDto filter, ServerSortState sortState, int page);
@@ -53,32 +55,89 @@ namespace ServerING.Services {
         }
 
 
-        private bool IsExist(Server server) {
+        private bool IsExist(string serverIp) {
             return serverRepository.GetAll()
-                .Any(item =>
-                    item.Name == server.Name &&
-                    item.GameName == server.GameName &&
-                    item.HostingID == server.HostingID &&
-                    item.PlatformID == server.PlatformID
-                    );
+                .Any(item => item.Ip == serverIp);
         }
 
         private bool IsExistById(int id) {
             return serverRepository.GetByID(id) != null;
         }
 
-        public void AddServer(Server server) {
-            if (IsExist(server))
-                throw new Exception("Such server is already exist");
+        public Server AddServer(ServerAddDto server) {
+            if (IsExist(server.Ip)) {
+                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
+                throw new ServerConflictException(conflictedId);
+            }
 
-            serverRepository.Add(server);
+            var transferedServer = new Server {
+                Name = server.Name,
+                GameName = server.GameName,
+                Ip = server.Ip,
+                Status = server.Status.Value,
+                HostingID = server.HostingID.Value,
+                PlatformID = server.PlatformID.Value,
+                CountryID = server.CountryID.Value,
+                OwnerID = server.OwnerID.Value
+            };
+
+            return serverRepository.Add(transferedServer);
         }
 
-        public Server DeleteServer(Server server) {
-            if (!IsExistById(server.Id))
-                throw new Exception("No such server");
+        public Server PutServer(int id, ServerUpdateDto server) {
+            if (IsExist(server.Ip)) {
+                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
+                throw new ServerConflictException(conflictedId);
+            }
 
-            return serverRepository.Delete(server.Id);
+            if (!IsExistById(id))
+                throw null;
+
+            var transferedServer = new Server {
+                Id = id,
+                Name = server.Name,
+                GameName = server.GameName,
+                Status = server.Status.Value,
+                Rating = server.Rating != null ? server.Rating.Value : 0,
+                Ip = server.Ip,
+                HostingID = server.HostingID.Value,
+                PlatformID = server.PlatformID.Value,
+                CountryID = server.CountryID.Value,
+                OwnerID = server.OwnerID.Value
+            };
+
+            return serverRepository.Update(transferedServer);
+        }
+
+        public Server PatchServer(int id, ServerUpdateDto server) {
+            if (IsExist(server.Ip)) {
+                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
+                throw new ServerConflictException(conflictedId);
+            }
+
+            if (!IsExistById(id))
+                return null;
+
+            var existedServer = GetServerByID(id);
+
+            var transferedServer = new Server {
+                Id = id,
+                Name = server.Name != null ? server.Name : existedServer.Name,
+                GameName = server.GameName != null ? server.GameName : existedServer.GameName,
+                Ip = server.Ip != null ? server.Ip : existedServer.Ip,
+                Status = server.Status != null ? server.Status.Value : existedServer.Status,
+                Rating = server.Rating != null ? server.Rating.Value : existedServer.Rating,
+                HostingID = server.HostingID != null ? server.HostingID.Value : existedServer.HostingID,
+                PlatformID = server.PlatformID != null ? server.PlatformID.Value : existedServer.PlatformID,
+                CountryID = server.CountryID != null ? server.CountryID.Value : existedServer.CountryID,
+                OwnerID = server.OwnerID != null ? server.OwnerID.Value : existedServer.OwnerID,
+            };
+
+            return serverRepository.Update(transferedServer);
+        }
+
+        public Server DeleteServer(int id) {
+            return serverRepository.Delete(id);
         }
 
         public IEnumerable<Server> GetAllServers(ServerFilterDto filter, 
@@ -131,14 +190,6 @@ namespace ServerING.Services {
             return serverRepository.GetByID(id);
         }
 
-        public void UpdateServer(Server server) {
-            if (!IsExistById(server.Id))
-                throw new Exception("No such server");
-
-            serverRepository.Update(server);
-        }
-
-
         private IEnumerable<Server> FilterServersByName(IEnumerable<Server> servers, string name, int? platformId) {
 
             var filteredServers = servers;
@@ -178,7 +229,6 @@ namespace ServerING.Services {
             return filteredServers;
         }
 
-
         private IEnumerable<Server> SortServersByOption(IEnumerable<Server> servers, ServerSortState sortOrder) {
 
             IEnumerable<Server> filteredServers;
@@ -217,14 +267,12 @@ namespace ServerING.Services {
             return filteredServers;
         }
 
-
         private IEnumerable<Server> PaginationServers(IEnumerable<Server> servers, int page, int pageSize) {
 
             var paginatedServers = servers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             return paginatedServers;
         }
-
 
         public IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder) {
 
@@ -253,7 +301,6 @@ namespace ServerING.Services {
 
             return viewModel;
         }
-
 
         public DetailViewModel DetailServer(int serverId) {
 

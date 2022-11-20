@@ -15,10 +15,12 @@ namespace ServerING.Repository {
         }
         ///
 
-        public void Add(WebHosting webHosting) {
+        public WebHosting Add(WebHosting webHosting) {
             try {
                 appDBContent.WebHosting.Add(webHosting);
                 appDBContent.SaveChanges();
+
+                return GetByID(webHosting.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);
@@ -47,13 +49,14 @@ namespace ServerING.Repository {
         }
 
 
-        public void Update(WebHosting webHosting) {
-
+        public WebHosting Update(WebHosting webHosting) {
             try {
                 var curWebHosting = appDBContent.WebHosting.FirstOrDefault(x => x.Id == webHosting.Id);
                 appDBContent.Entry(curWebHosting).CurrentValues.SetValues(webHosting);
                 /*appDBContent.WebHosting.Update(webHosting);*/
                 appDBContent.SaveChanges();
+
+                return GetByID(webHosting.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);

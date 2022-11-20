@@ -15,10 +15,12 @@ namespace ServerING.Repository {
         }
         ///
 
-        public void Add(Country country) {
+        public Country Add(Country country) {
             try {
                 appDBContent.Country.Add(country);
                 appDBContent.SaveChanges();
+
+                return GetByID(country.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);
@@ -66,11 +68,13 @@ namespace ServerING.Repository {
             return appDBContent.Country.Where(c => c.OverallPlayers == overallPlayers).ToList();
         }
 
-        public void Update(Country country) {
+        public Country Update(Country country) {
             try {
                 var curCountry = appDBContent.Country.FirstOrDefault(x => x.Id == country.Id);
                 appDBContent.Entry(curCountry).CurrentValues.SetValues(country);
                 appDBContent.SaveChanges();
+
+                return GetByID(country.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);
