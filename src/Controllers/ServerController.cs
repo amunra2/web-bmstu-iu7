@@ -19,9 +19,11 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] ServerFilterDto filter,
-                [FromQuery] ServerSortState sortState,
-                [FromQuery] [BindRequired] int page) {
+        public IActionResult GetAll([FromQuery] 
+            ServerFilterDto filter,
+            [FromQuery] ServerSortState? sortState,
+            [FromQuery] int? page
+        ) {
             return Ok(serverService.GetAllServers(filter, sortState, page));
         }
 
