@@ -17,7 +17,11 @@ namespace ServerING.Services {
         Server PatchServer(int id, ServerUpdateDto server);
 
         Server GetServerByID(int id);
-        IEnumerable<Server> GetAllServers(ServerFilterDto filter, ServerSortState sortState, int page);
+        IEnumerable<Server> GetAllServers(
+            ServerFilterDto filter, 
+            ServerSortState? sortState, 
+            int? page
+        );
 
         Server GetServerByName(string name);
         Server GetServerByIP(string ip);
@@ -27,7 +31,7 @@ namespace ServerING.Services {
         IEnumerable<Server> GetServersByPlatformID(int id);
         IEnumerable<Server> GetServersByRating(int rating);
 
-        IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder);
+        // IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder);
         DetailViewModel DetailServer(int serverId);
         IEnumerable<int> GetUserFavoriteServersIds(int userId);
 
@@ -98,7 +102,7 @@ namespace ServerING.Services {
                 Name = server.Name,
                 GameName = server.GameName,
                 Status = server.Status.Value,
-                Rating = server.Rating != null ? server.Rating.Value : 0,
+                Rating = server.Rating.Value, // ! чекнуть когда-нибудь
                 Ip = server.Ip,
                 HostingID = server.HostingID.Value,
                 PlatformID = server.PlatformID.Value,
@@ -140,29 +144,26 @@ namespace ServerING.Services {
             return serverRepository.Delete(id);
         }
 
-        public IEnumerable<Server> GetAllServers(ServerFilterDto filter, 
-                ServerSortState sortState,
-                int page) {
+        public IEnumerable<Server> GetAllServers(
+            ServerFilterDto filter, 
+            ServerSortState? sortState,
+            int? page
+        ) {
             var servers = serverRepository.GetAll();
 
-            if (!String.IsNullOrEmpty(filter.Name)) {
-                servers = servers.Where(p => p.Name.Contains(filter.Name));
+            // Фильтрация
+            servers = FilterServers(servers, filter);
+
+            // Сортировка
+            if (sortState != null) {
+                servers = SortServersByOption(servers, sortState.Value);
             }
 
-            if (!String.IsNullOrEmpty(filter.PlatformName)) {
-                var platform = platformRepository.GetByName(filter.PlatformName);
-
-                if (platform != null)
-                    servers = servers.Where(p => p.PlatformID == platform.Id);
-                else
-                    servers = new List<Server>();
+            // Пагинация
+            if (page != null) {
+                servers = PaginationServers(servers, page.Value);
             }
-
-            servers = SortServersByOption(servers, sortState);
-
-            var pageSize = 5;
-            servers = PaginationServers(servers, page, pageSize);
-
+            
             return servers;
         }
 
@@ -190,40 +191,24 @@ namespace ServerING.Services {
             return serverRepository.GetByID(id);
         }
 
-        private IEnumerable<Server> FilterServersByName(IEnumerable<Server> servers, string name, int? platformId) {
-
+        private IEnumerable<Server> FilterServers(IEnumerable<Server> servers, ServerFilterDto filter) {
             var filteredServers = servers;
 
-            if ((platformId != null) && (platformId > 0)) {
-                var joinedServerPlatformAsc = servers.Join(platformRepository.GetAll(),
-                                          s => s.PlatformID,
-                                          p => p.Id,
-                                          (s, p) => new {
-                                              Id = s.Id,
-                                              ServerName = s.Name,
-                                              GameVersion = s.GameName,
-                                              Ip = s.Ip,
-                                              PlatformId = s.PlatformID,
-                                              WebHostingId = s.HostingID,
-                                              PlatformName = p.Name,
-                                              Rating = s.Rating
-                                          });
-
-                filteredServers = joinedServerPlatformAsc
-                    .Where(j => j.PlatformId == platformId)
-                    .Select(j => new Server {
-                        Id = j.Id,
-                        Name = j.ServerName,
-                        GameName = j.GameVersion,
-                        Ip = j.Ip,
-                        HostingID = j.WebHostingId,
-                        PlatformID = j.PlatformId,
-                        Rating = j.Rating
-                    });
+            if (filter.Status != null) {
+                filteredServers = filteredServers.Where(s => s.Status == filter.Status.Value);
             }
 
-            if (!String.IsNullOrEmpty(name)) {
-                filteredServers = filteredServers.Where(p => p.Name.Contains(name));
+            if (!String.IsNullOrEmpty(filter.Name)) {
+                filteredServers = filteredServers.Where(s => s.Name.Contains(filter.Name));
+            }
+
+            if (!String.IsNullOrEmpty(filter.PlatformName)) {
+                var platform = platformRepository.GetByName(filter.PlatformName);
+
+                if (platform != null)
+                    filteredServers = filteredServers.Where(p => p.PlatformID == platform.Id);
+                else
+                    filteredServers = new List<Server>();
             }
 
             return filteredServers;
@@ -267,40 +252,40 @@ namespace ServerING.Services {
             return filteredServers;
         }
 
-        private IEnumerable<Server> PaginationServers(IEnumerable<Server> servers, int page, int pageSize) {
-
+        private IEnumerable<Server> PaginationServers(IEnumerable<Server> servers, int page) {
+            var pageSize = 10;
             var paginatedServers = servers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             return paginatedServers;
         }
 
-        public IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder) {
+        // public IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder) {
 
-            // Параметры пагинации 
-            int pageSize = 10;
-            var count = parsedServers.Count();
+        //     // Параметры пагинации 
+        //     int pageSize = 10;
+        //     var count = parsedServers.Count();
 
-            // фильтрация
-            parsedServers = FilterServersByName(parsedServers, name, platformId);
+        //     // фильтрация
+        //     parsedServers = FilterServersByName(parsedServers, name, platformId);
 
-            // сортировка
-            parsedServers = SortServersByOption(parsedServers, sortOrder);
+        //     // сортировка
+        //     parsedServers = SortServersByOption(parsedServers, sortOrder);
 
-            // пагинация
-            parsedServers = PaginationServers(parsedServers, page, pageSize);
+        //     // пагинация
+        //     parsedServers = PaginationServers(parsedServers, page, pageSize);
 
 
-            // Вывод - формируем модель представления
-            IndexViewModel viewModel = new IndexViewModel {
-                PageViewModel = new PageViewModel(count, page, pageSize),
-                SortViewModel = new SortViewModel(sortOrder),
-                FilterViewModel = new FilterViewModel(platformRepository.GetAll().ToList(), platformId, name),
-                Servers = parsedServers.ToList(),
-                Platforms = platformRepository.GetAll().ToList()
-            };
+        //     // Вывод - формируем модель представления
+        //     IndexViewModel viewModel = new IndexViewModel {
+        //         PageViewModel = new PageViewModel(count, page, pageSize),
+        //         SortViewModel = new SortViewModel(sortOrder),
+        //         FilterViewModel = new FilterViewModel(platformRepository.GetAll().ToList(), platformId, name),
+        //         Servers = parsedServers.ToList(),
+        //         Platforms = platformRepository.GetAll().ToList()
+        //     };
 
-            return viewModel;
-        }
+        //     return viewModel;
+        // }
 
         public DetailViewModel DetailServer(int serverId) {
 
