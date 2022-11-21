@@ -16,11 +16,12 @@ namespace ServerING.Repository {
         }
         ///
 
-        public void Add(Server server) {
-
+        public Server Add(Server server) {
             try {
-                appDBContent.Server.Add(server);
+                var addedServer = appDBContent.Server.Add(server);
                 appDBContent.SaveChanges();
+
+                return GetByID(server.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);
@@ -28,8 +29,22 @@ namespace ServerING.Repository {
             }
         }
 
-        public Server Delete(int id) {
+        public Server Update(Server server) {
+            try {
+                var curServer = appDBContent.Server.FirstOrDefault(x => x.Id == server.Id);
+                /*appDBContent.Server.Update(curServer);*/
+                appDBContent.Entry(curServer).CurrentValues.SetValues(server);
+                appDBContent.SaveChanges();
 
+                return GetByID(server.Id);
+            }
+            catch (Exception ex) {
+                Console.Write(ex.Message);
+                throw new Exception("Server Update Error");
+            }
+        }
+
+        public Server Delete(int id) {
             try {
                 Server server = appDBContent.Server.Find(id);
 
@@ -46,20 +61,6 @@ namespace ServerING.Repository {
             catch (Exception ex) {
                 Console.Write(ex.Message);
                 throw new Exception("Server Delete Error");
-            }
-        }
-
-        public void Update(Server server) {
-
-            try {
-                var curServer = appDBContent.Server.FirstOrDefault(x => x.Id == server.Id);
-                /*appDBContent.Server.Update(curServer);*/
-                appDBContent.Entry(curServer).CurrentValues.SetValues(server);
-                appDBContent.SaveChanges();
-            }
-            catch (Exception ex) {
-                Console.Write(ex.Message);
-                throw new Exception("Server Update Error");
             }
         }
 

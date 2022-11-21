@@ -15,11 +15,12 @@ namespace ServerING.Repository {
         }
         ///
 
-        public void Add(Platform platform) {
-
+        public Platform Add(Platform platform) {
             try {
                 appDBContent.Platform.Add(platform);
                 appDBContent.SaveChanges();
+
+                return GetByID(platform.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);
@@ -28,7 +29,6 @@ namespace ServerING.Repository {
         }
 
         public Platform Delete(int id) {
-
             try {
                 Platform platform = appDBContent.Platform.Find(id);
 
@@ -48,13 +48,14 @@ namespace ServerING.Repository {
             }
         }
 
-        public void Update(Platform platform) {
-
+        public Platform Update(Platform platform) {
             try {
                 var curPlatform = appDBContent.Platform.FirstOrDefault(x => x.Id == platform.Id);
                 appDBContent.Entry(curPlatform).CurrentValues.SetValues(platform);
                 /*appDBContent.Platform.Update(platform);*/
                 appDBContent.SaveChanges();
+
+                return GetByID(platform.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);

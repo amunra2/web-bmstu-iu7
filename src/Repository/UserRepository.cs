@@ -16,10 +16,12 @@ namespace ServerING.Repository {
         }
         ///
 
-        public void Add(User user) {
+        public User Add(User user) {
             try {
                 appDBContent.User.Add(user);
                 appDBContent.SaveChanges();
+
+                return GetByID(user.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);
@@ -47,12 +49,14 @@ namespace ServerING.Repository {
             }
         }
 
-        public void Update(User user) {
+        public User Update(User user) {
             try {
                 var curUser = appDBContent.User.FirstOrDefault(x => x.Id == user.Id);
                 appDBContent.Entry(curUser).CurrentValues.SetValues(user);
                 /*appDBContent.User.Update(user);*/
                 appDBContent.SaveChanges();
+
+                return GetByID(user.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);

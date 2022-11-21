@@ -16,11 +16,12 @@ namespace ServerING.Repository {
         ///
 
 
-        public void Add(Player player) {
-
+        public Player Add(Player player) {
             try {
                 appDBContent.Player.Add(player);
                 appDBContent.SaveChanges();
+
+                return GetByID(player.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);
@@ -29,7 +30,6 @@ namespace ServerING.Repository {
         }
 
         public Player Delete(int id) {
-
             try {
                 Player player = appDBContent.Player.Find(id);
 
@@ -50,13 +50,14 @@ namespace ServerING.Repository {
         }
 
 
-        public void Update(Player player) {
-
+        public Player Update(Player player) {
             try {
                 var curPlayer = appDBContent.Player.FirstOrDefault(x => x.Id == player.Id);
                 appDBContent.Entry(curPlayer).CurrentValues.SetValues(player);
                 /*appDBContent.Player.Update(player);*/
                 appDBContent.SaveChanges();
+
+                return GetByID(player.Id);
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);

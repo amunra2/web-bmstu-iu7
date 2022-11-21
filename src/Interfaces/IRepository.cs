@@ -2,9 +2,8 @@
 
 namespace ServerING.Interfaces {
     public interface IRepository<T> {
-
-        void Add(T model);
-        void Update(T model);
+        T Add(T model);
+        T Update(T model);
         T Delete(int id);
 
         IEnumerable<T> GetAll();

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ServerING.DTO;
+using ServerING.Exceptions;
 using ServerING.Models;
 using ServerING.Services;
 
@@ -18,59 +21,76 @@ namespace ServerING.Controllers {
         [HttpGet]
         public IActionResult GetAll([FromQuery] ServerFilterDto filter,
                 [FromQuery] ServerSortState sortState,
-                [FromQuery] int page) {
+                [FromQuery] [BindRequired] int page) {
             return Ok(serverService.GetAllServers(filter, sortState, page));
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id) {
-            Console.WriteLine(id);
-            return Ok(serverService.GetServerByID(id));
+        [HttpPost]
+        [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
+        public IActionResult Add(ServerAddDto server) {
+            try {
+                var addedServer = serverService.AddServer(server);
+                return Ok(addedServer);
+            }
+            catch (ServerConflictException ex) {
+                return Conflict(ex.Message);
+            }
         }
 
-        [HttpPost]
-        public void Add(ServerFormDto server) {
-            // Console.WriteLine(server.Name);
-            // return Ok(serverService.AddServer(server));
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult GetById(int id) {
+            var server = serverService.GetServerByID(id);
+
+            if (server != null) {
+                return Ok(server);
+            }
+            else {
+                return NotFound();
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
+        public IActionResult Put(int id, ServerUpdateDto server) {
+            try {
+                var updatedServer = serverService.PutServer(id, server);
+                return updatedServer != null ? Ok(updatedServer) : NotFound();
+            }
+            catch (ServerConflictException ex) {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpPatch("{id}")]
-        public void Update(int id, ServerFormDto server) {
-            Console.WriteLine(id);
+        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
+        public IActionResult Patch(int id, ServerUpdateDto server) {
+            try {
+                var updatedServer = serverService.PatchServer(id, server);
+                return updatedServer != null ? Ok(updatedServer) : NotFound();
+            }
+            catch (ServerConflictException ex) {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id) {
-            Console.WriteLine(id);
+        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult Delete(int id) {
+            var deletedServer = serverService.DeleteServer(id);
+
+            if (deletedServer != null) {
+                return Ok(deletedServer);
+            }
+            else {
+                return NotFound();
+            }
         }
     }
 }
-
-// [ApiController]
-// [Route("[controller]")]
-// public class WeatherForecastController : ControllerBase
-// {
-//     private static readonly string[] Summaries = new[]
-//     {
-//         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-//     };
-
-//     private readonly ILogger<WeatherForecastController> _logger;
-
-//     public WeatherForecastController(ILogger<WeatherForecastController> logger)
-//     {
-//         _logger = logger;
-//     }
-
-//     [HttpGet(Name = "GetWeatherForecast")]
-//     public IEnumerable<WeatherForecast> Get()
-//     {
-//         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-//         {
-//             Date = DateTime.Now.AddDays(index),
-//             TemperatureC = Random.Shared.Next(-20, 55),
-//             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-//         })
-//         .ToArray();
-//     }
-// }
