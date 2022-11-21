@@ -42,7 +42,7 @@ paths:
 
         - in: query
           name: Page
-          required: true
+          required: false
           schema:
             type: integer
           description: Page number for paging Servers
@@ -415,319 +415,6 @@ paths:
                     errorMessage:
                       type: string
                       example: "No server with id: '5'"
-
-  '/api/v1/server/{userId}/favorite/':
-    get:
-      security:
-          - bearerAuth: []
-
-      tags:
-        - Server
-      description: Return User's Favorite Servers
-
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-          description: Authorization Bearer
-
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: integer
-          description: User Id
-
-      responses:
-        '200':
-          description: User' Favorite Servers
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Server'
-
-        '204':
-          description: No Content
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No Favorite Servers"
-
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "User must be logged in"
-        
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "Not enough rights for this"
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No user with id: '5'"
-
-    post:
-      security:
-        - bearerAuth: []      
-
-      tags:
-        - Server
-      description: Post Favorite Server
-
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-          description: Authorization Bearer
-
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: integer
-          description: User Id
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                serverId:
-                  type: integer
-                  example: 1
-
-      responses:
-        '201':
-          description: Saved Favorite Server
-
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  serverId:
-                    type: integer
-                    example: 1
-                  userId:
-                    type: integer
-                    example: 1
-                  
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "User must be logged in"
-
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "Not enough rights for this"
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No user with id: '5'"
-  
-  '/api/v1/server/{userId}/favorite/{serverId}':
-    delete:
-        security:
-          - bearerAuth: []
-
-        tags:
-          - Server
-        description: Delete Favorite Server by Id
-
-        parameters:
-          - in: header
-            name: Authorization
-            required: true
-            schema:
-              type: string
-            description: Authorization Bearer 
-    
-          - in: path
-            name: serverId
-            required: true
-            schema:
-              type: integer
-            description: Server Id
-
-          - in: path
-            name: userId
-            required: true
-            schema:
-              type: integer
-            description: User Id
-                
-        responses:
-          '200':
-            description: Favorite Server removed
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      example: "Favorite Server deleted successfully!"
-          
-          '401':
-            description: Unauthorized
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errorMessage:
-                      type: string
-                      example: "User must be logged in"
-          
-          '403':
-            description: Forbidden
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errorMessage:
-                      type: string
-                      example: "Not enough rights for this"
-          
-          '404':
-            description: Not Found
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errorMessage:
-                      type: string
-                      example: "No server with id: '5'"
-
-  '/api/v1/server/{userId}/suggested/':
-    get:
-      security:
-          - bearerAuth: []
-
-      tags:
-        - Server
-      description: Return User's Suggested Servers
-
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-          description: Authorization Bearer
-
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: integer
-          description: User Id
-
-      responses:
-        '200':
-          description: User' Suggested Servers
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Server'
-
-        '204':
-          description: No Content
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No Suggested Servers"
-
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "User must be logged in"
-        
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "Not enough rights for this"
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No user with id: '5'"
 
 
   '/api/v1/platform':
@@ -2430,6 +2117,319 @@ paths:
                     errorMessage:
                       type: string
                       example: "No user with id: '5'"
+
+  '/api/v1/user/{userId}/favorite/':
+    get:
+      security:
+          - bearerAuth: []
+
+      tags:
+        - User
+      description: Return User's Favorite Servers
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: integer
+          description: User Id
+
+      responses:
+        '200':
+          description: User' Favorite Servers
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No Favorite Servers"
+
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+        
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No user with id: '5'"
+
+    post:
+      security:
+        - bearerAuth: []      
+
+      tags:
+        - User
+      description: Post Favorite Server
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: integer
+          description: User Id
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                serverId:
+                  type: integer
+                  example: 1
+
+      responses:
+        '201':
+          description: Saved Favorite Server
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  serverId:
+                    type: integer
+                    example: 1
+                  userId:
+                    type: integer
+                    example: 1
+                  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No user with id: '5'"
+  
+  '/api/v1/user/{userId}/favorite/{serverId}':
+    delete:
+        security:
+          - bearerAuth: []
+
+        tags:
+          - User
+        description: Delete Favorite Server by Id
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+    
+          - in: path
+            name: serverId
+            required: true
+            schema:
+              type: integer
+            description: Server Id
+
+          - in: path
+            name: userId
+            required: true
+            schema:
+              type: integer
+            description: User Id
+                
+        responses:
+          '200':
+            description: Favorite Server removed
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Favorite Server deleted successfully!"
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No server with id: '5'"
+
+  '/api/v1/user/{userId}/suggested/':
+    get:
+      security:
+          - bearerAuth: []
+
+      tags:
+        - User
+      description: Return User's Suggested Servers
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: integer
+          description: User Id
+
+      responses:
+        '200':
+          description: User' Suggested Servers
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No Suggested Servers"
+
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+        
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No user with id: '5'"
 
   '/api/v1/login/':
     post:
