@@ -24,7 +24,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(PlatformFormDto platform) {
             try {

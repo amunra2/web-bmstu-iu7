@@ -46,12 +46,12 @@ namespace ServerING.Services {
         private readonly IServerRepository serverRepository;
         private readonly IPlatformRepository platformRepository;
         private readonly IUserRepository userRepository;
-        private readonly IWebHostingRepository hostingRepository;
+        private readonly IHostingRepository hostingRepository;
 
         public ServerService(IServerRepository serverRepository, 
                 IPlatformRepository platformRepository, 
                 IUserRepository userRepository,
-                IWebHostingRepository hostingRepository) {
+                IHostingRepository hostingRepository) {
             this.serverRepository = serverRepository;
             this.platformRepository = platformRepository;
             this.userRepository = userRepository;
