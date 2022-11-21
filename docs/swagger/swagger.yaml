@@ -1996,7 +1996,7 @@ paths:
                 properties:
                   name:
                     type: string
-                    example: User
+                    example: Player
 
         responses:
           '201':
@@ -2153,17 +2153,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                nickname:
-                  type: string
-                  example: User
-                lastPlayed:
-                  type: string
-                  example: 2022-10-10
-                hoursPlayed:
-                  type: integer
-                  example: 23
+              $ref: '#/components/schemas/User'
 
       responses:
         '201':
@@ -2256,17 +2246,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  nickname:
-                    type: string
-                    example: User
-                  lastPlayed:
-                    type: string
-                    example: 2022-10-10
-                  hoursPlayed:
-                    type: integer
-                    example: 22
+                $ref: '#/components/schemas/User'
 
         responses:
           '201':
