@@ -26,7 +26,7 @@ namespace ServerING.Services {
         Server GetServerByName(string name);
         Server GetServerByIP(string ip);
 
-        IEnumerable<Server> GetServersByGameVersion(string gameVersion);
+        IEnumerable<Server> GetServersByGameName(string gameVersion);
         IEnumerable<Server> GetServersByHostingID(int id);
         IEnumerable<Server> GetServersByPlatformID(int id);
         IEnumerable<Server> GetServersByRating(int rating);
@@ -175,8 +175,8 @@ namespace ServerING.Services {
             return serverRepository.GetByName(name);
         }
 
-        public IEnumerable<Server> GetServersByGameVersion(string gameVersion) {
-            return serverRepository.GetByGameVersion(gameVersion);
+        public IEnumerable<Server> GetServersByGameName(string gameName) {
+            return serverRepository.GetByGameName(gameName);
         }
 
         public IEnumerable<Server> GetServersByHostingID(int id) {
