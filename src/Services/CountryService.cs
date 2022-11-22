@@ -4,15 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ServerING.Exceptions;
+using ServerING.DTO;
+
 
 namespace ServerING.Services {
     public interface ICountryService {
-        void AddCountry(Country country);
-        Country DeleteCountry(Country country);
-        void UpdateCountry(Country country);
+        Country AddCountry(CountryDto country);
+        Country UpdateCountry(CountryUpdateDto country);
+        Country PatchUpdateCountry(CountryUpdateSparceDto country);
+        Country DeleteCountry(int id);
 
         Country GetCountryByID(int id);
-        IEnumerable<Country> GetAllCountryes();
+        IEnumerable<Country> GetAllCountries();
 
         Country GetCountryByName(string name);
         IEnumerable<Country> GetCountryByOverallPlayers(ushort overallPlayers);
@@ -39,33 +43,68 @@ namespace ServerING.Services {
             return countryRepository.GetByID(id) != null;
         }
 
-        public void AddCountry(Country country) {
+        public Country AddCountry(CountryDto countryDto) {
+            var country = new Country()
+            {
+                Name = countryDto.Name,
+                LevelOfInterest = countryDto.LevelOfInterest,
+                OverallPlayers = countryDto.OverallPlayers
+            };
+
             if (IsExist(country))
-                throw new Exception("Such country is already exist");
-            else
-                countryRepository.Add(country);
+                throw new CountryAlreadyExistsException("Country already exists");
+
+            return countryRepository.Add(country);
         }
 
-        public Country DeleteCountry(Country country) {
-            if (!IsExistById(country.Id))
-                throw new Exception("No such country");
-
-            return countryRepository.Delete(country.Id);
+        public Country DeleteCountry(int id) {
+            return countryRepository.Delete(id);
         }
 
         public Country GetCountryByID(int id) {
             return countryRepository.GetByID(id);
         }
 
-        public IEnumerable<Country> GetAllCountryes() {
+        public IEnumerable<Country> GetAllCountries() {
             return countryRepository.GetAll();
         }
 
-        public void UpdateCountry(Country country) {
-            if (!IsExistById(country.Id))
-                throw new Exception("No such country");
+        public Country UpdateCountry(CountryUpdateDto countryDto) {
+            var country = new Country()
+            {
+                Id = countryDto.Id,
+                Name = countryDto.Name,
+                LevelOfInterest = countryDto.LevelOfInterest,
+                OverallPlayers = countryDto.OverallPlayers
+            };
 
-            countryRepository.Update(country);
+            if (!IsExistById(country.Id))
+                throw new CountryNotExistsException("No country with such id");
+
+            if (IsExist(country))
+                throw new CountryAlreadyExistsException("Country already exists");
+
+            return countryRepository.Update(country);
+        }
+
+        public Country PatchUpdateCountry(CountryUpdateSparceDto countrySparceDto) {
+            if (!IsExistById(countrySparceDto.Id))
+                throw new CountryNotExistsException("No country with such id");
+
+            var dbCountry = GetCountryByID(countrySparceDto.Id);
+
+            var country = new Country()
+            {
+                Id = countrySparceDto.Id,
+                Name = countrySparceDto.Name ?? dbCountry.Name,
+                LevelOfInterest = countrySparceDto.LevelOfInterest ?? dbCountry.LevelOfInterest,
+                OverallPlayers = countrySparceDto.OverallPlayers ?? dbCountry.OverallPlayers
+            };
+
+            if (IsExist(country))
+                throw new CountryAlreadyExistsException("Country already exists");
+
+            return countryRepository.Update(country);
         }
 
         public Country GetCountryByName(string name) {
