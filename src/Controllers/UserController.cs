@@ -124,7 +124,7 @@ namespace ServerING.Controllers
         }
 
         [HttpGet("{userId}/favorite")]
-        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<Server>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetFavorites(int userId)
@@ -141,7 +141,7 @@ namespace ServerING.Controllers
         }
 
         [HttpPost("{userId}/favorite/{serverId}")]
-        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult AddFavorite(int userId, int serverId)
         {
@@ -156,7 +156,7 @@ namespace ServerING.Controllers
         }
 
         [HttpDelete("{userId}/favorite/{serverId}")]
-        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult DeleteFavorite(int userId, int serverId)
         {

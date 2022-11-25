@@ -23,6 +23,8 @@ namespace ServerING.Services {
             int? page
         );
 
+        public IEnumerable<Player> GetServerPlayers(int serverId);
+
         Server GetServerByName(string name);
         Server GetServerByIP(string ip);
 
@@ -190,8 +192,20 @@ namespace ServerING.Services {
             return serverRepository.GetByID(id);
         }
 
+        public IEnumerable<Player> GetServerPlayers(int serverId) {
+            if (!IsExistById(serverId))
+                throw new ServerNotExistsException("No server with such id");
+
+            return serverRepository.GetPlayersByServerID(serverId);
+        }
+
+
         private IEnumerable<Server> FilterServers(IEnumerable<Server> servers, ServerFilterDto filter) {
             var filteredServers = servers;
+
+            if (filter.OwnerID != null) {
+                filteredServers = filteredServers.Where(s => s.OwnerID == filter.OwnerID);
+            }
 
             if (filter.Status != null) {
                 filteredServers = filteredServers.Where(s => s.Status == filter.Status.Value);
