@@ -12,7 +12,7 @@ using ServerING.Services;
 namespace ServerING.Controllers
 {
     [ApiController]   
-    [Route("/api/v1/player")]
+    [Route("/api/v1/players")]
     public class PlayerController : Controller
     {
         private IPlayerService playerService;

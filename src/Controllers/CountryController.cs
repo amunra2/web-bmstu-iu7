@@ -12,7 +12,7 @@ using ServerING.Services;
 namespace ServerING.Controllers
 {
     [ApiController]   
-    [Route("/api/v1/country")]
+    [Route("/api/v1/countries")]
     public class CountryController : Controller
     {
         private ICountryService countryService;

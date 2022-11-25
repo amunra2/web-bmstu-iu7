@@ -12,7 +12,7 @@ using ServerING.Services;
 namespace ServerING.Controllers
 {
     [ApiController]   
-    [Route("/api/v1/user")]
+    [Route("/api/v1/users")]
     public class UserController : Controller
     {
         private IUserService userService;
@@ -123,7 +123,7 @@ namespace ServerING.Controllers
             return deletedUser != null ? Ok(deletedUser) : NotFound();
         }
 
-        [HttpGet("{userId}/favorite")]
+        [HttpGet("{userId}/favorites")]
         [ProducesResponseType(typeof(IEnumerable<Server>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
@@ -140,7 +140,7 @@ namespace ServerING.Controllers
             }
         }
 
-        [HttpPost("{userId}/favorite/{serverId}")]
+        [HttpPost("{userId}/favorites/{serverId}")]
         [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult AddFavorite(int userId, int serverId)
@@ -155,7 +155,7 @@ namespace ServerING.Controllers
             }
         }
 
-        [HttpDelete("{userId}/favorite/{serverId}")]
+        [HttpDelete("{userId}/favorites/{serverId}")]
         [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult DeleteFavorite(int userId, int serverId)

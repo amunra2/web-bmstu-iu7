@@ -11,7 +11,7 @@ info:
   description: The API for the ServerING project
 
 paths:
-  '/api/v1/server':
+  '/api/v1/servers':
     get:
       tags:
           - Server
@@ -150,7 +150,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
          
-  '/api/v1/server/{id}':
+  '/api/v1/servers/{id}':
     get:
       tags:
           - Server
@@ -417,7 +417,7 @@ paths:
                       example: "No server with id: '5'"
 
 
-  '/api/v1/platform':
+  '/api/v1/platforms':
     get:
       tags:
           - Platform
@@ -506,7 +506,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
 
-  '/api/v1/platform/{id}':
+  '/api/v1/platforms/{id}':
     get:
       tags:
           - Platform
@@ -761,7 +761,7 @@ paths:
                       example: "No platform with id: '5'"
   
 
-  '/api/v1/hosting':
+  '/api/v1/hostings':
     get:
       tags:
           - Hosting
@@ -850,7 +850,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
 
-  '/api/v1/hosting/{id}':
+  '/api/v1/hostings/{id}':
     get:
       tags:
           - Hosting
@@ -1106,7 +1106,7 @@ paths:
                       example: "No hosting with id: '5'"
   
 
-  '/api/v1/country':
+  '/api/v1/countries':
     get:
       tags:
           - Country
@@ -1195,7 +1195,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
 
-  '/api/v1/country/{id}':
+  '/api/v1/countries/{id}':
     get:
       tags:
           - Country
@@ -1450,7 +1450,7 @@ paths:
                       type: string
                       example: "No country with id: '5'"
 
-  '/api/v1/player':
+  '/api/v1/players':
     get:
       tags:
           - Player
@@ -1539,7 +1539,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
 
-  '/api/v1/player/{id}':
+  '/api/v1/players/{id}':
     get:
       tags:
           - Player
@@ -1794,7 +1794,7 @@ paths:
                       type: string
                       example: "No player with id: '5'"
 
-  '/api/v1/user':
+  '/api/v1/users':
     get:
       tags:
           - User 
@@ -1873,7 +1873,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
 
-  '/api/v1/user/{id}':
+  '/api/v1/users/{id}':
     get:
       tags:
           - User
@@ -2118,7 +2118,7 @@ paths:
                       type: string
                       example: "No user with id: '5'"
 
-  '/api/v1/user/{userId}/favorite/':
+  '/api/v1/users/{userId}/favorites/':
     get:
       security:
           - bearerAuth: []
@@ -2195,7 +2195,7 @@ paths:
                     example: "No user with id: '5'"
 
 
-  '/api/v1/user/{userId}/favorite/{serverId}':
+  '/api/v1/users/{userId}/favorites/{serverId}':
     post:
       security:
         - bearerAuth: []      
@@ -2351,82 +2351,6 @@ paths:
                     errorMessage:
                       type: string
                       example: "No server with id: '5'"
-
-  '/api/v1/user/{userId}/suggested/':
-    get:
-      security:
-          - bearerAuth: []
-
-      tags:
-        - User
-      description: Return User's Suggested Servers
-
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-          description: Authorization Bearer
-
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: integer
-          description: User Id
-
-      responses:
-        '200':
-          description: User' Suggested Servers
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Server'
-
-        '204':
-          description: No Content
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No Suggested Servers"
-
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "User must be logged in"
-        
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "Not enough rights for this"
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No user with id: '5'"
 
   '/api/v1/login/':
     post:
