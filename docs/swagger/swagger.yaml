@@ -41,8 +41,15 @@ paths:
           description: SortState for sorting Servers
 
         - in: query
+          name: Status
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1, 2]
+          description: Status for filter Servers
+
+        - in: query
           name: Page
-          required: true
           schema:
             type: integer
           description: Page number for paging Servers

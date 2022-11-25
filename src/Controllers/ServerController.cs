@@ -19,8 +19,8 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] 
-            ServerFilterDto filter,
+        public IActionResult GetAll(
+            [FromQuery] ServerFilterDto filter,
             [FromQuery] ServerSortState? sortState,
             [FromQuery] int? page
         ) {

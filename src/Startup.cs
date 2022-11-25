@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using ServerING.Services;
 using ServerING.Interfaces;
 using ServerING.Repository;
+using System.Collections.Generic;
+using Microsoft.OpenApi.Models;
 
 namespace ServerING {
     public class Startup {
@@ -65,8 +67,18 @@ namespace ServerING {
         // This method gets called by the runtime
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
             if (env.IsDevelopment()) {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                // app.UseSwagger();
+                app.UseSwagger(c =>
+                {
+                    c.PreSerializeFilters.Add((swagger, httpReq) =>
+                    {
+                        swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/{httpReq.Headers["X-Forwarded-Prefix"]}" } };
+                    });
+                });
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+                });
                 app.UseDeveloperExceptionPage();
             }
 
