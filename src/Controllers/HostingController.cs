@@ -10,7 +10,7 @@ using ServerING.Services;
 
 namespace ServerING.Controllers {
     [ApiController]
-    [Route("/api/v1/hosting")]
+    [Route("/api/v1/hostings")]
     public class HostingController : Controller {
         private IHostingService hostingService;
 
