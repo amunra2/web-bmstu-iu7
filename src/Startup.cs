@@ -62,6 +62,9 @@ namespace ServerING {
 
             // Swagger
             services.AddSwaggerGen();
+
+            // Admin Page
+            services.AddCoreAdmin();
         }
 
         // This method gets called by the runtime
@@ -85,6 +88,9 @@ namespace ServerING {
             app.UseRouting();
             app.UseAuthorization();
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles(); // стили для админки
+            app.UseCoreAdminCustomUrl("admin");
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();     // нет определенных маршрутов

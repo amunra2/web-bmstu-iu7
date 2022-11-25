@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoreAdmin" Version="2.7.0" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
