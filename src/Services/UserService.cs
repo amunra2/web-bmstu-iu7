@@ -5,13 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ServerING.Exceptions;
+using ServerING.DTO;
+
 
 namespace ServerING.Services {
 
     public interface IUserService {
-        void AddUser(User user);
-        User DeleteUser(User user);
-        void UpdateUser(User user);
+        User AddUser(UserDto user);
+        User UpdateUser(UserUpdateDto userDto);
+        User PatchUpdateUser(UserUpdateDto userDto);
+        User DeleteUser(int id);
 
         User GetUserByID(int id);
         IEnumerable<User> GetAllUsers();
@@ -36,10 +40,7 @@ namespace ServerING.Services {
 
         private bool IsExist(User user) {
             return userRepository.GetAll()
-                .Any(item =>
-                    item.Login == user.Login &&
-                    item.Role == user.Role
-                    );
+                .Any(item => item.Login == user.Login && item.Id != user.Id);
         }
 
 
@@ -48,12 +49,18 @@ namespace ServerING.Services {
         }
 
 
-        public void AddUser(User user) {
+        public User AddUser(UserDto userDto) {
+            var user = new User()
+            {
+                Login = userDto.Login,
+                Password = userDto.Password,
+                Role = userDto.Role
+            };
 
             if (IsExist(user))
-                throw new Exception("Such user is already exist");
+                throw new UserAlreadyExistsException("User already exists");
 
-            userRepository.Add(user);
+            return userRepository.Add(user);
         }
 
         public IEnumerable<User> GetAllUsers() {
@@ -72,20 +79,46 @@ namespace ServerING.Services {
             return userRepository.GetByRole(role);
         }
 
-        public User DeleteUser(User user) {
+        public User UpdateUser(UserUpdateDto userDto) {
+            var user = new User()
+            {
+                Id = userDto.Id,
+                Login = userDto.Login,
+                Password = userDto.Password,
+                Role = userDto.Role
+            };
 
             if (!IsExistById(user.Id))
-                throw new Exception("No such user");
+                throw new UserNotExistsException("No user with such id");
 
-            return userRepository.Delete(user.Id);
+            if (IsExist(user))
+                throw new UserAlreadyExistsException("User already exists");
+
+            return userRepository.Update(user);
         }
 
-        public void UpdateUser(User user) {
+        public User PatchUpdateUser(UserUpdateDto userDto) {
+            if (!IsExistById(userDto.Id))
+                throw new UserNotExistsException("No user with such id");
 
-            if (!IsExistById(user.Id))
-                throw new Exception("No such user");
+            var dbUser = GetUserByID(userDto.Id);
 
-            userRepository.Update(user);
+            var user = new User()
+            {
+                Id = userDto.Id,
+                Login = userDto.Login ?? dbUser.Login,
+                Password = userDto.Password ?? dbUser.Password,
+                Role = userDto.Role ?? dbUser.Role
+            };
+
+            if (IsExist(user))
+                throw new UserAlreadyExistsException("User already exists");
+
+            return userRepository.Update(user);
+        }
+
+        public User DeleteUser(int id) {
+            return userRepository.Delete(id);
         }
 
         public IEnumerable<Server> GetUserFavoriteServers(User user) {

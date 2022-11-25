@@ -4,13 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ServerING.Exceptions;
+using ServerING.DTO;
+
 
 namespace ServerING.Services {
 
     public interface IPlayerService {
-        void AddPlayer(Player player);
-        Player DeletePlayer(Player player);
-        void UpdatePlayer(Player player);
+        Player AddPlayer(PlayerDto playerDto);
+        Player UpdatePlayer(PlayerUpdateDto playerDto);
+        Player PatchUpdatePlayer(PlayerUpdateSparceDto PlayerSparceDto);
+        Player DeletePlayer(int id);
 
         Player GetPlayerByID(int id);
         IEnumerable<Player> GetAllPlayers();
@@ -44,18 +48,22 @@ namespace ServerING.Services {
             return playerRepository.GetByID(id) != null;
         }
 
-        public void AddPlayer(Player player) {
-            if (IsExist(player))
-                throw new Exception("Such player is already exist");
+        public Player AddPlayer(PlayerDto playerDto) {
+            var player = new Player()
+            {
+                Nickname = playerDto.Nickname,
+                HoursPlayed = playerDto.HoursPlayed,
+                LastPlayed = playerDto.LastPlayed
+            };
 
-            playerRepository.Add(player);
+            if (IsExist(player))
+                throw new PlayerAlreadyExistsException("Player already exists");
+
+            return playerRepository.Add(player);
         }
 
-        public Player DeletePlayer(Player player) {
-            if (!IsExistById(player.Id))
-                throw new Exception("No such player");
-
-            return playerRepository.Delete(player.Id);
+        public Player DeletePlayer(int id) {
+            return playerRepository.Delete(id);
         }
 
         public IEnumerable<Player> GetAllPlayers() {
@@ -78,11 +86,42 @@ namespace ServerING.Services {
             return playerRepository.GetByLastPlayed(lastPlayed);
         }
 
-        public void UpdatePlayer(Player player) {
-            if (!IsExistById(player.Id))
-                throw new Exception("No such player");
+        public Player UpdatePlayer(PlayerUpdateDto playerDto) {
+            var player = new Player()
+            {
+                Id = playerDto.Id,
+                Nickname = playerDto.Nickname,
+                LastPlayed = playerDto.LastPlayed,
+                HoursPlayed = playerDto.HoursPlayed
+            };
 
-            playerRepository.Update(player);
+            if (!IsExistById(player.Id))
+                throw new PlayerNotExistsException("No player with such id");
+
+            if (IsExist(player))
+                throw new PlayerAlreadyExistsException("Player already exists");
+
+            return playerRepository.Update(player);
+        }
+
+        public Player PatchUpdatePlayer(PlayerUpdateSparceDto playerSparceDto) {
+            if (!IsExistById(playerSparceDto.Id))
+                throw new PlayerNotExistsException("No player with such id");
+
+            var dbPlayer = GetPlayerByID(playerSparceDto.Id);
+
+            var player = new Player()
+            {
+                Id = playerSparceDto.Id,
+                Nickname = playerSparceDto.Nickname ?? dbPlayer.Nickname,
+                HoursPlayed = playerSparceDto.HoursPlayed?? dbPlayer.HoursPlayed,
+                LastPlayed = playerSparceDto.LastPlayed ?? dbPlayer.LastPlayed
+            };
+
+            if (IsExist(player))
+                throw new PlayerAlreadyExistsException("Player already exists");
+
+            return playerRepository.Update(player);
         }
     }
 }

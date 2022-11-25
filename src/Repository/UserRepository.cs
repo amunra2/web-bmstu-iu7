@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ServerING.Exceptions;
+
 namespace ServerING.Repository {
     public class UserRepository : IUserRepository {
 
@@ -59,8 +61,7 @@ namespace ServerING.Repository {
                 return GetByID(user.Id);
             }
             catch (Exception ex) {
-                Console.Write(ex.Message);
-                throw new Exception("User Update Error");
+                throw new UserException(ex.InnerException.Message);
             }
         }
 

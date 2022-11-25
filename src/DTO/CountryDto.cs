@@ -14,7 +14,7 @@ namespace ServerING.DTO {
     }
 
     public class CountrySparceDto {
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         public int? LevelOfInterest { get; set; }
 
