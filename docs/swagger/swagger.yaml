@@ -2194,6 +2194,8 @@ paths:
                     type: string
                     example: "No user with id: '5'"
 
+
+  '/api/v1/user/{userId}/favorite/{serverId}':
     post:
       security:
         - bearerAuth: []      
@@ -2217,15 +2219,12 @@ paths:
             type: integer
           description: User Id
 
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                serverId:
-                  type: integer
-                  example: 1
+        - in: path
+          name: serverId
+          required: true
+          schema:
+            type: integer
+          description: Server Id
 
       responses:
         '201':
@@ -2278,8 +2277,6 @@ paths:
                   errorMessage:
                     type: string
                     example: "No user with id: '5'"
-  
-  '/api/v1/user/{userId}/favorite/{serverId}':
     delete:
         security:
           - bearerAuth: []

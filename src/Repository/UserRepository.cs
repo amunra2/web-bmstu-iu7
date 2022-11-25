@@ -93,15 +93,12 @@ namespace ServerING.Repository {
             return servers;
         }
 
-        public void AddFavoriteServer(int serverID, int userID) {
-            FavoriteServer favoriteServer = new FavoriteServer {
-                UserID = userID,
-                ServerID = serverID
-            };
-
+        public FavoriteServer AddFavoriteServer(FavoriteServer favoriteServer) {
             try {
                 appDBContent.FavoriteServer.Add(favoriteServer);
                 appDBContent.SaveChanges();
+
+                return favoriteServer;
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);

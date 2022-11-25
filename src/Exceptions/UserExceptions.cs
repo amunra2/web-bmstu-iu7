@@ -19,4 +19,16 @@ namespace ServerING.Exceptions
         public UserNotExistsException() : base() { }
         public UserNotExistsException(string message) : base(message) { }
     }
+
+    public class UserFavoriteAlreadyExistsException : UserException
+    {
+        public UserFavoriteAlreadyExistsException() : base() { }
+        public UserFavoriteAlreadyExistsException(string message) : base(message) { }
+    }
+
+    public class UserFavoriteNotExistsException : UserException
+    {
+        public UserFavoriteNotExistsException() : base() { }
+        public UserFavoriteNotExistsException(string message) : base(message) { }
+    }
 }

@@ -35,8 +35,7 @@ namespace ServerING.Services {
         DetailViewModel DetailServer(int serverId);
         IEnumerable<int> GetUserFavoriteServersIds(int userId);
 
-        void AddFavoriteServer(int serverId, int userId);
-        void DeleteFavoriteServer(int serverId, int userId);
+        void UpdateServerRating(int serverId, int change);
 
         bool IsServerExists(Server server);
     }
@@ -317,7 +316,7 @@ namespace ServerING.Services {
             return serverRepository.GetByRating(rating);
         }
 
-        private void UpdateServerRating(int serverId, int change) {
+        public void UpdateServerRating(int serverId, int change) {
             Server server = serverRepository.GetByID(serverId);
             server.Rating += change;
 
@@ -328,18 +327,6 @@ namespace ServerING.Services {
             return userRepository.GetFavoriteServersByUserId(userId).Select(s => s.Id);
         }
 
-        public void AddFavoriteServer(int serverId, int userId) {
-            UpdateServerRating(serverId, +1);
-
-            userRepository.AddFavoriteServer(serverId, userId);
-        }
-
-        public void DeleteFavoriteServer(int serverId, int userId) {
-            UpdateServerRating(serverId, -1);
-
-            FavoriteServer favoriteServer = userRepository.GetFavoriteServerByUserAndServerId(userId, serverId);
-            userRepository.DeleteFavoriteServer(favoriteServer.Id);
-        }
 
         public bool IsServerExists(Server server) {
             

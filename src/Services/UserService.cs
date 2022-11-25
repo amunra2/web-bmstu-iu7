@@ -23,7 +23,10 @@ namespace ServerING.Services {
         User GetUserByLogin(string login);
         IEnumerable<User> GetUsersByRole(string role);
         
-        IEnumerable<Server> GetUserFavoriteServers(User user);
+        IEnumerable<Server> GetUserFavoriteServers(int userId);
+        FavoriteServer AddFavoriteServer(int userId, int serverId);
+        FavoriteServer DeleteFavoriteServer(int userId, int serverId);
+
 
         UsersViewModel ParseUsers(IEnumerable<User> parsedUsers, string login, int page, UserSortState sortOrder);
         User ValidateUser(LoginViewModel model);
@@ -32,15 +35,21 @@ namespace ServerING.Services {
     public class UserService : IUserService {
 
         private readonly IUserRepository userRepository;
+        private readonly IServerService serverService;
 
-        public UserService(IUserRepository userRepository) {
+        public UserService(IUserRepository userRepository, IServerService serverService) {
             this.userRepository = userRepository;
+            this.serverService = serverService;
         }
 
 
         private bool IsExist(User user) {
             return userRepository.GetAll()
                 .Any(item => item.Login == user.Login && item.Id != user.Id);
+        }
+
+        private bool IsFavoriteExist(int userId, int serverId) {
+            return userRepository.GetFavoriteServerByUserAndServerId(userId, serverId) != null;
         }
 
 
@@ -121,8 +130,38 @@ namespace ServerING.Services {
             return userRepository.Delete(id);
         }
 
-        public IEnumerable<Server> GetUserFavoriteServers(User user) {
-            return userRepository.GetFavoriteServersByUserId(user.Id);
+        public IEnumerable<Server> GetUserFavoriteServers(int userId) {
+            if (!IsExistById(userId))
+                throw new UserNotExistsException("No user with such id");
+
+            return userRepository.GetFavoriteServersByUserId(userId);
+        }
+
+        public FavoriteServer AddFavoriteServer(int userId, int serverId) {
+            if (IsFavoriteExist(userId, serverId))
+                throw new UserFavoriteAlreadyExistsException("Already in favorites");
+
+            FavoriteServer favoriteServer = new FavoriteServer {
+                UserID = userId,
+                ServerID = serverId
+            };
+
+            serverService.UpdateServerRating(serverId, +1);
+
+            userRepository.AddFavoriteServer(favoriteServer);
+
+            return favoriteServer;
+        }
+
+        public FavoriteServer DeleteFavoriteServer(int userId, int serverId) {
+            serverService.UpdateServerRating(serverId, -1);
+
+            FavoriteServer favoriteServer = userRepository.GetFavoriteServerByUserAndServerId(userId, serverId);
+
+            if (favoriteServer != null)
+                userRepository.DeleteFavoriteServer(favoriteServer.Id);
+
+            return favoriteServer;
         }
 
         public UsersViewModel ParseUsers(IEnumerable<User> parsedServers, string login, int page, ServerSortState sortOrder) {

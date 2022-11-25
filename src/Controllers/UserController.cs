@@ -123,5 +123,45 @@ namespace ServerING.Controllers
             return deletedUser != null ? Ok(deletedUser) : NotFound();
         }
 
+        [HttpGet("{userId}/favorite")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult GetFavorites(int userId)
+        {
+            try
+            {
+                var servers = userService.GetUserFavoriteServers(userId);
+                return servers != null && servers.Any() ? Ok(servers) : NoContent();
+            }
+            catch (UserNotExistsException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost("{userId}/favorite/{serverId}")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
+        public IActionResult AddFavorite(int userId, int serverId)
+        {
+            try
+            {
+                return Ok(userService.AddFavoriteServer(userId, serverId));
+            }
+            catch (UserFavoriteAlreadyExistsException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpDelete("{userId}/favorite/{serverId}")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult DeleteFavorite(int userId, int serverId)
+        {
+            var deletedFavorite = userService.DeleteFavoriteServer(userId, serverId);
+            return deletedFavorite != null ? Ok(deletedFavorite) : NotFound();
+        }
     }
 }
