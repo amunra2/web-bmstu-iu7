@@ -68,16 +68,14 @@ namespace ServerING {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
             if (env.IsDevelopment()) {
                 // app.UseSwagger();
-                app.UseSwagger(c =>
-                {
-                    c.PreSerializeFilters.Add((swagger, httpReq) =>
-                    {
-                        swagger.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/{httpReq.Headers["X-Forwarded-Prefix"]}" } };
-                    });
+                app.UseSwagger(c => {
+                    c.RouteTemplate = "/api/v1/swagger/{documentName}/swagger.json";
                 });
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+                app.UseSwaggerUI(c => {
+                    //Notice the lack of / making it relative
+                    c.SwaggerEndpoint("swagger/v1/swagger.json", "My API V1");
+                    //This is the reverse proxy address
+                    c.RoutePrefix = "api/v1";
                 });
                 app.UseDeveloperExceptionPage();
             }
