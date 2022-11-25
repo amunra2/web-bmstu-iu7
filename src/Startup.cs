@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using ServerING.Services;
 using ServerING.Interfaces;
 using ServerING.Repository;
+using System.Collections.Generic;
+using Microsoft.OpenApi.Models;
 
 namespace ServerING {
     public class Startup {
@@ -65,8 +67,16 @@ namespace ServerING {
         // This method gets called by the runtime
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
             if (env.IsDevelopment()) {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                // app.UseSwagger();
+                app.UseSwagger(c => {
+                    c.RouteTemplate = "/api/v1/swagger/{documentName}/swagger.json";
+                });
+                app.UseSwaggerUI(c => {
+                    //Notice the lack of / making it relative
+                    c.SwaggerEndpoint("swagger/v1/swagger.json", "My API V1");
+                    //This is the reverse proxy address
+                    c.RoutePrefix = "api/v1";
+                });
                 app.UseDeveloperExceptionPage();
             }
 
