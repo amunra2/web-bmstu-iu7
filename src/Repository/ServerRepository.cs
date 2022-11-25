@@ -84,14 +84,14 @@ namespace ServerING.Repository {
                 .FirstOrDefault(s => s.Id == id);
         }
 
-        public IEnumerable<Server> GetByGameVersion(string gameVersion) {
+        public IEnumerable<Server> GetByGameName(string gameName) {
             return appDBContent
                 .Server
                 .Include(s => s.Country)
                 .Include(s => s.Platform)
                 .Include(s => s.Hosting)
                 .Include(s => s.Owner)
-                .Where(s => s.GameName == gameVersion)
+                .Where(s => s.GameName == gameName)
                 .ToList();
         }
 

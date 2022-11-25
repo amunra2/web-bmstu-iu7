@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ServerING.Repository {
-    public class WebHostingRepository : IWebHostingRepository {
+    public class HostingRepository : IHostingRepository {
 
         ///
         private readonly AppDBContent appDBContent;
 
-        public WebHostingRepository(AppDBContent appDBContent) {
+        public HostingRepository(AppDBContent appDBContent) {
             this.appDBContent = appDBContent;
         }
         ///

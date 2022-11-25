@@ -45,13 +45,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id) {
             var server = serverService.GetServerByID(id);
-
-            if (server != null) {
-                return Ok(server);
-            }
-            else {
-                return NotFound();
-            }
+            return server != null ? Ok(server) : NotFound();
         }
 
         [HttpPut("{id}")]
@@ -87,13 +81,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id) {
             var deletedServer = serverService.DeleteServer(id);
-
-            if (deletedServer != null) {
-                return Ok(deletedServer);
-            }
-            else {
-                return NotFound();
-            }
+            return deletedServer != null ? Ok(deletedServer) : NotFound();
         }
 
         [HttpGet("{serverId}/players")]

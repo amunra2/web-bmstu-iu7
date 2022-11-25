@@ -1,4 +1,6 @@
-﻿using ServerING.Interfaces;
+﻿using ServerING.DTO;
+using ServerING.Exceptions;
+using ServerING.Interfaces;
 using ServerING.Models;
 using System;
 using System.Collections.Generic;
@@ -7,9 +9,10 @@ using System.Linq;
 
 namespace ServerING.Services {
     public interface IPlatformService {
-        void AddPlatform(Platform platform);
-        Platform DeletePlatform(Platform platform);
-        void UpdatePlatform(Platform platform);
+        Platform AddPlatform(PlatformFormDto platform);
+        Platform DeletePlatform(int id);
+        Platform PatchPlatform(int id, PlatformFormDto platform);
+        Platform PutPlatform(int id, PlatformFormDto platform);
 
         Platform GetPlatformByID(int id);
         IEnumerable<Platform> GetAllPlatforms();
@@ -28,13 +31,10 @@ namespace ServerING.Services {
         }
 
 
-        private bool IsExist(Platform platform) {
-            return platformRepository.GetAll()
-                .Any(item =>
-                    item.Name == platform.Name &&
-                    item.Popularity == platform.Popularity &&
-                    item.Cost == platform.Cost
-                    );
+        private bool IsExist(PlatformFormDto platform) {
+            return platformRepository
+                .GetAll()
+                .Any(item => item.Name == platform.Name);
         }
 
 
@@ -43,18 +43,23 @@ namespace ServerING.Services {
         }
 
 
-        public void AddPlatform(Platform platform) {
-            if (IsExist(platform))
-                throw new Exception("Such platform is already exist");
+        public Platform AddPlatform(PlatformFormDto platform) {
+            if (IsExist(platform)) {
+                var conflictedId = platformRepository.GetByName(platform.Name).Id;
+                throw new PlatformConflictException(conflictedId);
+            }
 
-            platformRepository.Add(platform);
+            var transferedPlatform = new Platform {
+                Name = platform.Name,
+                Cost = platform.Cost.Value,
+                Popularity = (ushort) platform.Popularity.Value
+            };
+
+            return platformRepository.Add(transferedPlatform);
         }
 
-        public Platform DeletePlatform(Platform platform) {
-            if (!IsExistById(platform.Id))
-                throw new Exception("No such platform");
-
-            return platformRepository.Delete(platform.Id);
+        public Platform DeletePlatform(int id) {
+            return platformRepository.Delete(id);
         }
 
         public Platform GetPlatformByID(int id) {
@@ -65,11 +70,44 @@ namespace ServerING.Services {
             return platformRepository.GetAll();
         }
 
-        public void UpdatePlatform(Platform platform) {
-            if (!IsExistById(platform.Id))
-                throw new Exception("No such platform");
+        public Platform PutPlatform(int id, PlatformFormDto platform) {
+            if (IsExist(platform)) {
+                var conflictedId = platformRepository.GetByName(platform.Name).Id;
+                throw new PlatformConflictException(conflictedId);
+            }
 
-            platformRepository.Update(platform);
+            if (!IsExistById(id))
+                throw null;
+
+            var transferedPlatform = new Platform {
+                Id = id,
+                Name = platform.Name,
+                Cost = platform.Cost != null ? platform.Cost.Value : 0,
+                Popularity = platform.Popularity != null ? (ushort) platform.Popularity.Value : (ushort) 0
+            };
+
+            return platformRepository.Update(transferedPlatform);
+        }
+
+        public Platform PatchPlatform(int id, PlatformFormDto platform) {
+            if (IsExist(platform)) {
+                var conflictedId = platformRepository.GetByName(platform.Name).Id;
+                throw new PlatformConflictException(conflictedId);
+            }
+
+            if (!IsExistById(id))
+                return null;
+
+            var existedPlatform = GetPlatformByID(id);
+
+            var transferedPlatform = new Platform {
+                Id = id,
+                Name = platform.Name != null ? platform.Name : existedPlatform.Name,
+                Cost = platform.Cost != null ? platform.Cost.Value : existedPlatform.Cost,
+                Popularity = platform.Popularity != null ? (ushort) platform.Popularity.Value : existedPlatform.Popularity
+            };
+
+            return platformRepository.Update(transferedPlatform);
         }
 
         public Platform GetPlatformByName(string name) {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace ServerING.Interfaces {
-    public interface IWebHostingRepository : IRepository<WebHosting>{
+    public interface IHostingRepository : IRepository<WebHosting>{
 
         WebHosting GetByName(string name);
         IEnumerable<WebHosting> GetByPricePerMonth(int pricePerMonth);
