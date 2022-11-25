@@ -5,5 +5,6 @@ namespace ServerING.DTO {
         public string Name {get; set;}
         public string PlatformName {get; set;}
         public ServerStatus? Status {get; set;}
+        public int? OwnerID { get; set; }
     }
 }

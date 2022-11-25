@@ -23,6 +23,8 @@ namespace ServerING.Services {
             int? page
         );
 
+        public IEnumerable<Player> GetServerPlayers(int serverId);
+
         Server GetServerByName(string name);
         Server GetServerByIP(string ip);
 
@@ -35,8 +37,7 @@ namespace ServerING.Services {
         DetailViewModel DetailServer(int serverId);
         IEnumerable<int> GetUserFavoriteServersIds(int userId);
 
-        void AddFavoriteServer(int serverId, int userId);
-        void DeleteFavoriteServer(int serverId, int userId);
+        void UpdateServerRating(int serverId, int change);
 
         bool IsServerExists(Server server);
     }
@@ -191,8 +192,20 @@ namespace ServerING.Services {
             return serverRepository.GetByID(id);
         }
 
+        public IEnumerable<Player> GetServerPlayers(int serverId) {
+            if (!IsExistById(serverId))
+                throw new ServerNotExistsException("No server with such id");
+
+            return serverRepository.GetPlayersByServerID(serverId);
+        }
+
+
         private IEnumerable<Server> FilterServers(IEnumerable<Server> servers, ServerFilterDto filter) {
             var filteredServers = servers;
+
+            if (filter.OwnerID != null) {
+                filteredServers = filteredServers.Where(s => s.OwnerID == filter.OwnerID);
+            }
 
             if (filter.Status != null) {
                 filteredServers = filteredServers.Where(s => s.Status == filter.Status.Value);
@@ -317,7 +330,7 @@ namespace ServerING.Services {
             return serverRepository.GetByRating(rating);
         }
 
-        private void UpdateServerRating(int serverId, int change) {
+        public void UpdateServerRating(int serverId, int change) {
             Server server = serverRepository.GetByID(serverId);
             server.Rating += change;
 
@@ -328,18 +341,6 @@ namespace ServerING.Services {
             return userRepository.GetFavoriteServersByUserId(userId).Select(s => s.Id);
         }
 
-        public void AddFavoriteServer(int serverId, int userId) {
-            UpdateServerRating(serverId, +1);
-
-            userRepository.AddFavoriteServer(serverId, userId);
-        }
-
-        public void DeleteFavoriteServer(int serverId, int userId) {
-            UpdateServerRating(serverId, -1);
-
-            FavoriteServer favoriteServer = userRepository.GetFavoriteServerByUserAndServerId(userId, serverId);
-            userRepository.DeleteFavoriteServer(favoriteServer.Id);
-        }
 
         public bool IsServerExists(Server server) {
             

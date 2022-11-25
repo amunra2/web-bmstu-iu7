@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ServerING.Exceptions;
+
 namespace ServerING.Repository {
     public class UserRepository : IUserRepository {
 
@@ -59,8 +61,7 @@ namespace ServerING.Repository {
                 return GetByID(user.Id);
             }
             catch (Exception ex) {
-                Console.Write(ex.Message);
-                throw new Exception("User Update Error");
+                throw new UserException(ex.InnerException.Message);
             }
         }
 
@@ -92,15 +93,12 @@ namespace ServerING.Repository {
             return servers;
         }
 
-        public void AddFavoriteServer(int serverID, int userID) {
-            FavoriteServer favoriteServer = new FavoriteServer {
-                UserID = userID,
-                ServerID = serverID
-            };
-
+        public FavoriteServer AddFavoriteServer(FavoriteServer favoriteServer) {
             try {
                 appDBContent.FavoriteServer.Add(favoriteServer);
                 appDBContent.SaveChanges();
+
+                return favoriteServer;
             }
             catch (Exception ex) {
                 Console.Write(ex.Message);

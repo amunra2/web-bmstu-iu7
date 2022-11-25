@@ -8,7 +8,7 @@ namespace ServerING.Interfaces {
         IEnumerable<User> GetByRole(string role);
 
         IEnumerable<Server> GetFavoriteServersByUserId(int id);
-        void AddFavoriteServer(int serverID, int userID);
+        FavoriteServer AddFavoriteServer(FavoriteServer favoriteServer);
         FavoriteServer DeleteFavoriteServer(int id);
         FavoriteServer GetFavoriteServerByUserAndServerId(int userId, int serverId);
     }

@@ -10,7 +10,7 @@ using ServerING.Services;
 
 namespace ServerING.Controllers {
     [ApiController]
-    [Route("/api/v1/platform")]
+    [Route("/api/v1/platforms")]
     public class PlatformController : Controller {
         private IPlatformService platformService;
 

@@ -7,10 +7,11 @@ using ServerING.DTO;
 using ServerING.Exceptions;
 using ServerING.Models;
 using ServerING.Services;
+using System.Linq;
 
 namespace ServerING.Controllers {
     [ApiController]
-    [Route("/api/v1/server")]
+    [Route("/api/v1/servers")]
     public class ServerController : Controller {
         private IServerService serverService;
 
@@ -81,6 +82,23 @@ namespace ServerING.Controllers {
         public IActionResult Delete(int id) {
             var deletedServer = serverService.DeleteServer(id);
             return deletedServer != null ? Ok(deletedServer) : NotFound();
+        }
+
+        [HttpGet("{serverId}/players")]
+        [ProducesResponseType(typeof(IEnumerable<Player>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult GetServerPlayers(int serverId)
+        {
+            try
+            {
+                var players = serverService.GetServerPlayers(serverId);
+                return players != null && players.Any() ? Ok(players) : NoContent();
+            }
+            catch (UserNotExistsException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

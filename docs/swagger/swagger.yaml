@@ -11,7 +11,7 @@ info:
   description: The API for the ServerING project
 
 paths:
-  '/api/v1/server':
+  '/api/v1/servers':
     get:
       tags:
           - Server
@@ -50,6 +50,7 @@ paths:
 
         - in: query
           name: Page
+          required: false
           schema:
             type: integer
           description: Page number for paging Servers
@@ -157,7 +158,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
          
-  '/api/v1/server/{id}':
+  '/api/v1/servers/{id}':
     get:
       tags:
           - Server
@@ -423,321 +424,8 @@ paths:
                       type: string
                       example: "No server with id: '5'"
 
-  '/api/v1/server/{userId}/favorite/':
-    get:
-      security:
-          - bearerAuth: []
 
-      tags:
-        - Server
-      description: Return User's Favorite Servers
-
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-          description: Authorization Bearer
-
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: integer
-          description: User Id
-
-      responses:
-        '200':
-          description: User' Favorite Servers
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Server'
-
-        '204':
-          description: No Content
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No Favorite Servers"
-
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "User must be logged in"
-        
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "Not enough rights for this"
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No user with id: '5'"
-
-    post:
-      security:
-        - bearerAuth: []      
-
-      tags:
-        - Server
-      description: Post Favorite Server
-
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-          description: Authorization Bearer
-
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: integer
-          description: User Id
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                serverId:
-                  type: integer
-                  example: 1
-
-      responses:
-        '201':
-          description: Saved Favorite Server
-
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  serverId:
-                    type: integer
-                    example: 1
-                  userId:
-                    type: integer
-                    example: 1
-                  
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "User must be logged in"
-
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "Not enough rights for this"
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No user with id: '5'"
-  
-  '/api/v1/server/{userId}/favorite/{serverId}':
-    delete:
-        security:
-          - bearerAuth: []
-
-        tags:
-          - Server
-        description: Delete Favorite Server by Id
-
-        parameters:
-          - in: header
-            name: Authorization
-            required: true
-            schema:
-              type: string
-            description: Authorization Bearer 
-    
-          - in: path
-            name: serverId
-            required: true
-            schema:
-              type: integer
-            description: Server Id
-
-          - in: path
-            name: userId
-            required: true
-            schema:
-              type: integer
-            description: User Id
-                
-        responses:
-          '200':
-            description: Favorite Server removed
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      example: "Favorite Server deleted successfully!"
-          
-          '401':
-            description: Unauthorized
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errorMessage:
-                      type: string
-                      example: "User must be logged in"
-          
-          '403':
-            description: Forbidden
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errorMessage:
-                      type: string
-                      example: "Not enough rights for this"
-          
-          '404':
-            description: Not Found
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errorMessage:
-                      type: string
-                      example: "No server with id: '5'"
-
-  '/api/v1/server/{userId}/suggested/':
-    get:
-      security:
-          - bearerAuth: []
-
-      tags:
-        - Server
-      description: Return User's Suggested Servers
-
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-          description: Authorization Bearer
-
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: integer
-          description: User Id
-
-      responses:
-        '200':
-          description: User' Suggested Servers
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Server'
-
-        '204':
-          description: No Content
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No Suggested Servers"
-
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "User must be logged in"
-        
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "Not enough rights for this"
-
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: "No user with id: '5'"
-
-
-  '/api/v1/platform':
+  '/api/v1/platforms':
     get:
       tags:
           - Platform
@@ -826,7 +514,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
 
-  '/api/v1/platform/{id}':
+  '/api/v1/platforms/{id}':
     get:
       tags:
           - Platform
@@ -1081,7 +769,7 @@ paths:
                       example: "No platform with id: '5'"
   
 
-  '/api/v1/hosting':
+  '/api/v1/hostings':
     get:
       tags:
           - Hosting
@@ -1170,7 +858,7 @@ paths:
                     type: string
                     example: "Not enough rights for this"
 
-  '/api/v1/hosting/{id}':
+  '/api/v1/hostings/{id}':
     get:
       tags:
           - Hosting
@@ -1426,7 +1114,1334 @@ paths:
                       example: "No hosting with id: '5'"
   
 
+  '/api/v1/countries':
+    get:
+      tags:
+          - Country
+      description: Returns All Countries
 
+      responses:
+        '200':
+          description: All countries
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+                
+        '204':
+            description: No Content
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No Countries"
+    
+    post:
+      security:
+        - bearerAuth: []      
+
+      tags:
+        - Country
+      description: Post Country
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Russia
+                levelOfInterest:
+                  type: integer
+                  example: 100
+                overallPlayers:
+                  type: integer
+                  example: 15000
+
+      responses:
+        '201':
+          description: Saved Country
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+                
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+        
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+  '/api/v1/countries/{id}':
+    get:
+      tags:
+          - Country
+      description: Return Country by Id
+
+      parameters:
+          - in: path
+            required: true
+            name: id
+            schema:
+              type: integer
+            description: Country Id
+
+      responses:
+        '200':
+          description: Country by Id
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        
+        '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No country with id: '5'"
+
+    put:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - Country
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Country Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Russia
+                  levelOfInterest:
+                    type: integer
+                    example: 100
+                  overallPlayers:
+                    type: integer
+                    example: 15000
+
+        responses:
+          '201':
+            description: Updated Country
+
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Country'
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No country with id: '5'"
+
+    patch:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - Country
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Country Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: USSR 
+
+        responses:
+          '201':
+            description: Updated Country 
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Country'
+
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No country with id: '5'"
+
+    delete:
+        security:
+          - bearerAuth: []
+
+        tags:
+          - Country
+        description: Delete Country by Id
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+    
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Country Id
+                
+        responses:
+          '200':
+            description: Country removed
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Country deleted successfully!"
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No country with id: '5'"
+
+  '/api/v1/players':
+    get:
+      tags:
+          - Player
+      description: Returns All Players
+
+      responses:
+        '200':
+          description: All Players
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+                
+        '204':
+            description: No Content
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No Players"
+    
+    post:
+      security:
+        - bearerAuth: []      
+
+      tags:
+        - Player
+      description: Post Player
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  example: Player
+                lastPlayed:
+                  type: string
+                  example: 2022-10-10
+                hoursPlayed:
+                  type: integer
+                  example: 23
+
+      responses:
+        '201':
+          description: Saved Player
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+                
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+        
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+  '/api/v1/players/{id}':
+    get:
+      tags:
+          - Player
+      description: Return player by Id
+
+      parameters:
+          - in: path
+            required: true
+            name: id
+            schema:
+              type: integer
+            description: Player Id
+
+      responses:
+        '200':
+          description: Player by Id
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        
+        '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No player with id: '5'"
+
+    put:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - Player
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Player Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nickname:
+                    type: string
+                    example: Player
+                  lastPlayed:
+                    type: string
+                    example: 2022-10-10
+                  hoursPlayed:
+                    type: integer
+                    example: 22
+
+        responses:
+          '201':
+            description: Updated Player
+
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Player'
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No player with id: '5'"
+
+    patch:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - Player
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Player Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Player
+
+        responses:
+          '201':
+            description: Updated Player 
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Player'
+
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No player with id: '5'"
+
+    delete:
+        security:
+          - bearerAuth: []
+
+        tags:
+          - Player
+        description: Delete Player by Id
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+    
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: Player Id
+                
+        responses:
+          '200':
+            description: Player removed
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "player deleted successfully!"
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No player with id: '5'"
+
+  '/api/v1/users':
+    get:
+      tags:
+          - User 
+      description: Returns All Users
+
+      responses:
+        '200':
+          description: All Users
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+                
+        '204':
+            description: No Content
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No Users"
+    
+    post:
+      security:
+        - bearerAuth: []      
+
+      tags:
+        - User
+      description: Post User
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
+      responses:
+        '201':
+          description: Saved User
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+                
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+        
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+  '/api/v1/users/{id}':
+    get:
+      tags:
+          - User
+      description: Return user by Id
+
+      parameters:
+          - in: path
+            required: true
+            name: id
+            schema:
+              type: integer
+            description: User Id
+
+      responses:
+        '200':
+          description: User by Id
+
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        
+        '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No user with id: '5'"
+
+    put:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - User
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: User Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+        responses:
+          '201':
+            description: Updated User
+
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No user with id: '5'"
+
+    patch:
+        security:
+          - bearerAuth: []
+          
+        tags:
+          - User
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+        
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: User Id
+        
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: User
+
+        responses:
+          '201':
+            description: Updated User 
+            content: 
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No user with id: '5'"
+
+    delete:
+        security:
+          - bearerAuth: []
+
+        tags:
+          - User
+        description: Delete User by Id
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+    
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: User Id
+                
+        responses:
+          '200':
+            description: User removed
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "user deleted successfully!"
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No user with id: '5'"
+
+  '/api/v1/users/{userId}/favorites/':
+    get:
+      security:
+          - bearerAuth: []
+
+      tags:
+        - User
+      description: Return User's Favorite Servers
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: integer
+          description: User Id
+
+      responses:
+        '200':
+          description: User' Favorite Servers
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No Favorite Servers"
+
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+        
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No user with id: '5'"
+
+
+  '/api/v1/users/{userId}/favorites/{serverId}':
+    post:
+      security:
+        - bearerAuth: []      
+
+      tags:
+        - User
+      description: Post Favorite Server
+
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Authorization Bearer
+
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: integer
+          description: User Id
+
+        - in: path
+          name: serverId
+          required: true
+          schema:
+            type: integer
+          description: Server Id
+
+      responses:
+        '201':
+          description: Saved Favorite Server
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  serverId:
+                    type: integer
+                    example: 1
+                  userId:
+                    type: integer
+                    example: 1
+                  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "User must be logged in"
+
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "Not enough rights for this"
+
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+                    example: "No user with id: '5'"
+    delete:
+        security:
+          - bearerAuth: []
+
+        tags:
+          - User
+        description: Delete Favorite Server by Id
+
+        parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Authorization Bearer 
+    
+          - in: path
+            name: serverId
+            required: true
+            schema:
+              type: integer
+            description: Server Id
+
+          - in: path
+            name: userId
+            required: true
+            schema:
+              type: integer
+            description: User Id
+                
+        responses:
+          '200':
+            description: Favorite Server removed
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Favorite Server deleted successfully!"
+          
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "User must be logged in"
+          
+          '403':
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "Not enough rights for this"
+          
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorMessage:
+                      type: string
+                      example: "No server with id: '5'"
+
+  '/api/v1/login/':
+    post:
+      tags:
+        - User
+      description: Login
+    
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "=9"
+                password:
+                  type: string
+                  example: "vsebudethorosho"
+
+      responses:
+        '200':
+          description: Login success!
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    access_token:
+                      type: string
+                      example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha3JpayIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpc3MiOiIvYXBpL3Rva2VuL3JlZnJlc2giLCJleHAiOjE2NjQ4Nzg0MjJ9.aBaLTKBqBUQKgBEll1M8LEQFCmRccmXYxSlDNcpTkkE"
+                    refresh_token:
+                      type: string
+                      example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha3JpayIsImlzcyI6Ii9hcGkvbG9naW4iLCJleHAiOjE2NjQ4Nzk2MTV9.kmvm5nRpmjhyix6at3JkmdDeFGt4bwrlcMsed0mameA"
+
+        '401':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: "Incorrect login or password!"
+
+  '/api/v1/register/':
+    post:
+      tags:
+        - User
+      description: Register
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "=9"
+                password:
+                  type: string
+                  example: "vsebudethorosho"
+
+      responses:
+        '200':
+          description: Registered user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+        '409':
+          description: User Is Already Registered please choose another login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: "Please choose another login. This is taken..."
 
 components:
   securitySchemes:
