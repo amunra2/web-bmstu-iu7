@@ -87,7 +87,7 @@ namespace ServerING {
             // app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseStaticFiles(); // стили для админки
             app.UseCoreAdminCustomUrl("admin");
