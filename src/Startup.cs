@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 using Microsoft.EntityFrameworkCore;
 using ServerING.Models;
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using ServerING.Services;
 using ServerING.Interfaces;
 using ServerING.Repository;
+using ServerING.Auth;
 using System.Collections.Generic;
 using Microsoft.OpenApi.Models;
 
@@ -61,7 +64,73 @@ namespace ServerING {
             services.AddEndpointsApiExplorer();
 
             // Swagger
-            services.AddSwaggerGen();
+            var securityScheme = new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JSON Web Token based security",
+            };
+
+            var securityReq = new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            };
+            services.AddSwaggerGen(o =>
+            {
+                o.AddSecurityDefinition("Bearer", securityScheme);
+                o.AddSecurityRequirement(securityReq);
+                // add Basic Authentication
+                var basicSecurityScheme = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    Reference = new OpenApiReference { Id = "BasicAuth", Type = ReferenceType.SecurityScheme }
+                };
+                o.AddSecurityDefinition(basicSecurityScheme.Reference.Id, basicSecurityScheme);
+                o.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {basicSecurityScheme, new string[] { }}
+                });
+            });
+
+            // JWT
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            // укзывает, будет ли валидироваться издатель при валидации токена
+                            ValidateIssuer = true,
+                            // строка, представляющая издателя
+                            ValidIssuer = AuthOptions.ISSUER,
+ 
+                            // будет ли валидироваться потребитель токена
+                            ValidateAudience = true,
+                            // установка потребителя токена
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            // будет ли валидироваться время существования
+                            ValidateLifetime = true,
+ 
+                            // установка ключа безопасности
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            // валидация ключа безопасности
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
         }
 
         // This method gets called by the runtime
@@ -81,7 +150,7 @@ namespace ServerING {
             }
 
             // Authentication
-            // app.UseAuthentication();
+            app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
             app.UseHttpsRedirection();
@@ -89,6 +158,7 @@ namespace ServerING {
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();     // нет определенных маршрутов
             });
+
         }
     }
 }
