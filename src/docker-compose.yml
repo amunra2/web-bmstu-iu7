@@ -1,24 +1,6 @@
 version: '3.9'
 
-# networks:
-#   dockerapi-dev:
-#     driver: bridge
-
 services:
-  # webapi:
-    # image: servering
-    # depends_on:
-    #   - "postgres"
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    # ports:
-    #   - "5005:5005"     
-    # environment:
-    #   DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=web_db;username=amunra23;password=postgres"
-    # # networks:
-    # #   - dockerapi-dev
-
   postgres:
     image: postgres:14-alpine
     ports:
