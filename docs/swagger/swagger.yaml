@@ -26,10 +26,10 @@ paths:
           description: Name for filter Servers
 
         - in: query
-          name: PlatformName
+          name: PlatformId
           required: false
           schema:
-            type: string
+            type: integer
           description: Platform Name for filter Servers
 
         - in: query
@@ -69,19 +69,12 @@ paths:
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/Server'
-                
-        '204':
-            description: No Content
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    errorMessage:
-                      type: string
-                      example: "No Servers"
-    
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/ServerGet'
+                    - $ref: '#/components/schemas/ServerGet'
+      
     post:
       security:
         - bearerAuth: []      
@@ -2494,6 +2487,39 @@ components:
       bearerFormat: JWT # только для документации
 
   schemas:
+    ServerGet:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: MineStrike
+        ip:
+          type: string
+          example: 127.0.0.1
+        gameName:
+          type: string
+          example: Minecraft
+        status:
+          type: string 
+          example: Accepted
+        rating:
+          type: integer
+          example: 23
+        hostingId:
+          type: integer
+          example: 1
+        countryId:
+          type: integer
+          example: 1
+        platformId:
+          type: integer
+          example: 1
+        ownerId:
+          type: integer
+          example: 1
     Server:
       type: object
       properties:
