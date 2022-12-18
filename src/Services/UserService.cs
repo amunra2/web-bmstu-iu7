@@ -7,10 +7,10 @@ using System.Linq;
 
 using ServerING.Exceptions;
 using ServerING.DTO;
+using ServerING.Enums;
 
 
 namespace ServerING.Services {
-
     public interface IUserService {
         User AddUser(UserDto user);
         User UpdateUser(UserUpdateDto userDto);

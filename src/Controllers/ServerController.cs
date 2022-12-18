@@ -8,6 +8,7 @@ using ServerING.Exceptions;
 using ServerING.Models;
 using ServerING.Services;
 using System.Linq;
+using ServerING.Enums;
 
 namespace ServerING.Controllers {
     [ApiController]

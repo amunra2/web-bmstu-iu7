@@ -7,15 +7,18 @@ using ServerING.DTO;
 using ServerING.Exceptions;
 using ServerING.Models;
 using ServerING.Services;
+using ServerING.ModelConverters;
 
 namespace ServerING.Controllers {
     [ApiController]
     [Route("/api/v1/platforms")]
     public class PlatformController : Controller {
-        private IPlatformService platformService;
+        private readonly IPlatformService platformService;
+        private readonly PlatformConverters platformConverters;
 
-        public PlatformController(IPlatformService platformService) {
+        public PlatformController(IPlatformService platformService, PlatformConverters platformConverters) {
             this.platformService = platformService;
+            this.platformConverters = platformConverters;
         }
 
         [HttpGet]
@@ -28,7 +31,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(PlatformFormDto platform) {
             try {
-                var addedPlatform = platformService.AddPlatform(platform);
+                var addedPlatform = platformService.AddPlatform(platformConverters.convertPost(platform));
                 return Ok(addedPlatform);
             }
             catch (PlatformConflictException ex) {
@@ -50,7 +53,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Put(int id, PlatformFormDto platform) {
             try {
-                var updatedPlatform = platformService.PutPlatform(id, platform);
+                var updatedPlatform = platformService.UpdatePlatform(id, platformConverters.convertPut(id, platform));
                 return updatedPlatform != null ? Ok(updatedPlatform) : NotFound();
             }
             catch (PlatformConflictException ex) {
@@ -64,7 +67,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Patch(int id, PlatformFormDto platform) {
             try {
-                var updatedPlatform = platformService.PatchPlatform(id, platform);
+                var updatedPlatform = platformService.UpdatePlatform(id, platformConverters.convertPatch(id, platform));
                 return updatedPlatform != null ? Ok(updatedPlatform) : NotFound();
             }
             catch (PlatformConflictException ex) {

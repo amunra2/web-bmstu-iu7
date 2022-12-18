@@ -18,15 +18,7 @@
     "ServerING": {
       "commandName": "Project",
       "launchBrowser": false,
-      "applicationUrl": "http://host.docker.internal:5551;http://host.docker.internal:5552;http://host.docker.internal:5553",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "ServerING-mirror": {
-      "commandName": "Project-mirror",
-      "launchBrowser": false,
-      "applicationUrl": "http://host.docker.internal:5555",
+      "applicationUrl": "http://localhost:5555",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

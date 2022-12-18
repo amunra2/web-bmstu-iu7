@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
+using ServerING.Utils;
 
 using Microsoft.EntityFrameworkCore;
 using ServerING.Models;
@@ -57,7 +59,7 @@ namespace ServerING {
             services.AddTransient<ICountryRepository, CountryRepository>();
 
             // MVC
-            services.AddControllers();
+            services.AddControllers(); // add string enum
             services.AddEndpointsApiExplorer();
 
             // Swagger
@@ -65,6 +67,12 @@ namespace ServerING {
 
             // Admin Page
             services.AddCoreAdmin();
+
+            // AutoMapper
+            services.AddAutoMapper(typeof(AutoMappingProfile));
+
+            // DTO converters
+            services.AddDtoConverters(); // self
         }
 
         // This method gets called by the runtime

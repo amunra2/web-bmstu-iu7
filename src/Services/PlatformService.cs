@@ -1,7 +1,9 @@
-﻿using ServerING.DTO;
+﻿using AutoMapper;
+using ServerING.DTO;
 using ServerING.Exceptions;
 using ServerING.Interfaces;
 using ServerING.Models;
+using ServerING.ModelsBL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,31 +11,33 @@ using System.Linq;
 
 namespace ServerING.Services {
     public interface IPlatformService {
-        Platform AddPlatform(PlatformFormDto platform);
-        Platform DeletePlatform(int id);
-        Platform PatchPlatform(int id, PlatformFormDto platform);
-        Platform PutPlatform(int id, PlatformFormDto platform);
+        PlatformBL AddPlatform(PlatformBL platform);
+        PlatformBL DeletePlatform(int id);
+        PlatformBL UpdatePlatform(int id, PlatformBL platform);
 
-        Platform GetPlatformByID(int id);
-        IEnumerable<Platform> GetAllPlatforms();
+        PlatformBL GetPlatformByID(int id);
+        IEnumerable<PlatformBL> GetAllPlatforms();
 
-        Platform GetPlatformByName(string name);
-        IEnumerable<Platform> GetPlatformByPopularity(ushort popularity);
-        IEnumerable<Platform> GetPlatformByCost(int cost);
+        PlatformBL GetPlatformByName(string name);
+        IEnumerable<PlatformBL> GetPlatformByPopularity(ushort popularity);
+        IEnumerable<PlatformBL> GetPlatformByCost(int cost);
     }
 
     public class PlatformService : IPlatformService {
 
         private readonly IPlatformRepository platformRepository;
+        private IMapper mapper;
 
-        public PlatformService(IPlatformRepository platformRepository) {
+        public PlatformService(IPlatformRepository platformRepository, IMapper mapper) {
             this.platformRepository = platformRepository;
+            this.mapper = mapper;
         }
 
 
-        private bool IsExist(PlatformFormDto platform) {
+        private bool IsExist(PlatformBL platform) {
             return platformRepository
                 .GetAll()
+                .Where(item => item.Id != platform.Id)
                 .Any(item => item.Name == platform.Name);
         }
 
@@ -43,34 +47,29 @@ namespace ServerING.Services {
         }
 
 
-        public Platform AddPlatform(PlatformFormDto platform) {
+        public PlatformBL AddPlatform(PlatformBL platform) {
             if (IsExist(platform)) {
                 var conflictedId = platformRepository.GetByName(platform.Name).Id;
                 throw new PlatformConflictException(conflictedId);
             }
 
-            var transferedPlatform = new Platform {
-                Name = platform.Name,
-                Cost = platform.Cost.Value,
-                Popularity = (ushort) platform.Popularity.Value
-            };
-
-            return platformRepository.Add(transferedPlatform);
+            var transferedPlatform = mapper.Map<Platform>(platform);
+            return mapper.Map<PlatformBL>(platformRepository.Add(transferedPlatform));
         }
 
-        public Platform DeletePlatform(int id) {
-            return platformRepository.Delete(id);
+        public PlatformBL DeletePlatform(int id) {
+            return mapper.Map<PlatformBL>(platformRepository.Delete(id));
         }
 
-        public Platform GetPlatformByID(int id) {
-            return platformRepository.GetByID(id);
+        public PlatformBL GetPlatformByID(int id) {
+            return mapper.Map<PlatformBL>(platformRepository.GetByID(id));
         }
 
-        public IEnumerable<Platform> GetAllPlatforms() {
-            return platformRepository.GetAll();
+        public IEnumerable<PlatformBL> GetAllPlatforms() {
+            return mapper.Map<IEnumerable<PlatformBL>>(platformRepository.GetAll());
         }
 
-        public Platform PutPlatform(int id, PlatformFormDto platform) {
+        public PlatformBL UpdatePlatform(int id, PlatformBL platform) {
             if (IsExist(platform)) {
                 var conflictedId = platformRepository.GetByName(platform.Name).Id;
                 throw new PlatformConflictException(conflictedId);
@@ -79,47 +78,20 @@ namespace ServerING.Services {
             if (!IsExistById(id))
                 throw null;
 
-            var transferedPlatform = new Platform {
-                Id = id,
-                Name = platform.Name,
-                Cost = platform.Cost != null ? platform.Cost.Value : 0,
-                Popularity = platform.Popularity != null ? (ushort) platform.Popularity.Value : (ushort) 0
-            };
-
-            return platformRepository.Update(transferedPlatform);
+            var transferedPlatform = mapper.Map<Platform>(platform);
+            return mapper.Map<PlatformBL>(platformRepository.Update(transferedPlatform));
         }
 
-        public Platform PatchPlatform(int id, PlatformFormDto platform) {
-            if (IsExist(platform)) {
-                var conflictedId = platformRepository.GetByName(platform.Name).Id;
-                throw new PlatformConflictException(conflictedId);
-            }
-
-            if (!IsExistById(id))
-                return null;
-
-            var existedPlatform = GetPlatformByID(id);
-
-            var transferedPlatform = new Platform {
-                Id = id,
-                Name = platform.Name != null ? platform.Name : existedPlatform.Name,
-                Cost = platform.Cost != null ? platform.Cost.Value : existedPlatform.Cost,
-                Popularity = platform.Popularity != null ? (ushort) platform.Popularity.Value : existedPlatform.Popularity
-            };
-
-            return platformRepository.Update(transferedPlatform);
+        public PlatformBL GetPlatformByName(string name) {
+            return mapper.Map<PlatformBL>(platformRepository.GetByName(name));
         }
 
-        public Platform GetPlatformByName(string name) {
-            return platformRepository.GetByName(name);
+        public IEnumerable<PlatformBL> GetPlatformByPopularity(ushort popularity) {
+            return mapper.Map<IEnumerable<PlatformBL>>(platformRepository.GetByPopularity(popularity));
         }
 
-        public IEnumerable<Platform> GetPlatformByPopularity(ushort popularity) {
-            return platformRepository.GetByPopularity(popularity);
-        }
-
-        public IEnumerable<Platform> GetPlatformByCost(int cost) {
-            return platformRepository.GetByCost(cost);
+        public IEnumerable<PlatformBL> GetPlatformByCost(int cost) {
+            return mapper.Map<IEnumerable<PlatformBL>>(platformRepository.GetByCost(cost));
         }
     }
 }

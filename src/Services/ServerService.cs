@@ -1,4 +1,6 @@
-﻿using ServerING.Interfaces;
+﻿using AutoMapper;
+using ServerING.ModelsBL;
+using ServerING.Interfaces;
 using ServerING.Models;
 using ServerING.ViewModels;
 using System;
@@ -7,6 +9,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ServerING.DTO;
 using ServerING.Exceptions;
+using ServerING.Enums;
 
 namespace ServerING.Services {
 
@@ -17,9 +20,9 @@ namespace ServerING.Services {
         Server PatchServer(int id, ServerUpdateDto server);
 
         Server GetServerByID(int id);
-        IEnumerable<Server> GetAllServers(
-            ServerFilterDto filter, 
-            ServerSortState? sortState, 
+        IEnumerable<ServerBL> GetAllServers(
+            ServerFilterDto filter,
+            ServerSortState? sortState,
             int? page
         );
 
@@ -48,15 +51,18 @@ namespace ServerING.Services {
         private readonly IPlatformRepository platformRepository;
         private readonly IUserRepository userRepository;
         private readonly IHostingRepository hostingRepository;
+        private readonly IMapper mapper;
 
         public ServerService(IServerRepository serverRepository, 
                 IPlatformRepository platformRepository, 
                 IUserRepository userRepository,
-                IHostingRepository hostingRepository) {
+                IHostingRepository hostingRepository,
+                IMapper mapper) {
             this.serverRepository = serverRepository;
             this.platformRepository = platformRepository;
             this.userRepository = userRepository;
             this.hostingRepository = hostingRepository;
+            this.mapper = mapper;
         }
 
 
@@ -75,7 +81,7 @@ namespace ServerING.Services {
                 throw new ServerConflictException(conflictedId);
             }
 
-            var transferedServer = new Server {
+            var transferedServer = new ServerBL {
                 Name = server.Name,
                 GameName = server.GameName,
                 Ip = server.Ip,
@@ -86,7 +92,7 @@ namespace ServerING.Services {
                 OwnerID = server.OwnerID.Value
             };
 
-            return serverRepository.Add(transferedServer);
+            return serverRepository.Add(mapper.Map<Server>(transferedServer));
         }
 
         public Server PutServer(int id, ServerUpdateDto server) {
@@ -145,12 +151,12 @@ namespace ServerING.Services {
             return serverRepository.Delete(id);
         }
 
-        public IEnumerable<Server> GetAllServers(
+        public IEnumerable<ServerBL> GetAllServers(
             ServerFilterDto filter, 
             ServerSortState? sortState,
             int? page
         ) {
-            var servers = serverRepository.GetAll();
+            var servers = mapper.Map<IEnumerable<ServerBL>>(serverRepository.GetAll());
 
             // Фильтрация
             servers = FilterServers(servers, filter);
@@ -200,7 +206,7 @@ namespace ServerING.Services {
         }
 
 
-        private IEnumerable<Server> FilterServers(IEnumerable<Server> servers, ServerFilterDto filter) {
+        private IEnumerable<ServerBL> FilterServers(IEnumerable<ServerBL> servers, ServerFilterDto filter) {
             var filteredServers = servers;
 
             if (filter.OwnerID != null) {
@@ -221,15 +227,15 @@ namespace ServerING.Services {
                 if (platform != null)
                     filteredServers = filteredServers.Where(p => p.PlatformID == platform.Id);
                 else
-                    filteredServers = new List<Server>();
+                    filteredServers = new List<ServerBL>();
             }
 
             return filteredServers;
         }
 
-        private IEnumerable<Server> SortServersByOption(IEnumerable<Server> servers, ServerSortState sortOrder) {
+        private IEnumerable<ServerBL> SortServersByOption(IEnumerable<ServerBL> servers, ServerSortState sortOrder) {
 
-            IEnumerable<Server> filteredServers;
+            IEnumerable<ServerBL> filteredServers;
 
             if (sortOrder == ServerSortState.NameDesc) {
                 filteredServers = servers.OrderByDescending(s => s.Name);
@@ -265,7 +271,7 @@ namespace ServerING.Services {
             return filteredServers;
         }
 
-        private IEnumerable<Server> PaginationServers(IEnumerable<Server> servers, int page) {
+        private IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page) {
             var pageSize = 10;
             var paginatedServers = servers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 

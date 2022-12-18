@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ServerING.Enums;
 
 namespace ServerING.Models {
     public class Server {
@@ -37,26 +38,5 @@ namespace ServerING.Models {
         public virtual Platform Platform { get; set; }
         public virtual Country Country { get; set; }
         public virtual User Owner { get; set; }
-    }
-
-
-    public enum ServerStatus {
-        Accepted, // принят
-        Pending,  // не проверен
-        Rejected  // отклонен
-    }
-
-
-    public enum ServerSortState {
-        NameAsc,            // по имени по возрастанию
-        NameDesc,           // по имени по убыванию
-        IPAsc,              // по IP по возрастанию
-        IPDesc,             // по IP по убыванию
-        GameNameAsc,        // по названию игры по возрастанию
-        GameNameDesc,       // по названию игры по убыванию
-        RatingAsc,          // по платформе по возрастанию
-        RatingDesc,         // по платформе по убыванию
-        PlatformAsc,        // по платформе по возрастанию
-        PlatformDesc        // по платформе по убыванию
     }
 }

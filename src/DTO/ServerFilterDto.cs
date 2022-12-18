@@ -1,4 +1,4 @@
-using ServerING.Models;
+using ServerING.Enums;
 
 namespace ServerING.DTO {
     public class ServerFilterDto {

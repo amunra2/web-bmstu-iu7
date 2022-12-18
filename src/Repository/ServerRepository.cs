@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using ServerING.ModelsBL;
+using Microsoft.EntityFrameworkCore;
 using ServerING.Interfaces;
 using ServerING.Models;
 using System;
@@ -9,10 +11,12 @@ namespace ServerING.Repository {
     public class ServerRepository : IServerRepository {
 
         ///
+        private readonly IMapper mapper;
         private readonly AppDBContent appDBContent;
 
-        public ServerRepository(AppDBContent appDBContent) {
+        public ServerRepository(AppDBContent appDBContent, IMapper mapper) {
             this.appDBContent = appDBContent;
+            this.mapper = mapper;
         }
         ///
 

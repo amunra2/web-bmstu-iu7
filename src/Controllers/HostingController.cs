@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 using ServerING.DTO;
 using ServerING.Exceptions;
 using ServerING.Models;
@@ -13,13 +14,16 @@ namespace ServerING.Controllers {
     [Route("/api/v1/hostings")]
     public class HostingController : Controller {
         private IHostingService hostingService;
+        private readonly ILogger<HostingController> _logger;
 
-        public HostingController(IHostingService hostingService) {
+        public HostingController(IHostingService hostingService, ILogger<HostingController> logger) {
             this.hostingService = hostingService;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
         public IActionResult GetAll() {
+            _logger.LogInformation("hostings: Request: GET");
             return Ok(hostingService.GetAllHostings());
         }
 
@@ -29,6 +33,7 @@ namespace ServerING.Controllers {
         public IActionResult Add(HostingFormDto hosting) {
             try {
                 var addedHosting = hostingService.AddHosting(hosting);
+                _logger.LogInformation("dfghjkl");
                 return Ok(addedHosting);
             }
             catch (HostingConflictException ex) {
