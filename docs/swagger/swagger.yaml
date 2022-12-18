@@ -33,20 +33,27 @@ paths:
           description: Platform Name for filter Servers
 
         - in: query
-          name: SortState
-          required: false
-          schema:
-            type: integer
-            enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-          description: SortState for sorting Servers
-
-        - in: query
           name: Status
           required: false
           schema:
             type: integer
-            enum: [0, 1, 2]
+            enum: [Accepted, Pending, Rejected]
           description: Status for filter Servers
+
+        - in: query
+          name: OwnerID
+          required: false
+          schema:
+            type: integer
+          description: Owner id
+
+        - in: query
+          name: SortState
+          required: false
+          schema:
+            type: integer
+            enum: [NameAsc, NameDesc, IPAsc, IPDesc, GameNameAsc, GameNameDesc, RatingAsc, RatingDesc, PlatformAsc, PlatformDesc]
+          description: SortState for sorting Servers
 
         - in: query
           name: Page
@@ -54,14 +61,6 @@ paths:
           schema:
             type: integer
           description: Page number for paging Servers
-
-        - in: query
-          name: Status
-          required: false
-          schema:
-            type: integer
-            enum: [0, 1, 2]
-          description: Server status
 
       responses:
         '200':
