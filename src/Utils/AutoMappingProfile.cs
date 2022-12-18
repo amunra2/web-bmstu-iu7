@@ -19,6 +19,7 @@ namespace ServerING.Utils {
             // DTO <-> BL
             CreateMap<ServerDtoBase, ServerBL>().ReverseMap();
             CreateMap<ServerDto, ServerBL>().ReverseMap();
+            CreateMap<PlayerSparceDto, PlayerBL>().ReverseMap();
         }
     }
 }

@@ -137,22 +137,6 @@ namespace ServerING.Controllers
         {
             return Ok(mapper.Map<IEnumerable<ServerDto>>(userService.GetUserFavoriteServers(userId, filter, sortState, page)));
         }
-        //[HttpGet("{userId}/favorites")]
-        //[ProducesResponseType(typeof(IEnumerable<Server>), StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-        //public IActionResult GetFavorites()
-        //{
-        //    try
-        //    {using AutoMapper;
-        //        var servers = userService.GetUserFavoriteServers(userId);
-        //        return servers != null && servers.Any() ? Ok(servers) : NoContent();
-        //    }
-        //    catch (UserNotExistsException ex)
-        //    {
-        //        return NotFound(ex.Message);
-        //    }
-        //}
 
         [HttpPost("{userId}/favorites/{serverId}")]
         [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]

@@ -14,12 +14,11 @@ using ServerING.Enums;
 namespace ServerING.Services {
 
     public interface IServerService {
-        Server AddServer(ServerDtoBase server);
-        Server DeleteServer(int id);
-        Server PutServer(int id, ServerUpdateDto server);
-        Server PatchServer(int id, ServerUpdateDto server);
+        ServerBL AddServer(ServerBL server);
+        ServerBL DeleteServer(int id);
+        ServerBL UpdateServer(ServerBL server);
 
-        Server GetServerByID(int id);
+        ServerBL GetServerByID(int id);
         IEnumerable<ServerBL> GetAllServers(
             ServerFilterDto filter,
             ServerSortState? sortState,
@@ -29,7 +28,7 @@ namespace ServerING.Services {
         public IEnumerable<Player> GetServerPlayers(int serverId);
 
         Server GetServerByName(string name);
-        Server GetServerByIP(string ip);
+        ServerBL GetServerByIP(string ip);
 
         IEnumerable<Server> GetServersByGameName(string gameVersion);
         IEnumerable<Server> GetServersByHostingID(int id);
@@ -39,8 +38,6 @@ namespace ServerING.Services {
         IEnumerable<ServerBL> FilterServers(IEnumerable<ServerBL> servers, ServerFilterDto filter);
         IEnumerable<ServerBL> SortServersByOption(IEnumerable<ServerBL> servers, ServerSortState sortOrder);
         IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page);
-        // IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder);
-        DetailViewModel DetailServer(int serverId);
         IEnumerable<int> GetUserFavoriteServersIds(int userId);
 
         void UpdateServerRating(int serverId, int change);
@@ -68,92 +65,6 @@ namespace ServerING.Services {
             this.mapper = mapper;
         }
 
-
-        private bool IsExist(string serverIp) {
-            return serverRepository.GetAll()
-                .Any(item => item.Ip == serverIp);
-        }
-
-        private bool IsExistById(int id) {
-            return serverRepository.GetByID(id) != null;
-        }
-
-        public Server AddServer(ServerDtoBase server) {
-            if (IsExist(server.Ip)) {
-                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
-                throw new ServerConflictException(conflictedId);
-            }
-
-            var transferedServer = new ServerBL {
-                Name = server.Name,
-                GameName = server.GameName,
-                Ip = server.Ip,
-                Status = server.Status.Value,
-                HostingID = server.HostingID.Value,
-                PlatformID = server.PlatformID.Value,
-                CountryID = server.CountryID.Value,
-                OwnerID = server.OwnerID.Value
-            };
-
-            return serverRepository.Add(mapper.Map<Server>(transferedServer));
-        }
-
-        public Server PutServer(int id, ServerUpdateDto server) {
-            if (IsExist(server.Ip)) {
-                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
-                throw new ServerConflictException(conflictedId);
-            }
-
-            if (!IsExistById(id))
-                throw null;
-
-            var transferedServer = new Server {
-                Id = id,
-                Name = server.Name,
-                GameName = server.GameName,
-                Status = server.Status.Value,
-                Rating = server.Rating.Value, // ! чекнуть когда-нибудь
-                Ip = server.Ip,
-                HostingID = server.HostingID.Value,
-                PlatformID = server.PlatformID.Value,
-                CountryID = server.CountryID.Value,
-                OwnerID = server.OwnerID.Value
-            };
-
-            return serverRepository.Update(transferedServer);
-        }
-
-        public Server PatchServer(int id, ServerUpdateDto server) {
-            if (IsExist(server.Ip)) {
-                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
-                throw new ServerConflictException(conflictedId);
-            }
-
-            if (!IsExistById(id))
-                return null;
-
-            var existedServer = GetServerByID(id);
-
-            var transferedServer = new Server {
-                Id = id,
-                Name = server.Name != null ? server.Name : existedServer.Name,
-                GameName = server.GameName != null ? server.GameName : existedServer.GameName,
-                Ip = server.Ip != null ? server.Ip : existedServer.Ip,
-                Status = server.Status != null ? server.Status.Value : existedServer.Status,
-                Rating = server.Rating != null ? server.Rating.Value : existedServer.Rating,
-                HostingID = server.HostingID != null ? server.HostingID.Value : existedServer.HostingID,
-                PlatformID = server.PlatformID != null ? server.PlatformID.Value : existedServer.PlatformID,
-                CountryID = server.CountryID != null ? server.CountryID.Value : existedServer.CountryID,
-                OwnerID = server.OwnerID != null ? server.OwnerID.Value : existedServer.OwnerID,
-            };
-
-            return serverRepository.Update(transferedServer);
-        }
-
-        public Server DeleteServer(int id) {
-            return serverRepository.Delete(id);
-        }
-
         public IEnumerable<ServerBL> GetAllServers(
             ServerFilterDto filter, 
             ServerSortState? sortState,
@@ -177,8 +88,43 @@ namespace ServerING.Services {
             return servers;
         }
 
-        public Server GetServerByIP(string ip) {
-            return serverRepository.GetByIP(ip);
+        public ServerBL AddServer(ServerBL server) {
+            if (IsExist(server)) {
+                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
+                throw new ServerConflictException(conflictedId);
+            }
+
+            return mapper.Map<ServerBL>(serverRepository.Add(mapper.Map<Server>(server)));
+        }
+
+        public ServerBL GetServerByID(int id) {
+            return mapper.Map<ServerBL>(serverRepository.GetByID(id));
+        }
+
+        private bool IsExist(ServerBL server) {
+            return serverRepository.GetAll()
+                .Where(item => item.Id != server.Id)
+                .Any(item => item.Ip == server.Ip);
+        }
+
+        private bool IsExistById(int id) {
+            return serverRepository.GetByID(id) != null;
+        }
+
+        public ServerBL UpdateServer(ServerBL server) {
+            if (IsExist(server)) {
+                var conflictedId = serverRepository.GetByIP(server.Ip).Id;
+                throw new ServerConflictException(conflictedId);
+            }
+
+            if (!IsExistById(server.Id))
+                throw null;
+
+            return mapper.Map<ServerBL>(serverRepository.Update(mapper.Map<Server>(server)));
+        }
+
+        public ServerBL DeleteServer(int id) {
+            return mapper.Map<ServerBL>(serverRepository.Delete(id));
         }
 
         public Server GetServerByName(string name) {
@@ -197,9 +143,10 @@ namespace ServerING.Services {
             return serverRepository.GetByPlatformID(id);
         }
 
-        public Server GetServerByID(int id) {
-            return serverRepository.GetByID(id);
+        public ServerBL GetServerByIP(string ip) {
+            return mapper.Map<ServerBL>(serverRepository.GetByIP(ip));
         }
+
 
         public IEnumerable<Player> GetServerPlayers(int serverId) {
             if (!IsExistById(serverId))
@@ -224,13 +171,8 @@ namespace ServerING.Services {
                 filteredServers = filteredServers.Where(s => s.Name.Contains(filter.Name));
             }
 
-            if (!String.IsNullOrEmpty(filter.PlatformName)) {
-                var platform = platformRepository.GetByName(filter.PlatformName);
-
-                if (platform != null)
-                    filteredServers = filteredServers.Where(p => p.PlatformID == platform.Id);
-                else
-                    filteredServers = new List<ServerBL>();
+            if (filter.PlatformID != null) {
+                filteredServers = filteredServers.Where(s => s.PlatformID == filter.PlatformID);
             }
 
             return filteredServers;
@@ -281,60 +223,6 @@ namespace ServerING.Services {
             return paginatedServers;
         }
 
-        // public IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder) {
-
-        //     // Параметры пагинации 
-        //     int pageSize = 10;
-        //     var count = parsedServers.Count();
-
-        //     // фильтрация
-        //     parsedServers = FilterServersByName(parsedServers, name, platformId);
-
-        //     // сортировка
-        //     parsedServers = SortServersByOption(parsedServers, sortOrder);
-
-        //     // пагинация
-        //     parsedServers = PaginationServers(parsedServers, page, pageSize);
-
-
-        //     // Вывод - формируем модель представления
-        //     IndexViewModel viewModel = new IndexViewModel {
-        //         PageViewModel = new PageViewModel(count, page, pageSize),
-        //         SortViewModel = new SortViewModel(sortOrder),
-        //         FilterViewModel = new FilterViewModel(platformRepository.GetAll().ToList(), platformId, name),
-        //         Servers = parsedServers.ToList(),
-        //         Platforms = platformRepository.GetAll().ToList()
-        //     };
-
-        //     return viewModel;
-        // }
-
-        public DetailViewModel DetailServer(int serverId) {
-
-            if (serverId > 0) {
-
-                Server server = GetServerByID(serverId);
-
-                if (server != null) {
-
-                    IEnumerable<Player> players = serverRepository.GetPlayersByServerID(serverId);
-                    WebHosting webHosting = serverRepository.GetWebHostingByServerId(serverId);
-                    Country country = serverRepository.GetCountryByServerId(serverId);
-
-                    DetailViewModel viewModel = new DetailViewModel {
-                        Server = server,
-                        WebHosting = webHosting,
-                        Players = players,
-                        Country = country
-                    };
-
-                    return viewModel;
-                }
-            }
-
-            return null;
-        }
-
         public IEnumerable<Server> GetServersByRating(int rating) {
             return serverRepository.GetByRating(rating);
         }
@@ -369,64 +257,3 @@ namespace ServerING.Services {
         }
     }
 }
-
-
-
-
-
-// // Нужна ли вообще эта сортировка?
-//             else if (sortOrder == ServerSortState.PlatformAsc) { // особая сортировка (сортировка одной таблицы, относительно другой)
-
-//                 var joinedServerPlatformAsc = servers.Join(platformRepository.GetAll(),
-//                                           s => s.PlatformID,
-//                                           p => p.Id,
-//                                           (s, p) => new {
-//                                               Id = s.Id,
-//                                               ServerName = s.Name,
-//                                               GameVersion = s.GameName,
-//                                               Ip = s.Ip,
-//                                               PlatformId = s.PlatformID,
-//                                               WebHostingId = s.HostingID,
-//                                               PlatformName = p.Name,
-//                                               Rating = s.Rating
-//                                           });
-
-//                 filteredServers = joinedServerPlatformAsc
-//                     .OrderBy(j => j.PlatformName)
-//                     .Select(j => new Server {
-//                         Id = j.Id,
-//                         Name = j.ServerName,
-//                         GameName = j.GameVersion,
-//                         Ip = j.Ip,
-//                         HostingID = j.WebHostingId,
-//                         PlatformID = j.PlatformId,
-//                         Rating = j.Rating
-//                     });
-//             }
-//             else if (sortOrder == ServerSortState.PlatformDesc) { // особая сортировка (сортировка одной таблицы, относительно другой)
-//                 var joinedServerPlatformDesc = servers.Join(platformRepository.GetAll(),
-//                                           s => s.PlatformID,
-//                                           p => p.Id,
-//                                           (s, p) => new {
-//                                               Id = s.Id,
-//                                               ServerName = s.Name,
-//                                               GameVersion = s.GameName,
-//                                               Ip = s.Ip,
-//                                               PlatformId = s.PlatformID,
-//                                               WebHostingId = s.HostingID,
-//                                               PlatformName = p.Name,
-//                                               Rating = s.Rating
-//                                           });
-
-//                 filteredServers = joinedServerPlatformDesc
-//                     .OrderByDescending(j => j.PlatformName)
-//                     .Select(j => new Server {
-//                         Id = j.Id,
-//                         Name = j.ServerName,
-//                         GameName = j.GameVersion,
-//                         Ip = j.Ip,
-//                         HostingID = j.WebHostingId,
-//                         PlatformID = j.PlatformId,
-//                         Rating = j.Rating
-//                     });
-//             }
