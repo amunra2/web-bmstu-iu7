@@ -31,7 +31,7 @@ namespace ServerING.Controllers {
 
         [HttpPost]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(ServerAddDto server) {
+        public IActionResult Add(ServerDtoBase server) {
             try {
                 var addedServer = serverService.AddServer(server);
                 return Ok(addedServer);

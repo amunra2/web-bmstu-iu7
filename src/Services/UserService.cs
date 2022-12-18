@@ -4,17 +4,19 @@ using ServerING.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 
 using ServerING.Exceptions;
 using ServerING.DTO;
 using ServerING.Enums;
+using ServerING.ModelsBL;
 
 
 namespace ServerING.Services {
     public interface IUserService {
-        User AddUser(UserDto user);
-        User UpdateUser(UserUpdateDto userDto);
-        User PatchUpdateUser(UserUpdateDto userDto);
+        User AddUser(UserDtoBase user);
+        User UpdateUser(UserDto userDto);
+        User PatchUpdateUser(UserDto userDto);
         User DeleteUser(int id);
 
         User GetUserByID(int id);
@@ -23,7 +25,12 @@ namespace ServerING.Services {
         User GetUserByLogin(string login);
         IEnumerable<User> GetUsersByRole(string role);
         
-        IEnumerable<Server> GetUserFavoriteServers(int userId);
+        IEnumerable<ServerBL> GetUserFavoriteServers(
+            int userId,
+            ServerFilterDto filter, 
+            ServerSortState? sortState,
+            int? page
+        );
         FavoriteServer AddFavoriteServer(int userId, int serverId);
         FavoriteServer DeleteFavoriteServer(int userId, int serverId);
 
@@ -36,10 +43,16 @@ namespace ServerING.Services {
 
         private readonly IUserRepository userRepository;
         private readonly IServerService serverService;
+        private readonly IMapper mapper;
 
-        public UserService(IUserRepository userRepository, IServerService serverService) {
+        public UserService(
+            IUserRepository userRepository,
+            IServerService serverService,
+            IMapper mapper
+        ) {
             this.userRepository = userRepository;
             this.serverService = serverService;
+            this.mapper = mapper;
         }
 
 
@@ -58,7 +71,7 @@ namespace ServerING.Services {
         }
 
 
-        public User AddUser(UserDto userDto) {
+        public User AddUser(UserDtoBase userDto) {
             var user = new User()
             {
                 Login = userDto.Login,
@@ -88,7 +101,7 @@ namespace ServerING.Services {
             return userRepository.GetByRole(role);
         }
 
-        public User UpdateUser(UserUpdateDto userDto) {
+        public User UpdateUser(UserDto userDto) {
             var user = new User()
             {
                 Id = userDto.Id,
@@ -106,7 +119,7 @@ namespace ServerING.Services {
             return userRepository.Update(user);
         }
 
-        public User PatchUpdateUser(UserUpdateDto userDto) {
+        public User PatchUpdateUser(UserDto userDto) {
             if (!IsExistById(userDto.Id))
                 throw new UserNotExistsException("No user with such id");
 
@@ -130,11 +143,32 @@ namespace ServerING.Services {
             return userRepository.Delete(id);
         }
 
-        public IEnumerable<Server> GetUserFavoriteServers(int userId) {
+        public IEnumerable<ServerBL> GetUserFavoriteServers(
+            int userId,
+            ServerFilterDto filter, 
+            ServerSortState? sortState,
+            int? page
+        ) {
             if (!IsExistById(userId))
                 throw new UserNotExistsException("No user with such id");
 
-            return userRepository.GetFavoriteServersByUserId(userId);
+            var servers = mapper.Map<IEnumerable<ServerBL>>(userRepository.GetFavoriteServersByUserId(userId));
+
+            // Фильтрация
+            servers = serverService.FilterServers(servers, filter);
+
+            // Сортировка
+            if (sortState != null) {
+                servers = serverService.SortServersByOption(servers, sortState.Value);
+            }
+
+            // Пагинация
+            if (page != null) {
+                servers = serverService.PaginationServers(servers, page.Value);
+            }
+            
+
+            return servers;
         }
 
         public FavoriteServer AddFavoriteServer(int userId, int serverId) {

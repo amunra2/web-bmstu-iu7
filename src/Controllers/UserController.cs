@@ -3,11 +3,13 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using AutoMapper;
 
 using ServerING.DTO;
 using ServerING.Exceptions;
 using ServerING.Models;
 using ServerING.Services;
+using ServerING.Enums;
 
 namespace ServerING.Controllers
 {
@@ -16,10 +18,12 @@ namespace ServerING.Controllers
     public class UserController : Controller
     {
         private IUserService userService;
+        private IMapper mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IMapper mapper)
         {
             this.userService = userService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -34,7 +38,7 @@ namespace ServerING.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(UserDto userDto)
+        public IActionResult Add(UserDtoBase userDto)
         {
             try
             {
@@ -60,10 +64,10 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
-        public IActionResult Put(int id, UserDto userDto) {
+        public IActionResult Put(int id, UserDtoBase userDto) {
             try
             {
-                var userUpdateDto = new UserUpdateDto()
+                var userUpdateDto = new UserDto()
                 {
                     Id = id,
                     Login = userDto.Login,
@@ -91,10 +95,10 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Patch(int id, UserDto userDto) {
+        public IActionResult Patch(int id, UserDtoBase userDto) {
             try
             {
-                var userUpdateDto = new UserUpdateDto()
+                var userUpdateDto = new UserDto()
                 {
                     Id = id,
                     Login = userDto.Login,
@@ -124,21 +128,31 @@ namespace ServerING.Controllers
         }
 
         [HttpGet("{userId}/favorites")]
-        [ProducesResponseType(typeof(IEnumerable<Server>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-        public IActionResult GetFavorites(int userId)
+        public IActionResult GetFavorites(
+            int userId,
+            [FromQuery] ServerFilterDto filter,
+            [FromQuery] ServerSortState? sortState,
+            [FromQuery] int? page
+        )
         {
-            try
-            {
-                var servers = userService.GetUserFavoriteServers(userId);
-                return servers != null && servers.Any() ? Ok(servers) : NoContent();
-            }
-            catch (UserNotExistsException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            return Ok(mapper.Map<IEnumerable<ServerDto>>(userService.GetUserFavoriteServers(userId, filter, sortState, page)));
         }
+        //[HttpGet("{userId}/favorites")]
+        //[ProducesResponseType(typeof(IEnumerable<Server>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        //public IActionResult GetFavorites()
+        //{
+        //    try
+        //    {using AutoMapper;
+        //        var servers = userService.GetUserFavoriteServers(userId);
+        //        return servers != null && servers.Any() ? Ok(servers) : NoContent();
+        //    }
+        //    catch (UserNotExistsException ex)
+        //    {
+        //        return NotFound(ex.Message);
+        //    }
+        //}
 
         [HttpPost("{userId}/favorites/{serverId}")]
         [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]

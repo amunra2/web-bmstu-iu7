@@ -2135,6 +2135,50 @@ paths:
       description: Return User's Favorite Servers
 
       parameters:
+        - in: query
+          name: Name
+          required: false
+          schema:
+            type: string
+          description: Name for filter Servers
+
+        - in: query
+          name: PlatformName
+          required: false
+          schema:
+            type: string
+          description: Platform Name for filter Servers
+
+        - in: query
+          name: Status
+          required: false
+          schema:
+            type: integer
+            enum: [Accepted, Pending, Rejected]
+          description: Status for filter Servers
+
+        - in: query
+          name: OwnerID
+          required: false
+          schema:
+            type: integer
+          description: Owner id
+
+        - in: query
+          name: SortState
+          required: false
+          schema:
+            type: integer
+            enum: [NameAsc, NameDesc, IPAsc, IPDesc, GameNameAsc, GameNameDesc, RatingAsc, RatingDesc, PlatformAsc, PlatformDesc]
+          description: SortState for sorting Servers
+
+        - in: query
+          name: Page
+          required: false
+          schema:
+            type: integer
+          description: Page number for paging Servers
+
         - in: header
           name: Authorization
           required: true

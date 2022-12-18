@@ -14,7 +14,7 @@ using ServerING.Enums;
 namespace ServerING.Services {
 
     public interface IServerService {
-        Server AddServer(ServerAddDto server);
+        Server AddServer(ServerDtoBase server);
         Server DeleteServer(int id);
         Server PutServer(int id, ServerUpdateDto server);
         Server PatchServer(int id, ServerUpdateDto server);
@@ -36,6 +36,9 @@ namespace ServerING.Services {
         IEnumerable<Server> GetServersByPlatformID(int id);
         IEnumerable<Server> GetServersByRating(int rating);
 
+        IEnumerable<ServerBL> FilterServers(IEnumerable<ServerBL> servers, ServerFilterDto filter);
+        IEnumerable<ServerBL> SortServersByOption(IEnumerable<ServerBL> servers, ServerSortState sortOrder);
+        IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page);
         // IndexViewModel ParseServers(IEnumerable<Server> parsedServers, string name, int? platformId, int page, ServerSortState sortOrder);
         DetailViewModel DetailServer(int serverId);
         IEnumerable<int> GetUserFavoriteServersIds(int userId);
@@ -75,7 +78,7 @@ namespace ServerING.Services {
             return serverRepository.GetByID(id) != null;
         }
 
-        public Server AddServer(ServerAddDto server) {
+        public Server AddServer(ServerDtoBase server) {
             if (IsExist(server.Ip)) {
                 var conflictedId = serverRepository.GetByIP(server.Ip).Id;
                 throw new ServerConflictException(conflictedId);
@@ -206,7 +209,7 @@ namespace ServerING.Services {
         }
 
 
-        private IEnumerable<ServerBL> FilterServers(IEnumerable<ServerBL> servers, ServerFilterDto filter) {
+        public IEnumerable<ServerBL> FilterServers(IEnumerable<ServerBL> servers, ServerFilterDto filter) {
             var filteredServers = servers;
 
             if (filter.OwnerID != null) {
@@ -233,7 +236,7 @@ namespace ServerING.Services {
             return filteredServers;
         }
 
-        private IEnumerable<ServerBL> SortServersByOption(IEnumerable<ServerBL> servers, ServerSortState sortOrder) {
+        public IEnumerable<ServerBL> SortServersByOption(IEnumerable<ServerBL> servers, ServerSortState sortOrder) {
 
             IEnumerable<ServerBL> filteredServers;
 
@@ -271,7 +274,7 @@ namespace ServerING.Services {
             return filteredServers;
         }
 
-        private IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page) {
+        public IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page) {
             var pageSize = 10;
             var paginatedServers = servers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 

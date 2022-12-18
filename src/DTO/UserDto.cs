@@ -1,5 +1,5 @@
 namespace ServerING.DTO {
-    public class UserDto {
+    public class UserDtoBase {
         public string Login { get; set; }
 
         public string Password { get; set; }
@@ -7,7 +7,7 @@ namespace ServerING.DTO {
         public string Role{ get; set; }
     }
 
-    public class UserUpdateDto : UserDto {
+    public class UserDto : UserDtoBase {
         public int Id { get; set; }
     }
 }

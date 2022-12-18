@@ -17,7 +17,8 @@ namespace ServerING.Utils {
             CreateMap<WebHosting, WebHostingBL>().ReverseMap();
 
             // DTO <-> BL
-            CreateMap<ServerAddDto, ServerBL>().ReverseMap();
+            CreateMap<ServerDtoBase, ServerBL>().ReverseMap();
+            CreateMap<ServerDto, ServerBL>().ReverseMap();
         }
     }
 }
