@@ -11,7 +11,7 @@ namespace ServerING.ModelConverters {
             this.userService = userService;
         }
 
-        public UserBL convertPatch(int id, UserBaseDto user) {
+        public UserBL convertPatch(int id, UserPasswordDto user) {
             var existedUser = userService.GetUserByID(id);
 
             return new UserBL {

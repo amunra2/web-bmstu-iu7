@@ -31,6 +31,8 @@ namespace ServerING.Utils {
             CreateMap<PlayerDto, PlayerBL>().ReverseMap();
             CreateMap<UserBaseDto, UserBL>().ReverseMap();
             CreateMap<UserDto, UserBL>().ReverseMap();
+            CreateMap<UserPasswordDto, UserBL>().ReverseMap();
+            CreateMap<UserIdPasswordDto, UserBL>().ReverseMap();
         }
     }
 }

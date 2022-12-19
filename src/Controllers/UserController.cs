@@ -35,14 +35,14 @@ namespace ServerING.Controllers {
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(UserIdPasswordDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(UserBaseDto user) {
+        public IActionResult Add(UserPasswordDto user) {
             try {
                 var addedUser = userService
                     .AddUser(mapper.Map<UserBL>(user));
-                return Ok(mapper.Map<UserDto>(addedUser));
+                return Ok(mapper.Map<UserIdPasswordDto>(addedUser));
             }
             catch (UserAlreadyExistsException ex) {
                 return Conflict(ex.Message);
@@ -62,7 +62,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Put(int id, UserBaseDto user) {
+        public IActionResult Put(int id, UserPasswordDto user) {
             try {
                 var updatedUser = userService
                     .UpdateUser(id, mapper.Map<UserBL>(user,
@@ -83,7 +83,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Patch(int id, UserBaseDto user) {
+        public IActionResult Patch(int id, UserPasswordDto user) {
             try {
                 var updatedUser = userService
                     .UpdateUser(id, userConverters.convertPatch(id, user));
