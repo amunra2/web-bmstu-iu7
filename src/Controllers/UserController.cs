@@ -1,47 +1,48 @@
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using ServerING.DTO;
 using ServerING.Exceptions;
+using ServerING.ModelConverters;
 using ServerING.Models;
+using ServerING.ModelsBL;
 using ServerING.Services;
 
-namespace ServerING.Controllers
-{
+namespace ServerING.Controllers {
     [ApiController]   
     [Route("/api/v1/users")]
-    public class UserController : Controller
-    {
-        private IUserService userService;
+    public class UserController : Controller {
+        private readonly IUserService userService;
+        private readonly IMapper mapper;
+        private readonly UserConverters userConverters;
 
-        public UserController(IUserService userService)
-        {
+        public UserController(IUserService userService,
+            IMapper mapper, UserConverters userConverters) {
             this.userService = userService;
+            this.mapper = mapper;
+            this.userConverters = userConverters;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        public IActionResult GetAll()
-        {
-            var countries = userService.GetAllUsers();
-            return countries.Any() ? Ok(countries) : NoContent();
+        public IActionResult GetAll() {
+            return Ok(mapper.Map<IEnumerable<UserDto>>(userService.GetAllUsers()));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(UserDto userDto)
-        {
-            try
-            {
-                return Ok(userService.AddUser(userDto));
+        public IActionResult Add(UserBaseDto user) {
+            try {
+                var addedUser = userService
+                    .AddUser(mapper.Map<UserBL>(user));
+                return Ok(mapper.Map<UserDto>(addedUser));
             }
-            catch (UserAlreadyExistsException ex)
-            {
+            catch (UserAlreadyExistsException ex) {
                 return Conflict(ex.Message);
             }
         }
@@ -49,9 +50,8 @@ namespace ServerING.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-        public IActionResult GetById(int id)
-        {
-            var user = userService.GetUserByID(id);
+        public IActionResult GetById(int id) {
+            var user = mapper.Map<UserDto>(userService.GetUserByID(id));
             return user != null ? Ok(user) : NotFound();
         }
 
@@ -60,29 +60,18 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
-        public IActionResult Put(int id, UserDto userDto) {
-            try
-            {
-                var userUpdateDto = new UserUpdateDto()
-                {
-                    Id = id,
-                    Login = userDto.Login,
-                    Password = userDto.Password,
-                    Role = userDto.Role
-                };
+        public IActionResult Put(int id, UserBaseDto user) {
+            try {
+                var updatedUser = userService
+                    .UpdateUser(id, mapper.Map<UserBL>(user,
+                        o => o.AfterMap((src, dest) => dest.Id = id)));
 
-                return Ok(userService.UpdateUser(userUpdateDto));
+                return updatedUser != null ? Ok(mapper.Map<UserDto>(updatedUser)) : NotFound();
             }
-            catch (UserAlreadyExistsException ex)
-            {
+            catch (UserAlreadyExistsException ex) {
                 return Conflict(ex.Message);
             }
-            catch (UserNotExistsException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (UserException ex)
-            {
+            catch (UserException ex) {
                 return BadRequest(ex.Message);
             }
         }
@@ -91,36 +80,25 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Patch(int id, UserDto userDto) {
-            try
-            {
-                var userUpdateDto = new UserUpdateDto()
-                {
-                    Id = id,
-                    Login = userDto.Login,
-                    Password = userDto.Password,
-                    Role = userDto.Role
-                };
-
-                return Ok(userService.PatchUpdateUser(userUpdateDto));
+        public IActionResult Patch(int id, UserBaseDto user) {
+            try {
+                var updatedUser = userService
+                    .UpdateUser(id, userConverters.convertPatch(id, user));
+                return updatedUser != null ? Ok(mapper.Map<UserDto>(updatedUser)) : NotFound();
             }
             catch (UserAlreadyExistsException ex)
             {
                 return Conflict(ex.Message);
-            }
-            catch (UserNotExistsException ex)
-            {
-                return NotFound(ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-        public IActionResult Delete(int id)
-        {
-            var deletedUser = userService.DeleteUser(id);
-            return deletedUser != null ? Ok(deletedUser) : NotFound();
+        public IActionResult Delete(int id) {
+            var deletedUser = userService
+                .DeleteUser(id);
+            return deletedUser != null ? Ok(mapper.Map<UserDto>(deletedUser)) : NotFound();
         }
 
         [HttpGet("{userId}/favorites")]

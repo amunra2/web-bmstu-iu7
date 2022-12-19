@@ -76,7 +76,7 @@ namespace ServerING.Services {
             }
 
             if (!IsExistById(id))
-                throw null;
+                return null;
 
             var transferedPlatform = mapper.Map<Platform>(platform);
             return mapper.Map<PlatformBL>(platformRepository.Update(transferedPlatform));

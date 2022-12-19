@@ -1,4 +1,4 @@
-﻿using ServerING.Models;
+﻿using ServerING.Enums;
 
 namespace ServerING.ViewModels {
     public class SortUserViewModel {

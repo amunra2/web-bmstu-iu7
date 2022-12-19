@@ -8,20 +8,20 @@ using System.Linq;
 using ServerING.Exceptions;
 using ServerING.DTO;
 using ServerING.Enums;
-
+using ServerING.ModelsBL;
+using AutoMapper;
 
 namespace ServerING.Services {
     public interface IUserService {
-        User AddUser(UserDto user);
-        User UpdateUser(UserUpdateDto userDto);
-        User PatchUpdateUser(UserUpdateDto userDto);
-        User DeleteUser(int id);
+        UserBL AddUser(UserBL user);
+        UserBL UpdateUser(int id, UserBL user);
+        UserBL DeleteUser(int id);
 
-        User GetUserByID(int id);
-        IEnumerable<User> GetAllUsers();
+        UserBL GetUserByID(int id);
+        IEnumerable<UserBL> GetAllUsers();
 
-        User GetUserByLogin(string login);
-        IEnumerable<User> GetUsersByRole(string role);
+        UserBL GetUserByLogin(string login);
+        IEnumerable<UserBL> GetUsersByRole(string role);
         
         IEnumerable<Server> GetUserFavoriteServers(int userId);
         FavoriteServer AddFavoriteServer(int userId, int serverId);
@@ -36,17 +36,21 @@ namespace ServerING.Services {
 
         private readonly IUserRepository userRepository;
         private readonly IServerService serverService;
+        private readonly IMapper mapper;
 
-        public UserService(IUserRepository userRepository, IServerService serverService) {
+        public UserService(IUserRepository userRepository, IServerService serverService, IMapper mapper) {
             this.userRepository = userRepository;
             this.serverService = serverService;
+            this.mapper = mapper;
         }
 
 
-        private bool IsExist(User user) {
+        private bool IsExist(UserBL user) {
             return userRepository.GetAll()
-                .Any(item => item.Login == user.Login && item.Id != user.Id);
+                .Where(item => item.Id != user.Id)
+                .Any(item => item.Login == user.Login);
         }
+
 
         private bool IsFavoriteExist(int userId, int serverId) {
             return userRepository.GetFavoriteServerByUserAndServerId(userId, serverId) != null;
@@ -58,76 +62,43 @@ namespace ServerING.Services {
         }
 
 
-        public User AddUser(UserDto userDto) {
-            var user = new User()
-            {
-                Login = userDto.Login,
-                Password = userDto.Password,
-                Role = userDto.Role
-            };
+        public UserBL AddUser(UserBL user) {
+            if (IsExist(user))
+                throw new UserAlreadyExistsException("User already exists");
+
+            var transferedUser = mapper.Map<User>(user);
+            return mapper.Map<UserBL>(userRepository.Add(transferedUser));
+        }
+
+        public IEnumerable<UserBL> GetAllUsers() {
+            return mapper.Map<IEnumerable<UserBL>>(userRepository.GetAll());
+        }
+
+        public UserBL GetUserByID(int id) {
+            return mapper.Map<UserBL>(userRepository.GetByID(id));
+        }
+
+        public UserBL GetUserByLogin(string login) {
+            return mapper.Map<UserBL>(userRepository.GetByLogin(login));
+        }
+
+        public IEnumerable<UserBL> GetUsersByRole(string role) {
+            return mapper.Map<IEnumerable<UserBL>>(userRepository.GetByRole(role));
+        }
+
+        public UserBL UpdateUser(int id, UserBL user) {
+            if (!IsExistById(id))
+                return null;
 
             if (IsExist(user))
                 throw new UserAlreadyExistsException("User already exists");
 
-            return userRepository.Add(user);
+            var transferedUser = mapper.Map<User>(user);
+            return mapper.Map<UserBL>(userRepository.Update(transferedUser));
         }
 
-        public IEnumerable<User> GetAllUsers() {
-            return userRepository.GetAll();
-        }
-
-        public User GetUserByID(int id) {
-            return userRepository.GetByID(id);
-        }
-
-        public User GetUserByLogin(string login) {
-            return userRepository.GetByLogin(login);
-        }
-
-        public IEnumerable<User> GetUsersByRole(string role) {
-            return userRepository.GetByRole(role);
-        }
-
-        public User UpdateUser(UserUpdateDto userDto) {
-            var user = new User()
-            {
-                Id = userDto.Id,
-                Login = userDto.Login,
-                Password = userDto.Password,
-                Role = userDto.Role
-            };
-
-            if (!IsExistById(user.Id))
-                throw new UserNotExistsException("No user with such id");
-
-            if (IsExist(user))
-                throw new UserAlreadyExistsException("User already exists");
-
-            return userRepository.Update(user);
-        }
-
-        public User PatchUpdateUser(UserUpdateDto userDto) {
-            if (!IsExistById(userDto.Id))
-                throw new UserNotExistsException("No user with such id");
-
-            var dbUser = GetUserByID(userDto.Id);
-
-            var user = new User()
-            {
-                Id = userDto.Id,
-                Login = userDto.Login ?? dbUser.Login,
-                Password = userDto.Password ?? dbUser.Password,
-                Role = userDto.Role ?? dbUser.Role
-            };
-
-            if (IsExist(user))
-                throw new UserAlreadyExistsException("User already exists");
-
-            return userRepository.Update(user);
-        }
-
-        public User DeleteUser(int id) {
-            return userRepository.Delete(id);
+        public UserBL DeleteUser(int id) {
+            return mapper.Map<UserBL>(userRepository.Delete(id));
         }
 
         public IEnumerable<Server> GetUserFavoriteServers(int userId) {
@@ -224,7 +195,7 @@ namespace ServerING.Services {
             // Вывод - формируем модель представления
             UsersViewModel viewModel = new UsersViewModel {
                 PageViewModel = new PageViewModel(count, page, pageSize),
-                SortUserViewModel = new SortUserViewModel(sortOrder),
+                //SortUserViewModel = new SortUserViewModel(sortOrder),
                 FilterUserViewModel = new FilterUserViewModel(login),
                 Users = parsedUsers.ToList()
             };

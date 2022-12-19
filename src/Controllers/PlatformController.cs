@@ -8,31 +8,37 @@ using ServerING.Exceptions;
 using ServerING.Models;
 using ServerING.Services;
 using ServerING.ModelConverters;
+using AutoMapper;
+using ServerING.ModelsBL;
 
 namespace ServerING.Controllers {
     [ApiController]
     [Route("/api/v1/platforms")]
     public class PlatformController : Controller {
+
+        private readonly IMapper mapper;
         private readonly IPlatformService platformService;
         private readonly PlatformConverters platformConverters;
 
-        public PlatformController(IPlatformService platformService, PlatformConverters platformConverters) {
+        public PlatformController(IPlatformService platformService, PlatformConverters platformConverters, IMapper mapper) {
             this.platformService = platformService;
             this.platformConverters = platformConverters;
+            this.mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetAll() {
-            return Ok(platformService.GetAllPlatforms());
+            return Ok(mapper.Map<IEnumerable<PlatformDto>>(platformService.GetAllPlatforms()));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(PlatformFormDto platform) {
+        public IActionResult Add(PlatformBaseDto platform) {
             try {
-                var addedPlatform = platformService.AddPlatform(platformConverters.convertPost(platform));
-                return Ok(addedPlatform);
+                var addedPlatform = platformService
+                    .AddPlatform(mapper.Map<PlatformBL>(platform));
+                return Ok(mapper.Map<PlatformDto>(addedPlatform));
             }
             catch (PlatformConflictException ex) {
                 return Conflict(ex.Message);
@@ -43,7 +49,7 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id) {
-            var platform = platformService.GetPlatformByID(id);
+            var platform = mapper.Map<PlatformDto>(platformService.GetPlatformByID(id));
             return platform != null ? Ok(platform) : NotFound();
         }
 
@@ -51,10 +57,13 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Put(int id, PlatformFormDto platform) {
+        public IActionResult Put(int id, PlatformBaseDto platform) {
             try {
-                var updatedPlatform = platformService.UpdatePlatform(id, platformConverters.convertPut(id, platform));
-                return updatedPlatform != null ? Ok(updatedPlatform) : NotFound();
+                var updatedPlatform = platformService
+                    .UpdatePlatform(id, mapper.Map<PlatformBL>(platform,
+                        o => o.AfterMap((src, dest) => dest.Id = id)
+                    ));
+                return updatedPlatform != null ? Ok(mapper.Map<PlatformDto>(updatedPlatform)) : NotFound();
             }
             catch (PlatformConflictException ex) {
                 return Conflict(ex.Message);
@@ -65,10 +74,11 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Patch(int id, PlatformFormDto platform) {
+        public IActionResult Patch(int id, PlatformBaseDto platform) {
             try {
-                var updatedPlatform = platformService.UpdatePlatform(id, platformConverters.convertPatch(id, platform));
-                return updatedPlatform != null ? Ok(updatedPlatform) : NotFound();
+                var updatedPlatform = platformService
+                    .UpdatePlatform(id, platformConverters.convertPatch(id, platform));
+                return updatedPlatform != null ? Ok(mapper.Map<PlatformDto>(updatedPlatform)) : NotFound();
             }
             catch (PlatformConflictException ex) {
                 return Conflict(ex.Message);
@@ -79,8 +89,9 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id) {
-            var deletedPlatform = platformService.DeletePlatform(id);
-            return deletedPlatform != null ? Ok(deletedPlatform) : NotFound();
+            var deletedPlatform = platformService
+                .DeletePlatform(id);
+            return deletedPlatform != null ? Ok(mapper.Map<PlatformDto>(deletedPlatform)) : NotFound();
         }
     }
 }

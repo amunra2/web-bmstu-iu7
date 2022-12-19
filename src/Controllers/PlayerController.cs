@@ -1,47 +1,46 @@
 using System.Collections.Generic;
-using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using ServerING.DTO;
 using ServerING.Exceptions;
+using ServerING.ModelConverters;
 using ServerING.Models;
+using ServerING.ModelsBL;
 using ServerING.Services;
 
-namespace ServerING.Controllers
-{
+namespace ServerING.Controllers {
     [ApiController]   
     [Route("/api/v1/players")]
-    public class PlayerController : Controller
-    {
-        private IPlayerService playerService;
+    public class PlayerController : Controller {
+        private readonly IPlayerService playerService;
+        private readonly IMapper mapper;
+        private readonly PlayerConverters playerConverters;
 
-        public PlayerController(IPlayerService playerService)
-        {
+        public PlayerController(IPlayerService playerService,
+            IMapper mapper, PlayerConverters playerConverters) {
             this.playerService = playerService;
+            this.mapper = mapper;
+            this.playerConverters = playerConverters;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Player>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        public IActionResult GetAll()
-        {
-            var countries = playerService.GetAllPlayers();
-            return countries.Any() ? Ok(countries) : NoContent();
+        public IActionResult GetAll() {
+            return Ok(mapper.Map<IEnumerable<PlayerDto>>(playerService.GetAllPlayers()));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(Player), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(PlayerDto playerDto)
-        {
-            try
-            {
-                return Ok(playerService.AddPlayer(playerDto));
+        public IActionResult Add(PlayerBaseDto player) {
+            try {
+                var addedPlayer = playerService
+                    .AddPlayer(mapper.Map<PlayerBL>(player));
+                return Ok(mapper.Map<PlayerDto>(addedPlayer));
             }
-            catch (PlayerAlreadyExistsException ex)
-            {
+            catch (PlayerAlreadyExistsException ex) {
                 return Conflict(ex.Message);
             }
         }
@@ -49,9 +48,8 @@ namespace ServerING.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Player), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-        public IActionResult GetById(int id)
-        {
-            var player = playerService.GetPlayerByID(id);
+        public IActionResult GetById(int id) {
+            var player = mapper.Map<PlayerDto>(playerService.GetPlayerByID(id));
             return player != null ? Ok(player) : NotFound();
         }
 
@@ -59,26 +57,16 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(Player), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Put(int id, PlayerDto playerDto) {
-            try
-            {
-                var playerUpdateDto = new PlayerUpdateDto()
-                {
-                    Id = id,
-                    Nickname = playerDto.Nickname,
-                    LastPlayed = playerDto.LastPlayed,
-                    HoursPlayed = playerDto.HoursPlayed
-                };
+        public IActionResult Put(int id, PlayerBaseDto player) {
+            try {
+                var updatedPlayer = playerService
+                    .UpdatePlayer(id, mapper.Map<PlayerBL>(player,
+                        o => o.AfterMap((src, dest) => dest.Id = id)));
 
-                return Ok(playerService.UpdatePlayer(playerUpdateDto));
+                return updatedPlayer != null ? Ok(mapper.Map<PlayerDto>(updatedPlayer)) : NotFound();
             }
-            catch (PlayerAlreadyExistsException ex)
-            {
+            catch (PlayerAlreadyExistsException ex) {
                 return Conflict(ex.Message);
-            }
-            catch (PlayerNotExistsException ex)
-            {
-                return NotFound(ex.Message);
             }
         }
 
@@ -86,26 +74,14 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(Player), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Patch(int id, PlayerSparceDto playerDto) {
-            try
-            {
-                var playerUpdateDto = new PlayerUpdateSparceDto()
-                {
-                    Id = id,
-                    Nickname = playerDto.Nickname,
-                    LastPlayed = playerDto.LastPlayed,
-                    HoursPlayed = playerDto.HoursPlayed
-                };
-
-                return Ok(playerService.PatchUpdatePlayer(playerUpdateDto));
+        public IActionResult Patch(int id, PlayerBaseDto player) {
+            try {
+                var updatedPlayer = playerService
+                    .UpdatePlayer(id, playerConverters.convertPatch(id, player));
+                return updatedPlayer != null ? Ok(mapper.Map<PlayerDto>(updatedPlayer)) : NotFound();
             }
-            catch (PlayerAlreadyExistsException ex)
-            {
+            catch (PlayerAlreadyExistsException ex) {
                 return Conflict(ex.Message);
-            }
-            catch (PlayerNotExistsException ex)
-            {
-                return NotFound(ex.Message);
             }
         }
 
@@ -114,8 +90,9 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            var deletedPlayer = playerService.DeletePlayer(id);
-            return deletedPlayer != null ? Ok(deletedPlayer) : NotFound();
+            var deletedPlayer = playerService
+                .DeletePlayer(id);
+            return deletedPlayer != null ? Ok(mapper.Map<PlayerDto>(deletedPlayer)) : NotFound();
         }
 
     }

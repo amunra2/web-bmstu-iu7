@@ -1,47 +1,47 @@
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using ServerING.DTO;
 using ServerING.Exceptions;
+using ServerING.ModelConverters;
 using ServerING.Models;
+using ServerING.ModelsBL;
 using ServerING.Services;
 
-namespace ServerING.Controllers
-{
+namespace ServerING.Controllers {
     [ApiController]   
     [Route("/api/v1/countries")]
-    public class CountryController : Controller
-    {
-        private ICountryService countryService;
+    public class CountryController : Controller {
+        private readonly IMapper mapper;
+        private readonly CountryConverters countryConverters;
+        private readonly ICountryService countryService;
 
-        public CountryController(ICountryService countryService)
-        {
+        public CountryController(ICountryService countryService, 
+            IMapper mapper, CountryConverters countryConverters) {
             this.countryService = countryService;
+            this.mapper = mapper;
+            this.countryConverters = countryConverters;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Country>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        public IActionResult GetAll()
-        {
-            var countries = countryService.GetAllCountries();
-            return countries.Any() ? Ok(countries) : NoContent();
+        public IActionResult GetAll() {
+            return Ok(mapper.Map<IEnumerable<CountryDto>>(countryService.GetAllCountries()));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(Country), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(CountryDto countryDto)
-        {
-            try
-            {
-                return Ok(countryService.AddCountry(countryDto));
+        public IActionResult Add(CountryBaseDto country) {
+            try {
+                var addedCountry = countryService
+                    .AddCountry(mapper.Map<CountryBL>(country));
+                return Ok(mapper.Map<CountryDto>(addedCountry));
             }
-            catch (CountryAlreadyExistsException ex)
-            {
+            catch (CountryAlreadyExistsException ex) {
                 return Conflict(ex.Message);
             }
         }
@@ -51,7 +51,7 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id)
         {
-            var country = countryService.GetCountryByID(id);
+            var country = mapper.Map<CountryDto>(countryService.GetCountryByID(id));
             return country != null ? Ok(country) : NotFound();
         }
 
@@ -59,26 +59,16 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Put(int id, CountryDto countryDto) {
-            try
-            {
-                var countryUpdateDto = new CountryUpdateDto()
-                {
-                    Id = id,
-                    Name = countryDto.Name,
-                    LevelOfInterest = countryDto.LevelOfInterest,
-                    OverallPlayers = countryDto.OverallPlayers
-                };
+        public IActionResult Put(int id, CountryBaseDto country) {
+            try {
+                var updatedCountry = countryService
+                    .UpdateCountry(id, mapper.Map<CountryBL>(country,
+                        o => o.AfterMap((src, dest) => dest.Id = id)));
 
-                return Ok(countryService.UpdateCountry(countryUpdateDto));
+                return updatedCountry != null ? Ok(mapper.Map<CountryDto>(updatedCountry)) : NotFound();
             }
-            catch (CountryAlreadyExistsException ex)
-            {
+            catch (CountryAlreadyExistsException ex) {
                 return Conflict(ex.Message);
-            }
-            catch (CountryNotExistsException ex)
-            {
-                return NotFound(ex.Message);
             }
         }
 
@@ -86,36 +76,24 @@ namespace ServerING.Controllers
         [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Patch(int id, CountrySparceDto countryDto) {
-            try
-            {
-                var countryUpdateDto = new CountryUpdateSparceDto()
-                {
-                    Id = id,
-                    Name = countryDto.Name,
-                    LevelOfInterest = countryDto.LevelOfInterest,
-                    OverallPlayers = countryDto.OverallPlayers
-                };
-
-                return Ok(countryService.PatchUpdateCountry(countryUpdateDto));
+        public IActionResult Patch(int id, CountryBaseDto country) {
+            try {
+                var updatedCountry = countryService
+                    .UpdateCountry(id, countryConverters.convertPatch(id, country));
+                return updatedCountry != null ? Ok(mapper.Map<CountryDto>(updatedCountry)) : NotFound();
             }
-            catch (CountryAlreadyExistsException ex)
-            {
+            catch (CountryAlreadyExistsException ex) {
                 return Conflict(ex.Message);
-            }
-            catch (CountryNotExistsException ex)
-            {
-                return NotFound(ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-        public IActionResult Delete(int id)
-        {
-            var deletedCountry = countryService.DeleteCountry(id);
-            return deletedCountry != null ? Ok(deletedCountry) : NotFound();
+        public IActionResult Delete(int id) {
+            var deletedCountry = countryService
+                .DeleteCountry(id);
+            return deletedCountry != null ? Ok(mapper.Map<CountryDto>(deletedCountry)) : NotFound();
         }
 
     }

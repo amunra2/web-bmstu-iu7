@@ -1,122 +1,89 @@
-﻿using ServerING.Interfaces;
-using ServerING.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 
 using ServerING.Exceptions;
-using ServerING.DTO;
+using ServerING.ModelsBL;
+using ServerING.Interfaces;
+using ServerING.Models;
 
 
 namespace ServerING.Services {
     public interface ICountryService {
-        Country AddCountry(CountryDto country);
-        Country UpdateCountry(CountryUpdateDto country);
-        Country PatchUpdateCountry(CountryUpdateSparceDto country);
-        Country DeleteCountry(int id);
+        CountryBL AddCountry(CountryBL country);
+        CountryBL UpdateCountry(int id, CountryBL country);
+        CountryBL DeleteCountry(int id);
 
-        Country GetCountryByID(int id);
-        IEnumerable<Country> GetAllCountries();
+        CountryBL GetCountryByID(int id);
+        IEnumerable<CountryBL> GetAllCountries();
 
-        Country GetCountryByName(string name);
-        IEnumerable<Country> GetCountryByOverallPlayers(ushort overallPlayers);
-        IEnumerable<Country> GetCountryByLevelOfInterest(int levelOfIntereset);
+        CountryBL GetCountryByName(string name);
+        IEnumerable<CountryBL> GetCountryByOverallPlayers(ushort overallPlayers);
+        IEnumerable<CountryBL> GetCountryByLevelOfInterest(int levelOfIntereset);
     }
 
     public class CountryService : ICountryService {
         private readonly ICountryRepository countryRepository;
+        private readonly IMapper mapper;
 
-        public CountryService(ICountryRepository countryRepository) {
+        public CountryService(ICountryRepository countryRepository, IMapper mapper) {
             this.countryRepository = countryRepository;
+            this.mapper = mapper;
         }
 
-        private bool IsExist(Country country) {
+        private bool IsExist(CountryBL country) {
             return countryRepository.GetAll()
-                .Any(item =>
-                    item.Name == country.Name &&
-                    item.LevelOfInterest == country.LevelOfInterest &&
-                    item.OverallPlayers == country.OverallPlayers
-                    );
+                .Where(item => item.Id != country.Id)
+                .Any(item => item.Name == country.Name);
         }
 
         private bool IsExistById(int id) {
             return countryRepository.GetByID(id) != null;
         }
 
-        public Country AddCountry(CountryDto countryDto) {
-            var country = new Country()
-            {
-                Name = countryDto.Name,
-                LevelOfInterest = countryDto.LevelOfInterest,
-                OverallPlayers = countryDto.OverallPlayers
-            };
+        public CountryBL AddCountry(CountryBL country) {
+            if (IsExist(country))
+                throw new CountryAlreadyExistsException("Country already exists");
+
+            var transferedCountry = mapper.Map<Country>(country);
+            return mapper.Map<CountryBL>(countryRepository.Add(transferedCountry));
+        }
+
+        public CountryBL DeleteCountry(int id) {
+            return mapper.Map<CountryBL>(countryRepository.Delete(id));
+        }
+
+        public CountryBL GetCountryByID(int id) {
+            return mapper.Map<CountryBL>(countryRepository.GetByID(id));
+        }
+
+        public IEnumerable<CountryBL> GetAllCountries() {
+            return mapper.Map<IEnumerable<CountryBL>>(countryRepository.GetAll());
+        }
+
+        public CountryBL UpdateCountry(int id, CountryBL country) {
+            if (!IsExistById(id))
+                return null;
 
             if (IsExist(country))
                 throw new CountryAlreadyExistsException("Country already exists");
 
-            return countryRepository.Add(country);
+            var transferedCountry = mapper.Map<Country>(country);
+            return mapper.Map<CountryBL>(countryRepository.Update(transferedCountry));
         }
 
-        public Country DeleteCountry(int id) {
-            return countryRepository.Delete(id);
+        public CountryBL GetCountryByName(string name) {
+            return mapper.Map<CountryBL>(countryRepository.GetByName(name));
         }
 
-        public Country GetCountryByID(int id) {
-            return countryRepository.GetByID(id);
+        public IEnumerable<CountryBL> GetCountryByOverallPlayers(ushort overallPlayers) {
+            return mapper
+                .Map<IEnumerable<CountryBL>>(countryRepository.GetByOverallPlayers(overallPlayers));
         }
 
-        public IEnumerable<Country> GetAllCountries() {
-            return countryRepository.GetAll();
-        }
-
-        public Country UpdateCountry(CountryUpdateDto countryDto) {
-            var country = new Country()
-            {
-                Id = countryDto.Id,
-                Name = countryDto.Name,
-                LevelOfInterest = countryDto.LevelOfInterest,
-                OverallPlayers = countryDto.OverallPlayers
-            };
-
-            if (!IsExistById(country.Id))
-                throw new CountryNotExistsException("No country with such id");
-
-            if (IsExist(country))
-                throw new CountryAlreadyExistsException("Country already exists");
-
-            return countryRepository.Update(country);
-        }
-
-        public Country PatchUpdateCountry(CountryUpdateSparceDto countrySparceDto) {
-            if (!IsExistById(countrySparceDto.Id))
-                throw new CountryNotExistsException("No country with such id");
-
-            var dbCountry = GetCountryByID(countrySparceDto.Id);
-
-            var country = new Country()
-            {
-                Id = countrySparceDto.Id,
-                Name = countrySparceDto.Name ?? dbCountry.Name,
-                LevelOfInterest = countrySparceDto.LevelOfInterest ?? dbCountry.LevelOfInterest,
-                OverallPlayers = countrySparceDto.OverallPlayers ?? dbCountry.OverallPlayers
-            };
-
-            if (IsExist(country))
-                throw new CountryAlreadyExistsException("Country already exists");
-
-            return countryRepository.Update(country);
-        }
-
-        public Country GetCountryByName(string name) {
-            return countryRepository.GetByName(name);
-        }
-
-        public IEnumerable<Country> GetCountryByOverallPlayers(ushort overallPlayers) {
-            return countryRepository.GetByOverallPlayers(overallPlayers);
-        }
-
-        public IEnumerable<Country> GetCountryByLevelOfInterest(int levelOfInterest) {
-            return countryRepository.GetByLevelOfInterest(levelOfInterest);
+        public IEnumerable<CountryBL> GetCountryByLevelOfInterest(int levelOfInterest) {
+            return mapper
+                .Map<IEnumerable<CountryBL>>(countryRepository.GetByLevelOfInterest(levelOfInterest));
         }
     }
 }

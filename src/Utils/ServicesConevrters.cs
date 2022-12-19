@@ -5,7 +5,10 @@ namespace ServerING.Utils {
     public static class ProvideExtension {
         public static IServiceCollection AddDtoConverters(this IServiceCollection services) {
             services.AddTransient<PlatformConverters>();
-            // другие конвертеры
+            services.AddTransient<CountryConverters>();
+            services.AddTransient<HostingConverters>();
+            services.AddTransient<PlayerConverters>();
+            services.AddTransient<UserConverters>();
 
             return services;
         }
