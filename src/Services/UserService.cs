@@ -10,7 +10,6 @@ using ServerING.Exceptions;
 using ServerING.DTO;
 using ServerING.Enums;
 using ServerING.ModelsBL;
-using AutoMapper;
 
 namespace ServerING.Services {
     public interface IUserService {
