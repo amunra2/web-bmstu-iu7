@@ -5,19 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ServerING.DTO;
 using ServerING.Exceptions;
+using ServerING.ModelsBL;
 using ServerING.Models;
 using ServerING.Services;
 using System.Linq;
 using ServerING.Enums;
+using AutoMapper;
+using ServerING.ModelConverters;
 
 namespace ServerING.Controllers {
     [ApiController]
     [Route("/api/v1/servers")]
     public class ServerController : Controller {
         private IServerService serverService;
+        private ServerConverters serverConverters;
+        private IMapper mapper;
 
-        public ServerController(IServerService serverService) {
+        public ServerController(IServerService serverService, IMapper mapper, ServerConverters serverConverters) {
             this.serverService = serverService;
+            this.mapper = mapper;
+            this.serverConverters = serverConverters;
         }
 
         [HttpGet]
@@ -26,43 +33,51 @@ namespace ServerING.Controllers {
             [FromQuery] ServerSortState? sortState,
             [FromQuery] int? page
         ) {
-            return Ok(serverService.GetAllServers(filter, sortState, page));
+            return Ok(mapper.Map<IEnumerable<ServerDto>>(serverService.GetAllServers(filter, sortState, page)));
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Server), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ServerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
-        public IActionResult Add(ServerAddDto server) {
+        public IActionResult Add(ServerDtoBase server) {
             try {
-                var addedServer = serverService.AddServer(server);
+                var serverBL = mapper.Map<ServerBL>(server);
+                var addedServer =  mapper.Map<ServerDto>(serverService.AddServer(serverBL));
                 return Ok(addedServer);
             }
             catch (ServerConflictException ex) {
                 return Conflict(ex.Message);
             }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id) {
             var server = serverService.GetServerByID(id);
-            return server != null ? Ok(server) : NotFound();
+            return server != null ? Ok(mapper.Map<ServerDto>(server)) : NotFound();
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Put(int id, ServerUpdateDto server) {
             try {
-                var updatedServer = serverService.PutServer(id, server);
-                return updatedServer != null ? Ok(updatedServer) : NotFound();
+                var updatedServer = serverService.UpdateServer(mapper.Map<ServerBL>(server,
+                o => o.AfterMap((src, dest) => dest.Id = id)));
+                return updatedServer != null ? Ok(mapper.Map<ServerDto>(updatedServer)) : NotFound();
             }
             catch (ServerConflictException ex) {
                 return Conflict(ex.Message);
+            }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -73,20 +88,23 @@ namespace ServerING.Controllers {
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Patch(int id, ServerUpdateDto server) {
             try {
-                var updatedServer = serverService.PatchServer(id, server);
-                return updatedServer != null ? Ok(updatedServer) : NotFound();
+                var updatedServer = serverService.UpdateServer(serverConverters.convertPatch(id, server));
+                return updatedServer != null ? Ok(mapper.Map<ServerDto>(updatedServer)) : NotFound();
             }
             catch (ServerConflictException ex) {
                 return Conflict(ex.Message);
             }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id) {
             var deletedServer = serverService.DeleteServer(id);
-            return deletedServer != null ? Ok(deletedServer) : NotFound();
+            return deletedServer != null ? Ok(mapper.Map<ServerDto>(deletedServer)) : NotFound();
         }
 
         [HttpGet("{serverId}/players")]
@@ -97,7 +115,7 @@ namespace ServerING.Controllers {
             try
             {
                 var players = serverService.GetServerPlayers(serverId);
-                return players != null && players.Any() ? Ok(players) : NoContent();
+                return Ok(mapper.Map<IEnumerable<PlayerUpdateDto>>(players));
             }
             catch (UserNotExistsException ex)
             {

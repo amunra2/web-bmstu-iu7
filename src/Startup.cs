@@ -7,6 +7,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using ServerING.Utils;
+using System.Text.Json.Serialization;
 
 using Microsoft.EntityFrameworkCore;
 using ServerING.Models;
@@ -59,7 +60,11 @@ namespace ServerING {
             services.AddTransient<ICountryRepository, CountryRepository>();
 
             // MVC
-            services.AddControllers(); // add string enum
+            services.AddControllers().AddJsonOptions(o =>
+            {
+                var enumConverter = new JsonStringEnumConverter();
+                o.JsonSerializerOptions.Converters.Add(enumConverter);
+            }); // add string enum
             services.AddEndpointsApiExplorer();
 
             // Swagger

@@ -4,6 +4,7 @@ using ServerING.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 
 using ServerING.Exceptions;
 using ServerING.DTO;
@@ -23,9 +24,14 @@ namespace ServerING.Services {
         UserBL GetUserByLogin(string login);
         IEnumerable<UserBL> GetUsersByRole(string role);
         
-        IEnumerable<Server> GetUserFavoriteServers(int userId);
-        FavoriteServer AddFavoriteServer(int userId, int serverId);
-        FavoriteServer DeleteFavoriteServer(int userId, int serverId);
+        IEnumerable<ServerBL> GetUserFavoriteServers(
+            int userId,
+            ServerFilterDto filter, 
+            ServerSortState? sortState,
+            int? page
+        );
+        FavoriteServerBL AddFavoriteServer(int userId, int serverId);
+        FavoriteServerBL DeleteFavoriteServer(int userId, int serverId);
 
 
         UsersViewModel ParseUsers(IEnumerable<User> parsedUsers, string login, int page, UserSortState sortOrder);
@@ -37,6 +43,7 @@ namespace ServerING.Services {
         private readonly IUserRepository userRepository;
         private readonly IServerService serverService;
         private readonly IMapper mapper;
+
 
         public UserService(IUserRepository userRepository, IServerService serverService, IMapper mapper) {
             this.userRepository = userRepository;
@@ -60,8 +67,7 @@ namespace ServerING.Services {
         private bool IsExistById(int id) {
             return userRepository.GetByID(id) != null;
         }
-
-
+        
         public UserBL AddUser(UserBL user) {
             if (IsExist(user))
                 throw new UserAlreadyExistsException("User already exists");
@@ -101,14 +107,35 @@ namespace ServerING.Services {
             return mapper.Map<UserBL>(userRepository.Delete(id));
         }
 
-        public IEnumerable<Server> GetUserFavoriteServers(int userId) {
+        public IEnumerable<ServerBL> GetUserFavoriteServers(
+            int userId,
+            ServerFilterDto filter, 
+            ServerSortState? sortState,
+            int? page
+        ) {
             if (!IsExistById(userId))
                 throw new UserNotExistsException("No user with such id");
 
-            return userRepository.GetFavoriteServersByUserId(userId);
+            var servers = mapper.Map<IEnumerable<ServerBL>>(userRepository.GetFavoriteServersByUserId(userId));
+
+            // Фильтрация
+            servers = serverService.FilterServers(servers, filter);
+
+            // Сортировка
+            if (sortState != null) {
+                servers = serverService.SortServersByOption(servers, sortState.Value);
+            }
+
+            // Пагинация
+            if (page != null) {
+                servers = serverService.PaginationServers(servers, page.Value);
+            }
+            
+
+            return servers;
         }
 
-        public FavoriteServer AddFavoriteServer(int userId, int serverId) {
+        public FavoriteServerBL AddFavoriteServer(int userId, int serverId) {
             if (IsFavoriteExist(userId, serverId))
                 throw new UserFavoriteAlreadyExistsException("Already in favorites");
 
@@ -121,10 +148,10 @@ namespace ServerING.Services {
 
             userRepository.AddFavoriteServer(favoriteServer);
 
-            return favoriteServer;
+            return mapper.Map<FavoriteServerBL>(favoriteServer);
         }
 
-        public FavoriteServer DeleteFavoriteServer(int userId, int serverId) {
+        public FavoriteServerBL DeleteFavoriteServer(int userId, int serverId) {
             serverService.UpdateServerRating(serverId, -1);
 
             FavoriteServer favoriteServer = userRepository.GetFavoriteServerByUserAndServerId(userId, serverId);
@@ -132,7 +159,7 @@ namespace ServerING.Services {
             if (favoriteServer != null)
                 userRepository.DeleteFavoriteServer(favoriteServer.Id);
 
-            return favoriteServer;
+            return mapper.Map<FavoriteServerBL>(favoriteServer);
         }
 
         public UsersViewModel ParseUsers(IEnumerable<User> parsedServers, string login, int page, ServerSortState sortOrder) {
