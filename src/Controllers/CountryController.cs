@@ -34,6 +34,7 @@ namespace ServerING.Controllers {
 
         [HttpPost]
         [ProducesResponseType(typeof(Country), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(CountryBaseDto country) {
             try {
@@ -57,6 +58,7 @@ namespace ServerING.Controllers {
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Put(int id, CountryBaseDto country) {
@@ -74,6 +76,7 @@ namespace ServerING.Controllers {
 
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Patch(int id, CountryBaseDto country) {

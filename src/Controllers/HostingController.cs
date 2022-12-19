@@ -37,6 +37,7 @@ namespace ServerING.Controllers {
 
         [HttpPost]
         [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(HostingBaseDto hosting) {
             try {
@@ -59,6 +60,7 @@ namespace ServerING.Controllers {
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Put(int id, HostingBaseDto hosting) {
@@ -76,6 +78,7 @@ namespace ServerING.Controllers {
 
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Patch(int id, HostingBaseDto hosting) {

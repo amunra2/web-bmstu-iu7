@@ -30,6 +30,8 @@ namespace ServerING.Controllers {
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Server), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(ServerAddDto server) {
             try {
@@ -51,6 +53,7 @@ namespace ServerING.Controllers {
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Put(int id, ServerUpdateDto server) {
@@ -65,6 +68,7 @@ namespace ServerING.Controllers {
 
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(Server), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Patch(int id, ServerUpdateDto server) {
@@ -87,7 +91,6 @@ namespace ServerING.Controllers {
 
         [HttpGet("{serverId}/players")]
         [ProducesResponseType(typeof(IEnumerable<Player>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetServerPlayers(int serverId)
         {
