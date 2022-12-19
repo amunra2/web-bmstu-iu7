@@ -6,7 +6,10 @@ namespace ServerING.Utils {
         public static IServiceCollection AddDtoConverters(this IServiceCollection services) {
             services.AddTransient<PlatformConverters>();
             services.AddTransient<ServerConverters>();
-            // другие конвертеры
+            services.AddTransient<CountryConverters>();
+            services.AddTransient<HostingConverters>();
+            services.AddTransient<PlayerConverters>();
+            services.AddTransient<UserConverters>();
 
             return services;
         }

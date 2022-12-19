@@ -74,7 +74,6 @@ paths:
                   oneOf:
                     - $ref: '#/components/schemas/ServerGet'
                     - $ref: '#/components/schemas/ServerGet'
-      
     post:
       security:
         - bearerAuth: []      

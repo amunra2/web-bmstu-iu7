@@ -19,9 +19,18 @@ namespace ServerING.Utils {
             // DTO <-> BL
             CreateMap<ServerDtoBase, ServerBL>().ReverseMap();
             CreateMap<ServerDto, ServerBL>().ReverseMap();
-            CreateMap<PlayerSparceDto, PlayerBL>().ReverseMap();
             CreateMap<FavoriteServerDtoBase, FavoriteServerBL>().ReverseMap();
             CreateMap<FavoriteServerDto, FavoriteServerBL>().ReverseMap();
+            CreateMap<PlatformBaseDto, PlatformBL>().ReverseMap();
+            CreateMap<PlatformDto, PlatformBL>().ReverseMap();
+            CreateMap<CountryBaseDto, CountryBL>().ReverseMap();
+            CreateMap<CountryDto, CountryBL>().ReverseMap();
+            CreateMap<HostingBaseDto, WebHostingBL>().ReverseMap();
+            CreateMap<HostingDto, WebHostingBL>().ReverseMap();
+            CreateMap<PlayerBaseDto, PlayerBL>().ReverseMap();
+            CreateMap<PlayerDto, PlayerBL>().ReverseMap();
+            CreateMap<UserBaseDto, UserBL>().ReverseMap();
+            CreateMap<UserDto, UserBL>().ReverseMap();
         }
     }
 }

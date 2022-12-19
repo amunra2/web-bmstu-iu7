@@ -1,7 +1,9 @@
-﻿using ServerING.DTO;
+﻿using AutoMapper;
+using ServerING.DTO;
 using ServerING.Exceptions;
 using ServerING.Interfaces;
 using ServerING.Models;
+using ServerING.ModelsBL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,29 +11,31 @@ using System.Linq;
 
 namespace ServerING.Services {
     public interface IHostingService {
-        WebHosting AddHosting(HostingFormDto hosting);
-        WebHosting PatchHosting(int id, HostingFormDto hosting);
-        WebHosting PutHosting(int id, HostingFormDto hosting);
-        WebHosting DeleteHosting(int id);
+        WebHostingBL AddHosting(WebHostingBL hosting);
+        WebHostingBL UpdateHosting(int id, WebHostingBL hosting);
+        WebHostingBL DeleteHosting(int id);
 
-        WebHosting GetHostingByID(int id);
-        IEnumerable<WebHosting> GetAllHostings();
+        WebHostingBL GetHostingByID(int id);
+        IEnumerable<WebHostingBL> GetAllHostings();
 
-        WebHosting GetHostingByName(string name);
-        IEnumerable<WebHosting> GetHostingByPricePerMonth(int pricePerMonth);
-        IEnumerable<WebHosting> GetHostingBySubMonths(ushort subMonths);
+        WebHostingBL GetHostingByName(string name);
+        IEnumerable<WebHostingBL> GetHostingByPricePerMonth(int pricePerMonth);
+        IEnumerable<WebHostingBL> GetHostingBySubMonths(ushort subMonths);
     }
 
 
     public class HostingService : IHostingService {
         private readonly IHostingRepository hostingRepository;
+        private readonly IMapper mapper;
 
-        public HostingService(IHostingRepository hostingRepository) {
+        public HostingService(IHostingRepository hostingRepository, IMapper mapper) {
             this.hostingRepository = hostingRepository;
+            this.mapper = mapper;
         }
 
-        private bool IsExist(HostingFormDto hosting) {
+        private bool IsExist(WebHostingBL hosting) {
             return hostingRepository.GetAll()
+                .Where(item => item.Id != hosting.Id)
                 .Any(item => item.Name == hosting.Name);
         }
 
@@ -39,41 +43,17 @@ namespace ServerING.Services {
             return hostingRepository.GetByID(id) != null;
         }
 
-        public WebHosting AddHosting(HostingFormDto hosting) {
+        public WebHostingBL AddHosting(WebHostingBL hosting) {
             if (IsExist(hosting)) {
                 var conflictedId = hostingRepository.GetByName(hosting.Name).Id;
                 throw new HostingConflictException(conflictedId);
             }
 
-            var transferedHosting = new WebHosting {
-                Name = hosting.Name,
-                PricePerMonth = hosting.PricePerMonth.Value,
-                SubMonths = (ushort) hosting.SubMonths.Value
-            };
-
-            return hostingRepository.Add(transferedHosting);
+            var transferedHosting = mapper.Map<WebHosting>(hosting);
+            return mapper.Map<WebHostingBL>(hostingRepository.Add(transferedHosting));
         }
 
-        public WebHosting PutHosting(int id, HostingFormDto hosting) {
-            if (IsExist(hosting)) {
-                var conflictedId = hostingRepository.GetByName(hosting.Name).Id;
-                throw new HostingConflictException(conflictedId);
-            }
-
-            if (!IsExistById(id))
-                throw null;
-
-            var transferedHosting = new WebHosting {
-                Id = id,
-                Name = hosting.Name,
-                PricePerMonth = hosting.PricePerMonth != null ? hosting.PricePerMonth.Value : 0,
-                SubMonths = hosting.SubMonths != null ? (ushort) hosting.SubMonths.Value : (ushort) 0
-            };
-
-            return hostingRepository.Update(transferedHosting);
-        }
-
-        public WebHosting PatchHosting(int id, HostingFormDto hosting) {
+        public WebHostingBL UpdateHosting(int id, WebHostingBL hosting) {
             if (IsExist(hosting)) {
                 var conflictedId = hostingRepository.GetByName(hosting.Name).Id;
                 throw new HostingConflictException(conflictedId);
@@ -81,41 +61,35 @@ namespace ServerING.Services {
 
             if (!IsExistById(id))
                 return null;
-
-            var existedHosting = GetHostingByID(id);
-
-            var transferedHosting = new WebHosting {
-                Id = id,
-                Name = hosting.Name != null ? hosting.Name : existedHosting.Name,
-                PricePerMonth = hosting.PricePerMonth != null ? hosting.PricePerMonth.Value : existedHosting.PricePerMonth,
-                SubMonths = hosting.SubMonths != null ? (ushort) hosting.SubMonths.Value : existedHosting.SubMonths
-            };
-
-            return hostingRepository.Update(transferedHosting);
+            
+            var transferedHosting = mapper.Map<WebHosting>(hosting);
+            return mapper.Map<WebHostingBL>(hostingRepository.Update(transferedHosting));
         }
 
-        public WebHosting DeleteHosting(int id) {
-            return hostingRepository.Delete(id);
+        public WebHostingBL DeleteHosting(int id) {
+            return mapper.Map<WebHostingBL>(hostingRepository.Delete(id));
         }
 
-        public IEnumerable<WebHosting> GetAllHostings() {
-            return hostingRepository.GetAll();
+        public IEnumerable<WebHostingBL> GetAllHostings() {
+            return mapper.Map<IEnumerable<WebHostingBL>>(hostingRepository.GetAll());
         }
 
-        public WebHosting GetHostingByID(int id) {
-            return hostingRepository.GetByID(id);
+        public WebHostingBL GetHostingByID(int id) {
+            return mapper.Map<WebHostingBL>(hostingRepository.GetByID(id));
         }
 
-        public IEnumerable<WebHosting> GetHostingByPricePerMonth(int pricePerMonth) {
-            return hostingRepository.GetByPricePerMonth(pricePerMonth);
+        public IEnumerable<WebHostingBL> GetHostingByPricePerMonth(int pricePerMonth) {
+            return mapper
+                .Map<IEnumerable<WebHostingBL>>(hostingRepository.GetByPricePerMonth(pricePerMonth));
         }
 
-        public IEnumerable<WebHosting> GetHostingBySubMonths(ushort subMonths) {
-            return hostingRepository.GetBySubMonths(subMonths);
+        public IEnumerable<WebHostingBL> GetHostingBySubMonths(ushort subMonths) {
+            return mapper
+                .Map<IEnumerable<WebHostingBL>>(hostingRepository.GetBySubMonths(subMonths));
         }
 
-        public WebHosting GetHostingByName(string name) {
-            return hostingRepository.GetByName(name);
+        public WebHostingBL GetHostingByName(string name) {
+            return mapper.Map<WebHostingBL>(hostingRepository.GetByName(name));
         }
     }
 }

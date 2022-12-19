@@ -5,42 +5,39 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ServerING.Exceptions;
-using ServerING.DTO;
-
+using ServerING.ModelsBL;
+using AutoMapper;
 
 namespace ServerING.Services {
 
     public interface IPlayerService {
-        Player AddPlayer(PlayerDto playerDto);
-        Player UpdatePlayer(PlayerUpdateDto playerDto);
-        Player PatchUpdatePlayer(PlayerUpdateSparceDto PlayerSparceDto);
-        Player DeletePlayer(int id);
+        PlayerBL AddPlayer(PlayerBL player);
+        PlayerBL UpdatePlayer(int id, PlayerBL player);
+        PlayerBL DeletePlayer(int id);
 
-        Player GetPlayerByID(int id);
-        IEnumerable<Player> GetAllPlayers();
+        PlayerBL GetPlayerByID(int id);
+        IEnumerable<PlayerBL> GetAllPlayers();
 
-        Player GetPlayerByNickname(string nickname);
-        IEnumerable<Player> GetPlayersByHoursPlayed(int hoursPlayed);
-        IEnumerable<Player> GetPlayersByLastPlayed(DateTime lastPlayed);
+        PlayerBL GetPlayerByNickname(string nickname);
+        IEnumerable<PlayerBL> GetPlayersByHoursPlayed(int hoursPlayed);
+        IEnumerable<PlayerBL> GetPlayersByLastPlayed(DateTime lastPlayed);
     }
 
 
     public class PlayerService : IPlayerService {
-
         private readonly IPlayerRepository playerRepository;
+        private readonly IMapper mapper;
 
-        public PlayerService(IPlayerRepository playerRepository) {
+        public PlayerService(IPlayerRepository playerRepository, IMapper mapper) {
             this.playerRepository = playerRepository;
+            this.mapper = mapper;
         }
 
 
-        private bool IsExist(Player player) {
+        private bool IsExist(PlayerBL player) {
             return playerRepository.GetAll()
-                .Any(item =>
-                    item.Nickname == player.Nickname &&
-                    item.HoursPlayed == player.HoursPlayed &&
-                    item.LastPlayed == player.LastPlayed
-                    );
+                .Where(item => item.Id != player.Id)
+                .Any(item => item.Nickname == player.Nickname);
         }
 
 
@@ -48,80 +45,47 @@ namespace ServerING.Services {
             return playerRepository.GetByID(id) != null;
         }
 
-        public Player AddPlayer(PlayerDto playerDto) {
-            var player = new Player()
-            {
-                Nickname = playerDto.Nickname,
-                HoursPlayed = playerDto.HoursPlayed,
-                LastPlayed = playerDto.LastPlayed
-            };
+        public PlayerBL AddPlayer(PlayerBL player) {
+            if (IsExist(player))
+                throw new PlayerAlreadyExistsException("Player already exists");
+
+            var transferedPlayer = mapper.Map<Player>(player);
+            return mapper.Map<PlayerBL>(playerRepository.Add(transferedPlayer));
+        }
+
+        public PlayerBL DeletePlayer(int id) {
+            return mapper.Map<PlayerBL>(playerRepository.Delete(id));
+        }
+
+        public IEnumerable<PlayerBL> GetAllPlayers() {
+            return mapper.Map<IEnumerable<PlayerBL>>(playerRepository.GetAll());
+        }
+
+        public PlayerBL GetPlayerByID(int id) {
+            return mapper.Map<PlayerBL>(playerRepository.GetByID(id));
+        }
+
+        public PlayerBL GetPlayerByNickname(string nickname) {
+            return mapper.Map<PlayerBL>(playerRepository.GetByNickname(nickname));
+        }
+
+        public IEnumerable<PlayerBL> GetPlayersByHoursPlayed(int hoursPlayed) {
+            return mapper.Map<IEnumerable<PlayerBL>>(playerRepository.GetByHoursPlayed(hoursPlayed));
+        }
+
+        public IEnumerable<PlayerBL> GetPlayersByLastPlayed(DateTime lastPlayed) {
+            return mapper.Map<IEnumerable<PlayerBL>>(playerRepository.GetByLastPlayed(lastPlayed));
+        }
+
+        public PlayerBL UpdatePlayer(int id, PlayerBL player) {
+            if (!IsExistById(id))
+                return null;
 
             if (IsExist(player))
                 throw new PlayerAlreadyExistsException("Player already exists");
 
-            return playerRepository.Add(player);
-        }
-
-        public Player DeletePlayer(int id) {
-            return playerRepository.Delete(id);
-        }
-
-        public IEnumerable<Player> GetAllPlayers() {
-            return playerRepository.GetAll();
-        }
-
-        public Player GetPlayerByID(int id) {
-            return playerRepository.GetByID(id);
-        }
-
-        public Player GetPlayerByNickname(string nickname) {
-            return playerRepository.GetByNickname(nickname);
-        }
-
-        public IEnumerable<Player> GetPlayersByHoursPlayed(int hoursPlayed) {
-            return playerRepository.GetByHoursPlayed(hoursPlayed);
-        }
-
-        public IEnumerable<Player> GetPlayersByLastPlayed(DateTime lastPlayed) {
-            return playerRepository.GetByLastPlayed(lastPlayed);
-        }
-
-        public Player UpdatePlayer(PlayerUpdateDto playerDto) {
-            var player = new Player()
-            {
-                Id = playerDto.Id,
-                Nickname = playerDto.Nickname,
-                LastPlayed = playerDto.LastPlayed,
-                HoursPlayed = playerDto.HoursPlayed
-            };
-
-            if (!IsExistById(player.Id))
-                throw new PlayerNotExistsException("No player with such id");
-
-            if (IsExist(player))
-                throw new PlayerAlreadyExistsException("Player already exists");
-
-            return playerRepository.Update(player);
-        }
-
-        public Player PatchUpdatePlayer(PlayerUpdateSparceDto playerSparceDto) {
-            if (!IsExistById(playerSparceDto.Id))
-                throw new PlayerNotExistsException("No player with such id");
-
-            var dbPlayer = GetPlayerByID(playerSparceDto.Id);
-
-            var player = new Player()
-            {
-                Id = playerSparceDto.Id,
-                Nickname = playerSparceDto.Nickname ?? dbPlayer.Nickname,
-                HoursPlayed = playerSparceDto.HoursPlayed?? dbPlayer.HoursPlayed,
-                LastPlayed = playerSparceDto.LastPlayed ?? dbPlayer.LastPlayed
-            };
-
-            if (IsExist(player))
-                throw new PlayerAlreadyExistsException("Player already exists");
-
-            return playerRepository.Update(player);
+            var transferedPlayer = mapper.Map<Player>(player);
+            return mapper.Map<PlayerBL>(playerRepository.Update(transferedPlayer));
         }
     }
 }
