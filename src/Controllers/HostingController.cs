@@ -30,6 +30,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<HostingDto>), StatusCodes.Status200OK)]
         public IActionResult GetAll() {
             _logger.LogInformation("hostings: Request: GET");
             return Ok(mapper.Map<IEnumerable<HostingDto>>(hostingService.GetAllHostings()));

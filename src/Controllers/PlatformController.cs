@@ -27,6 +27,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<PlatformDto>), StatusCodes.Status200OK)]
         public IActionResult GetAll() {
             return Ok(mapper.Map<IEnumerable<PlatformDto>>(platformService.GetAllPlatforms()));
         }

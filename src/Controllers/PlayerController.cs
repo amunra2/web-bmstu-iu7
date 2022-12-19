@@ -26,7 +26,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Player>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<PlayerDto>), StatusCodes.Status200OK)]
         public IActionResult GetAll() {
             return Ok(mapper.Map<IEnumerable<PlayerDto>>(playerService.GetAllPlayers()));
         }

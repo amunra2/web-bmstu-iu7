@@ -27,7 +27,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Country>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<CountryDto>), StatusCodes.Status200OK)]
         public IActionResult GetAll() {
             return Ok(mapper.Map<IEnumerable<CountryDto>>(countryService.GetAllCountries()));
         }
