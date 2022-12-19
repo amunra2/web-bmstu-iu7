@@ -90,7 +90,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet("{serverId}/players")]
-        [ProducesResponseType(typeof(IEnumerable<Player>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<PlayerDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetServerPlayers(int serverId)
         {
