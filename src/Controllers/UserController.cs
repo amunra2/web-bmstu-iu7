@@ -139,13 +139,13 @@ namespace ServerING.Controllers
         }
 
         [HttpPost("{userId}/favorites/{serverId}")]
-        [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(FavoriteServerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult AddFavorite(int userId, int serverId)
         {
             try
             {
-                return Ok(userService.AddFavoriteServer(userId, serverId));
+                return Ok(mapper.Map<FavoriteServerDto>(userService.AddFavoriteServer(userId, serverId)));
             }
             catch (UserFavoriteAlreadyExistsException ex)
             {
@@ -154,12 +154,12 @@ namespace ServerING.Controllers
         }
 
         [HttpDelete("{userId}/favorites/{serverId}")]
-        [ProducesResponseType(typeof(FavoriteServer), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(FavoriteServerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult DeleteFavorite(int userId, int serverId)
         {
             var deletedFavorite = userService.DeleteFavoriteServer(userId, serverId);
-            return deletedFavorite != null ? Ok(deletedFavorite) : NotFound();
+            return deletedFavorite != null ? Ok(mapper.Map<FavoriteServerDto>(deletedFavorite)) : NotFound();
         }
     }
 }

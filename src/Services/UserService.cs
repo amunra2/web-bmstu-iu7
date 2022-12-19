@@ -31,8 +31,8 @@ namespace ServerING.Services {
             ServerSortState? sortState,
             int? page
         );
-        FavoriteServer AddFavoriteServer(int userId, int serverId);
-        FavoriteServer DeleteFavoriteServer(int userId, int serverId);
+        FavoriteServerBL AddFavoriteServer(int userId, int serverId);
+        FavoriteServerBL DeleteFavoriteServer(int userId, int serverId);
 
 
         UsersViewModel ParseUsers(IEnumerable<User> parsedUsers, string login, int page, UserSortState sortOrder);
@@ -171,7 +171,7 @@ namespace ServerING.Services {
             return servers;
         }
 
-        public FavoriteServer AddFavoriteServer(int userId, int serverId) {
+        public FavoriteServerBL AddFavoriteServer(int userId, int serverId) {
             if (IsFavoriteExist(userId, serverId))
                 throw new UserFavoriteAlreadyExistsException("Already in favorites");
 
@@ -184,10 +184,10 @@ namespace ServerING.Services {
 
             userRepository.AddFavoriteServer(favoriteServer);
 
-            return favoriteServer;
+            return mapper.Map<FavoriteServerBL>(favoriteServer);
         }
 
-        public FavoriteServer DeleteFavoriteServer(int userId, int serverId) {
+        public FavoriteServerBL DeleteFavoriteServer(int userId, int serverId) {
             serverService.UpdateServerRating(serverId, -1);
 
             FavoriteServer favoriteServer = userRepository.GetFavoriteServerByUserAndServerId(userId, serverId);
@@ -195,7 +195,7 @@ namespace ServerING.Services {
             if (favoriteServer != null)
                 userRepository.DeleteFavoriteServer(favoriteServer.Id);
 
-            return favoriteServer;
+            return mapper.Map<FavoriteServerBL>(favoriteServer);
         }
 
         public UsersViewModel ParseUsers(IEnumerable<User> parsedServers, string login, int page, ServerSortState sortOrder) {
