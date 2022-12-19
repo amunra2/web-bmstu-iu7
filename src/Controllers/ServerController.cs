@@ -115,7 +115,7 @@ namespace ServerING.Controllers {
             try
             {
                 var players = serverService.GetServerPlayers(serverId);
-                return Ok(mapper.Map<IEnumerable<PlayerUpdateDto>>(players));
+                return Ok(mapper.Map<IEnumerable<PlayerDto>>(players));
             }
             catch (UserNotExistsException ex)
             {
