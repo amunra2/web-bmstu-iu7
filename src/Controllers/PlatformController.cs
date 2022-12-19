@@ -32,7 +32,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlatformDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(PlatformBaseDto platform) {
@@ -47,7 +47,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlatformDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id) {
             var platform = mapper.Map<PlatformDto>(platformService.GetPlatformByID(id));
@@ -55,7 +55,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlatformDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -73,7 +73,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlatformDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -89,7 +89,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Platform), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlatformDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id) {
             var deletedPlatform = platformService

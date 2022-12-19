@@ -32,7 +32,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Player), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(PlayerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(PlayerBaseDto player) {
@@ -47,7 +47,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Player), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlayerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id) {
             var player = mapper.Map<PlayerDto>(playerService.GetPlayerByID(id));
@@ -55,7 +55,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Player), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlayerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -73,7 +73,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(Player), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlayerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -89,7 +89,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Player), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PlayerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {

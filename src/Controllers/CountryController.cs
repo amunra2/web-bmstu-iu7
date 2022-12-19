@@ -33,7 +33,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CountryDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(CountryBaseDto country) {
@@ -48,7 +48,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CountryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id)
         {
@@ -57,7 +57,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CountryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -75,7 +75,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CountryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -91,7 +91,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CountryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id) {
             var deletedCountry = countryService

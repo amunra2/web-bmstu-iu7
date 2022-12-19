@@ -36,7 +36,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(HostingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
         public IActionResult Add(HostingBaseDto hosting) {
@@ -51,7 +51,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(HostingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult GetById(int id) {
             var hosting = mapper.Map<HostingDto>(hostingService.GetHostingByID(id));
@@ -59,7 +59,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(HostingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -77,7 +77,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(HostingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
@@ -93,7 +93,7 @@ namespace ServerING.Controllers {
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(WebHosting), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(HostingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id) {
             var deletedHosting = hostingService
