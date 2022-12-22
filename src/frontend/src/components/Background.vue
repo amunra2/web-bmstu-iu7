@@ -20,7 +20,7 @@ export default defineComponent({
   position: absolute;
   height: 100vh;
   width: 100vw;
-  background-image: url("@/assets/background.svg");
+  background-image: url("@/assets/img/background.svg");
   background-size: cover;
   size: cover;
 }
