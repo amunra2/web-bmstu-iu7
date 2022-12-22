@@ -1,4 +1,4 @@
-# frontend
+# vue-try
 
 ## Project setup
 ```

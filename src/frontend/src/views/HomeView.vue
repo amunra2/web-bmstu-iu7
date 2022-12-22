@@ -1,19 +1,12 @@
 <template>
-  <h1>Hello, {{ name }}!</h1>
+  <div class="home"></div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  data() {
-    return { name: "Marina" };
-  },
+  name: "HomeView",
+  components: {},
 });
 </script>
-
-<style scoped>
-h1 {
-  color: blue;
-}
-</style>
