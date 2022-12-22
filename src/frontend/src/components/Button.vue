@@ -33,6 +33,8 @@ export default defineComponent({
   border: 4px solid var(--magenta);
   filter: drop-shadow(0px 0px 15px var(--magenta));
   border-radius: 0px 0px 0px 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   font-family: "Chakra Petch";
 }
 .button:hover{

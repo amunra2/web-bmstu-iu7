@@ -4,7 +4,7 @@
   <PinkText fontSize="var(--middle-text)">Good</PinkText>
   <PinkText fontSize="var(--large-text)">Good</PinkText>
   <PinkText fontSize="var(--huge-text)">Good</PinkText>
-  <Button v-on:click="consoleInfo">button</Button>
+  <Button v-on:click="consoleInfo">LongLongLongLongLongLong</Button>
 </template>
 
 <script lang="ts">
