@@ -25,7 +25,7 @@ export default defineComponent({
   .drop-down {
     width: v-bind(size);
     height: v-bind(size);
-    filter: drop-shadow(0px 0px 10px #D51EE4);
+    filter: drop-shadow(0px 0px 10px var(--magenta));
     transform: rotate(v-bind(rotateAngle));
   }
 

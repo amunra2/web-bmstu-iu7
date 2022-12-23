@@ -16,8 +16,8 @@ export default defineComponent({
 
 <style scoped>
   .blue-text {
-    color: #1ee4d8;
-    font: 400 32px "Chakra Petch";
-    text-shadow: 0px 0px 10px #D51EE4;
+    color: var(--cyan);
+    font: "Chakra Petch";
+    text-shadow: 0px 0px 10px var(--magenta);
   }
 </style>

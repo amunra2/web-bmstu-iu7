@@ -27,8 +27,8 @@ export default defineComponent({
 
 <style scoped>
   .form-field-drop-down {
-    justify-content: center;
+    /* justify-content: center;
     align-items: center;
-    text-align: center;
+    text-align: center; */
   }
 </style>

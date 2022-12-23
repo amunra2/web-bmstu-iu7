@@ -16,12 +16,12 @@ export default defineComponent({
   .input-line {
     background: transparent;
     border: none;
-    border-bottom: 2px solid #1ee4d8;
+    border-bottom: 2px solid var(--cyan);;
     width: 231px;
     height: 25px;
-    filter: drop-shadow(0px 0px 10px #D51EE4);
+    filter: drop-shadow(0px 0px 10px var(--magenta));
     font: 400 23px "Chakra Petch", sans-serif;
-    color: #1ee4d8;
+    color: var(--cyan);
   }
 </style>
 
