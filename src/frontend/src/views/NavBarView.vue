@@ -3,7 +3,7 @@
       <NavBar />
     </div>
     <div style="height: calc(100% - var(--navbar-height)">
-        <slot></slot>
+      <slot></slot>
     </div>
 </template>
 

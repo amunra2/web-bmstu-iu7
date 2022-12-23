@@ -1,6 +1,5 @@
 <template>
     <div class="nav-menu">
-      Guest
       <Button>Sign Up</Button>
       <Button>Sign In</Button>
     </div>

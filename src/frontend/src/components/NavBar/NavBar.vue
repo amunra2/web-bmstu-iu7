@@ -59,6 +59,7 @@ export default defineComponent({
   position: fixed;
   height: var(--navbar-height);
   background-color: var(--violet);
+  box-shadow: inset 0px 0px 40px rgba(213, 30, 228, 0.6);
   left: 0;
   right: 0;
   padding-left: 1.4rem;

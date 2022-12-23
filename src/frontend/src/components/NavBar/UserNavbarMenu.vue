@@ -1,19 +1,19 @@
 <template>
     <div class="nav-menu">
-      User 
-      <Button>Sign Up</Button>
-      <Button>Sign In</Button>
+      <UserPatch>User Name</UserPatch>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Button from "@/components/Button.vue"
+import UserPatch from "@/components/UserPatch.vue"
 
 export default defineComponent({
   name: "AdminNavbarMenu",
   components: {
-    Button
+    Button,
+    UserPatch
   }
 })
 </script>
