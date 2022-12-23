@@ -1,7 +1,15 @@
 <template>
     <div class="nav-menu">
-      <Button>Sign Up</Button>
-      <Button>Sign In</Button>
+      <router-link style="text-decoration: none" to="/signup">
+        <Button>
+          Sign Up
+        </Button>
+      </router-link>
+      <router-link style="text-decoration: none" to="/signin">
+        <Button>
+          Sign In
+        </Button>
+      </router-link>
     </div>
 </template>
 

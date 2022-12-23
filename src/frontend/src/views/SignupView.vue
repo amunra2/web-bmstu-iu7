@@ -10,7 +10,7 @@
             <FormField>Confirm Password</FormField>
             <Button>Sign Up</Button>
             <BlueText class="text" fontSize="var(--tiny-text)">
-                Already have an account?
+                Have an account?
             </BlueText>
             <PinkText class="text" fontSize="var(--tiny-text)">
               <router-link style="color: var(--magenta)" to="/signin">Sign In</router-link>
