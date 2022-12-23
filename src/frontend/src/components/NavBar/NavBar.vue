@@ -1,10 +1,10 @@
 <template>
   <nav class="nav-container">
-    <a href="/">
+    <router-link style="text-decoration: none" to="/">
       <BlueText :fontSize="'var(--middle-text)'">
         ServerING
       </BlueText>
-    </a>
+    </router-link>
     <div style="display: flex; gap: 20px">
         <Button v-on:click="setGuest">Guest</Button>
         <Button v-on:click="setUser">User</Button>
