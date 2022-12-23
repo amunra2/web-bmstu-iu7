@@ -11,11 +11,6 @@ import { defineComponent } from 'vue'
 import PinkText from '@/components/PinkText.vue'
 
 export default defineComponent({
-  data() {
-    return {
-      hover: false,
-    }
-  },
   name: "Button",
   components: {
     PinkText
@@ -23,7 +18,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 .button{
   display: flex;
   flex-direction: row;
