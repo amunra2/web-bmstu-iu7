@@ -21,7 +21,7 @@ import PinkText from "@/components/PinkText.vue"
 import Button from "@/components/Button.vue"
 import UserPatch from "@/components/UserPatch.vue"
 import UpperBackground from "@/components/UpperBackground.vue";
-import NavBar from "@/components/NavBar.vue";
+import NavBar from "@/components/NavBar/NavBar.vue";
 
 export default defineComponent({
   name: "HomeView",

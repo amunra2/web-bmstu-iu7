@@ -7,12 +7,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Background from "@/components/Background.vue"
-import NavBar from "@/components/NavBar.vue"
+import NavBar from "@/components/NavBar/NavBar.vue"
 
 export default defineComponent({
-  data() {
-    return { name: "Marina" };
-  },
   components: {
     Background,
     NavBar
