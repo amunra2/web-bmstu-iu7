@@ -1,31 +1,37 @@
 <template>
-  <body class="container">
-    <UpperBackground class="center">
-      <PinkText fontSize="var(--tiny-text)">Good</PinkText>
-      <PinkText fontSize="var(--little-text)">Info</PinkText>
-      <PinkText fontSize="var(--middle-text)">Good</PinkText>
-      <PinkText fontSize="var(--large-text)">Good</PinkText>
-      <PinkText fontSize="var(--huge-text)">Good</PinkText>
-      <Button v-on:click="consoleInfo">LongLongLongLongLongLong</Button>
-      <UserPatch v-on:click="consoleInfo">User Name</UserPatch>
-    </UpperBackground>
-  </body>
+  <NavBarView>
+    <div class="container">
+      <UpperBackground class="center">
+        <PinkText fontSize="var(--tiny-text)">Good</PinkText>
+        <PinkText fontSize="var(--little-text)">Info</PinkText>
+        <PinkText fontSize="var(--middle-text)">Good</PinkText>
+        <PinkText fontSize="var(--large-text)">Good</PinkText>
+        <PinkText fontSize="var(--huge-text)">Good</PinkText>
+        <Button v-on:click="consoleInfo">LongLongLongLongLongLong</Button>
+        <UserPatch v-on:click="consoleInfo">User Name</UserPatch>
+      </UpperBackground>
+    </div>
+  </NavBarView>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import NavBarView from "@/views/NavBarView.vue"
 import PinkText from "@/components/PinkText.vue"
 import Button from "@/components/Button.vue"
 import UserPatch from "@/components/UserPatch.vue"
 import UpperBackground from "@/components/UpperBackground.vue";
+import NavBar from "@/components/NavBar/NavBar.vue";
 
 export default defineComponent({
   name: "HomeView",
   components: {
+    NavBarView,
     PinkText,
     Button,
     UserPatch,
-    UpperBackground
+    UpperBackground,
+    NavBar
   },
   methods: {
     consoleInfo: function(event: Event){
