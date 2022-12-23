@@ -7,13 +7,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Background from "@/components/Background.vue"
+import NavBar from "@/components/NavBar.vue"
 
 export default defineComponent({
   data() {
     return { name: "Marina" };
   },
   components: {
-    Background
+    Background,
+    NavBar
   }
 });
 </script>
@@ -38,5 +40,6 @@ export default defineComponent({
   --cyan: rgb(30, 228, 216);
   --magenta: rgb(213, 30, 228);
   --violet: rgb(58, 13, 105);
+  --navbar-height: 64px;
 }
 </style>
