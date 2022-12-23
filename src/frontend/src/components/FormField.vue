@@ -1,7 +1,7 @@
 <template>
   <div class="form-field">
-    <BlueText><slot></slot></BlueText>
-    <InputLine />
+    <BlueText fontSize="var(--little-text)"><slot></slot></BlueText>
+    <InputLine fontSize="var(--tiny-text)" style="text-align: center;"/>
   </div>
 </template>
 
@@ -21,7 +21,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  /* .form-field {
-    
-  } */
+  .form-field {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:10px;
+  }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <input class="input-line">
+    <input class="input-line" :style="{fontSize}">
 </template>
 
 <script lang="ts">
@@ -8,7 +8,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "InputLine",
   components: {},
-  props: {}
+  props: ['fontSize']
 });
 </script>
 
@@ -20,7 +20,7 @@ export default defineComponent({
     width: 231px;
     height: 25px;
     filter: drop-shadow(0px 0px 10px var(--magenta));
-    font: 400 23px "Chakra Petch", sans-serif;
+    font: "Chakra Petch";
     color: var(--cyan);
   }
 </style>
