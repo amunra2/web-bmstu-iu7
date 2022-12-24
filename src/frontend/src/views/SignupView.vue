@@ -2,7 +2,11 @@
     <body class="container">
         <UpperBackground class="center">
             <UpperBackground class="login-header">
-                <BlueText fontSize="var(--middle-text)">ServerING</BlueText>
+                <router-link style="text-decoration: none" to="/">
+                  <BlueText fontSize="var(--middle-text)">
+                    ServerING
+                  </BlueText>
+                </router-link>
                 <PinkText fontSize="var(--large-text)">Sign Up</PinkText>
             </UpperBackground>
             <FormField>Login</FormField>

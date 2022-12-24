@@ -18,7 +18,7 @@ export default defineComponent({
     border: none;
     border-bottom: 2px solid var(--cyan);;
     width: 231px;
-    height: 25px;
+    height: 35px;
     filter: drop-shadow(0px 0px 10px var(--magenta));
     font: "Chakra Petch";
     color: var(--cyan);
