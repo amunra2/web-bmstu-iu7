@@ -1,10 +1,14 @@
 <template>
     <div class="nav-menu">
       <router-link style="text-decoration: none" to="/signup">
-        <Button>Sign Up</Button>
+        <Button>
+          Sign Up
+        </Button>
       </router-link>
       <router-link style="text-decoration: none" to="/signin">
-        <Button>Sign In</Button>
+        <Button>
+          Sign In
+        </Button>
       </router-link>
     </div>
 </template>
