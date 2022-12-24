@@ -166,27 +166,25 @@ export default defineComponent({
   height: 100%;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: 15px;
 }
 
 .container-row {
-  /* display: grid;
-  grid-template-columns: 2fr 2fr 2fr 1fr; */
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 1fr;
+  justify-content: space-between;
+  width: 100%;
   gap: 10px;
 }
 
 .container-column {
   display: flex;
   flex-direction: column;
-  width: 450px;
   gap: 5px;
 }
 
 .center {
   border-radius: 0px 50px 0px 50px;
-  /* height: %; */
   width: 90%;
   display: flex;
   justify-content: center;
