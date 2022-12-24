@@ -28,5 +28,6 @@ export default defineComponent({
   height: 100%;
   justify-content: center;
   align-items: center;
+  overflow: scroll;
 }
 </style>

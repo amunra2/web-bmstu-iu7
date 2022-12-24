@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <ServerItem v-for="n in 4" v-bind:key="n">
+    <ServerItem class="item" v-for="n in 4" v-bind:key="n">
     </ServerItem>
   </div>
   <PagingFirst class="for-list" style=""/>
@@ -22,9 +22,10 @@ export default defineComponent({
 
 <style scoped>
 .container {
-  display: grid;
-  gap: 30px;
-  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  min-height: 550px;
 }
 .for-list {
   font-size: var(--tiny-text);
