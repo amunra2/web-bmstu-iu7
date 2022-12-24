@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <ServerItem class="item" v-for="n in 4" v-bind:key="n">
+    <ServerItem class="item" :mode="mode" v-for="n in 4" v-bind:key="n">
     </ServerItem>
   </div>
   <PagingFirst class="for-list" style=""/>
@@ -16,6 +16,12 @@ export default defineComponent({
   components: {
     ServerItem,
     PagingFirst
+  },
+  props: {
+    mode: {
+      type: String,
+      default: 'guest'
+    }
   },
 })
 </script>

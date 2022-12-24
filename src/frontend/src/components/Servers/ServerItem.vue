@@ -9,7 +9,7 @@
     <BlueText class="item" fontSize="var(--little-text)">
       Rating
     </BlueText>
-    <ServerMenu class="item" mode="admin-suggest" />
+    <ServerMenu class="item" :mode="mode"/>
     <BlueText class="item" fontSize="var(--little-text)">
       GameName
     </BlueText>
@@ -36,6 +36,12 @@ export default defineComponent({
     PinkText,
     BlueText,
     ServerMenu
+  },
+  props: {
+    mode: {
+      type: String,
+      default: 'guest'
+    }
   },
   data() {
     return {

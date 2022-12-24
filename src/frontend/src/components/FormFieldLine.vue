@@ -1,7 +1,7 @@
 <template>
   <div class="form-field-line">
-    <BlueText><slot></slot></BlueText>
-    <InputLine />
+    <BlueText fontSize="var(--little-text)"><slot></slot></BlueText>
+    <InputLine fontSize="var(--tiny-text)"/>
   </div>
 </template>
 

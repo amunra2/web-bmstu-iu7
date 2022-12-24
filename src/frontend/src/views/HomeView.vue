@@ -4,12 +4,8 @@
       <BlueText class="text" fontSize="var(--huge-text)">
         Server List
       </BlueText>
-      <UpperBackground style="margin-bottom: 20px; width: 100%">
-        <FormFieldLine style="font-size: var(--little-text)">
-          Search by Name:
-        </FormFieldLine>
-      </UpperBackground>
-      <ServerList />
+      <ServerSearch style="margin-bottom: 20px; width: calc(100% - 74px);"/>
+      <ServerList mode='guest' />
     </div>
   </NavBarView>
 </template>
@@ -19,8 +15,7 @@ import { defineComponent } from "vue";
 import NavBarView from "@/views/NavBarView.vue"
 import BlueText from "@/components/BlueText.vue"
 import ServerList from "@/components/Servers/ServerList.vue"
-import UpperBackground from "@/components/UpperBackground.vue"
-import FormFieldLine from "@/components/FormFieldLine.vue"
+import ServerSearch from "@/components/Servers/ServerSearch.vue"
 
 export default defineComponent({
   name: "HomeView",
@@ -28,8 +23,7 @@ export default defineComponent({
     NavBarView,
     BlueText,
     ServerList,
-    FormFieldLine,
-    UpperBackground
+    ServerSearch
   },
   methods: {
     consoleInfo: function(event: Event){

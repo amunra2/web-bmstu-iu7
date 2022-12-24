@@ -1,7 +1,7 @@
 <template>
   <div class="form-field-line-drop-down">
-    <BlueText><slot></slot></BlueText>
-    <InputLine />
+    <BlueText fontSize="var(--little-text)"><slot></slot></BlueText>
+    <InputLine fontSize="var(--tiny-text)"/>
     <DropDownButton size=15px />
   </div>
 </template>
