@@ -4,7 +4,7 @@
       <BlueText class="text" fontSize="var(--huge-text)">
         Server List
       </BlueText>
-      <UpperBackground>
+      <UpperBackground style="margin-bottom: 20px; width: 100%">
         <FormFieldLine style="font-size: var(--little-text)">
           Search by Name:
         </FormFieldLine>
@@ -55,6 +55,6 @@ export default defineComponent({
   flex-direction: row;
   justify-content: left;
   align-items: left;
-  width: 100%
+  width: 100%;
 }
 </style>
