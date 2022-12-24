@@ -1,15 +1,10 @@
 <template>
   <NavBarView>
     <div class="container">
-      <UpperBackground class="center">
-        <PinkText fontSize="var(--tiny-text)">Good</PinkText>
-        <PinkText fontSize="var(--little-text)">Info</PinkText>
-        <PinkText fontSize="var(--middle-text)">Good</PinkText>
-        <PinkText fontSize="var(--large-text)">Good</PinkText>
-        <PinkText fontSize="var(--huge-text)">Good</PinkText>
-        <Button v-on:click="consoleInfo">LongLongLongLongLongLong</Button>
-        <UserPatch v-on:click="consoleInfo">User Name</UserPatch>
-      </UpperBackground>
+      <BlueText class="text" fontSize="var(--huge-text)">
+        Server List
+      </BlueText>
+      <ServerList />
     </div>
   </NavBarView>
 </template>
@@ -17,21 +12,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import NavBarView from "@/views/NavBarView.vue"
-import PinkText from "@/components/PinkText.vue"
-import Button from "@/components/Button.vue"
-import UserPatch from "@/components/UserPatch.vue"
-import UpperBackground from "@/components/UpperBackground.vue";
-import NavBar from "@/components/NavBar/NavBar.vue";
+import BlueText from "@/components/BlueText.vue"
+import ServerList from "@/components/Servers/ServerList.vue"
 
 export default defineComponent({
   name: "HomeView",
   components: {
     NavBarView,
-    PinkText,
-    Button,
-    UserPatch,
-    UpperBackground,
-    NavBar
+    BlueText,
+    ServerList
   },
   methods: {
     consoleInfo: function(event: Event){
@@ -44,17 +33,19 @@ export default defineComponent({
 <style scoped>
 .container {
   display: flex;
+  flex-direction: column;
   margin: 0;
-  width: 100%;
+  width: 90%;
   height: 100%;
   justify-content: center;
   align-items: center;
+  gap: 30px;
 }
-.center {
-  position: relative;
-  width: 75%;
-  display: grid;
-  justify-content: center;
-  align-items: center;
+.text {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: left;
+  width: 100%
 }
 </style>
