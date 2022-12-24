@@ -142,7 +142,7 @@ import NavBarView from "@/views/NavBarView.vue";
 import BlueText from "@/components/BlueText.vue";
 import PinkText from "@/components/PinkText.vue";
 import UpperBackground from "@/components/UpperBackground.vue";
-import PlayerItem from "@/components/PlayerItem.vue"
+import PlayerItem from "@/components/PlayerItem.vue";
 
 export default defineComponent({
   name: "ServerInfoView",
@@ -188,7 +188,7 @@ export default defineComponent({
   border-radius: 0px 50px 0px 50px;
   /* height: %; */
   width: 90%;
-  display: grid;
+  display: flex;
   justify-content: center;
   align-items: center;
   padding: 30px;

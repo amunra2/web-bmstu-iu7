@@ -1,9 +1,9 @@
 <template>
   <div class="form-field-drop-down">
-    <BlueText><slot></slot></BlueText>
+    <BlueText fontSize="var(--little-text)"><slot></slot></BlueText>
     <div class="form-field-drop-down" style="display: flex; gap: 5px;">
-      <InputLine />
-      <DropDownButton size=15px />
+      <InputLine fontSize="var(--tiny-text)" style="text-align: center;" />
+      <DropDownButton size=30px />
     </div>
   </div>
 </template>
@@ -27,8 +27,8 @@ export default defineComponent({
 
 <style scoped>
   .form-field-drop-down {
-    /* justify-content: center;
+    justify-content: center;
     align-items: center;
-    text-align: center; */
+    text-align: center;
   }
 </style>
