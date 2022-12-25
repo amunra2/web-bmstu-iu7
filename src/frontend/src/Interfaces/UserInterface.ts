@@ -1,6 +1,5 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-axios.defaults.baseURL = 'http://localhost:5555/';
 axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
@@ -13,26 +12,31 @@ interface User {
 
 const client = axios.create({
     baseURL: 'http://localhost:5555/api/v1/users',
+    validateStatus: function (status) {
+        return status < 500;
+    }
 })
 
 export default {
     async execute(method: any, resource: any, data?: any) {
         return client({
-            method,
-            url: resource,
-            data,
-            headers: { }
-        }).then(req => {
-            return req.data
-        })
+                    method,
+                    url: resource,
+                    data,
+                    headers: { }
+                });
     },
 
     login (login: String, password: String) {
-        return this.execute('post', '/loign', {login, password}) // что возвращать должен?
+        return this.execute('post', '/login', {login, password}) // что возвращать должен?
     },
 
-    async getAll() {
-        return await this.execute('get', '/');
+    register (login: String, password: String) {
+        return this.execute('post', '/', {login, password}) // что возвращать должен?
+    },
+
+    getAll() {
+        return this.execute('get', '/');
     },
 }
 

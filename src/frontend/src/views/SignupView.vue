@@ -9,16 +9,28 @@
                 </router-link>
                 <PinkText fontSize="var(--large-text)">Sign Up</PinkText>
             </UpperBackground>
-            <FormField>Login</FormField>
-            <FormField>Password</FormField>
-            <FormField>Confirm Password</FormField>
-            <Button>Sign Up</Button>
-            <BlueText class="text" fontSize="var(--tiny-text)">
-                Have an account?
-            </BlueText>
-            <PinkText class="text" fontSize="var(--tiny-text)">
-              <router-link style="color: var(--magenta)" to="/signin">Sign In</router-link>
-            </PinkText>
+
+            <form class="form" @submit.prevent="onSubmit">
+              <BlueText fontSize="var(--little-text)">Login</BlueText>
+              <InputLine @login="setLogin" name="login" fontSize="var(--tiny-text)"></InputLine>
+
+              <BlueText fontSize="var(--little-text)">Password</BlueText>
+              <InputLine @passwordNew="setPassword" name="passwordNew" fontSize="var(--tiny-text)"></InputLine>
+
+              <BlueText fontSize="var(--little-text)">Confirm Password</BlueText>
+              <InputLine @passwordConfirm="setPasswordConfirm" name="passwordConfirm" fontSize="var(--tiny-text)"></InputLine>
+
+              <Button type="submit">Sign Up</Button>
+            </form>
+
+            <div class="form">
+              <BlueText class="text" fontSize="var(--tiny-text)">
+                  Have an account?
+              </BlueText>
+              <PinkText class="text" fontSize="var(--tiny-text)">
+                <router-link style="color: var(--magenta)" to="/signin">Sign In</router-link>
+              </PinkText>
+            </div>
         </UpperBackground>
     </body>
 </template>
@@ -29,8 +41,11 @@ import { defineComponent } from "vue";
 import UpperBackground from "@/components/UpperBackground.vue"
 import BlueText from "@/components/BlueText.vue"
 import PinkText from "@/components/PinkText.vue"
-import FormField from "@/components/FormField.vue"
+import InputLine from "@/components/InputLine.vue"
 import Button from "@/components/Button.vue"
+
+import auth from "@/authentificationService";
+import router from "@/router";
 
 export default defineComponent({
     name: "SignupView",
@@ -38,8 +53,57 @@ export default defineComponent({
         UpperBackground,
         BlueText,
         PinkText,
-        FormField,
         Button,
+        InputLine
+    },
+    data () {
+      return {
+        login: '',
+        password: '',
+        passwordConfirm: '',
+      }
+    },
+    methods: {
+      async onSubmit() {
+        console.log("SignUp:", this.login, this.password, this.passwordConfirm);
+
+        if (this.login == '' || this.password == '' || this.passwordConfirm == '') {
+          this.$notify({
+            title: "Error",
+            text: "Data is Required",
+          });
+          return;
+        }
+
+        if (this.password != this.passwordConfirm) {
+          this.$notify({
+            title: "Error",
+            text: "Passwords are Different",
+          });
+          return;
+        }
+        const result = await auth.register(this.login, this.password);
+
+        if (result) {
+          await auth.login(this.login, this.password);
+          router.push("/");
+        }
+        else {
+          this.$notify({
+            title: "Error",
+            text: "Login is currently Used",
+        });
+        }
+      },
+      setLogin(login : string) {
+        this.login = login;
+      },
+      setPassword(password : string) {
+        this.password = password;
+      },
+      setPasswordConfirm(passwordConfirm : string) {
+        this.passwordConfirm = passwordConfirm;
+      }
     }
 })
 </script>
@@ -72,7 +136,6 @@ export default defineComponent({
     flex-direction: column;
     overflow: hidden;
     padding: 15px 20px;
-    width: fit-content;
     box-shadow: 0px 0px 60px var(--magenta);
 }
 
@@ -81,5 +144,12 @@ export default defineComponent({
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 15px;
 }
 </style>

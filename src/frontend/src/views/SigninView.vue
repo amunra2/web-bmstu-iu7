@@ -10,9 +10,7 @@
                 <PinkText fontSize="var(--large-text)">Sign In</PinkText>
             </UpperBackground>
 
-            <form @submit.prevent="onSubmit">
-              <!-- <FormField v-model="login">Login</FormField>
-              <FormField v-model="password">Password</FormField> -->
+            <form class="form" @submit.prevent="onSubmit">
               <BlueText fontSize="var(--little-text)">Login</BlueText>
               <InputLine @login="setLogin" name="login" fontSize="var(--tiny-text)"></InputLine>
 
@@ -22,12 +20,14 @@
               <Button type="submit">Sign In</Button>
             </form>
 
-            <BlueText class="text" fontSize="var(--tiny-text)">
+            <div class="form">
+              <BlueText class="text" fontSize="var(--tiny-text)">
                 Don't have an account?
-            </BlueText>
-            <PinkText class="text" fontSize="var(--tiny-text)">
-              <router-link style="color: var(--magenta)" to="/signup">Sign Up</router-link>
-            </PinkText>
+              </BlueText>
+              <PinkText class="text" fontSize="var(--tiny-text)">
+                <router-link style="color: var(--magenta)" to="/signup">Sign Up</router-link>
+              </PinkText>
+            </div>
         </UpperBackground>
     </body>
 </template>
@@ -43,9 +43,10 @@ import InputLine from "@/components/InputLine.vue"
 import Button from "@/components/Button.vue"
 
 import auth from "@/authentificationService"
+import router from "@/router";
 
 export default defineComponent({
-    name: "SignupView",
+    name: "SigninView",
     data () {
       return {
         login: '',
@@ -61,16 +62,35 @@ export default defineComponent({
         InputLine
     },
     methods: {
-      onSubmit() {
-        console.log("Test:", this.login, this.password);
-        auth.login(this.login, this.password);
+      async onSubmit() {
+        console.log("Login:", this.login, this.password);
+
+        if (this.login == '' || this.password == '') {
+          this.$notify({
+            title: "Error",
+            text: "Login and Password are Required",
+          });
+          return;
+        }
+
+        const result = await auth.login(this.login, this.password);
+
+        if (result)
+          router.push("/");
+        else {
+          console.log("Incorrect Data")
+          this.$notify({
+            title: "Error",
+            text: "Login Or Password is Incorrect",
+          });
+        }
       },
       setLogin(login : string) {
         this.login = login;
       },
       setPassword(password : string) {
         this.password = password;
-      }
+      },
     }
 })
 </script>
@@ -97,13 +117,12 @@ export default defineComponent({
 }
 
 .login-header {
-    align-items: center;
-    border-radius: 0px 0px 0px 30px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    border-radius: 0px 0px 0px 30px;
     overflow: hidden;
     padding: 15px 20px;
-    width: fit-content;
     box-shadow: 0px 0px 60px var(--magenta);
 }
 
@@ -112,5 +131,12 @@ export default defineComponent({
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 15px;
 }
 </style>
