@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -13,6 +14,7 @@ using ServerING.ModelsBL;
 using ServerING.Services;
 
 namespace ServerING.Controllers {
+    [EnableCors("MyPolicy")]
     [ApiController]
     [Route("/api/v1/hostings")]
     public class HostingController : Controller {

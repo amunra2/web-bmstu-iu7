@@ -5,29 +5,29 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
 
 export interface Platform {
-    id: Number
-    name: String
+    id: Number,
+    name: string,
+    cost: Number,
     popularity: Number
-    cost: Number
 }
 
 const client = axios.create({
     baseURL: 'http://localhost:5555/api/v1/platforms',
+    validateStatus: function (status) {
+        return status < 500;
+    }
 })
 
 export default {
     name: "PlatformInterface",
 
-    async execute(method: any, resource: any, data?: any, params?: any) {
+    execute(method: any, resource: any, data?: any) {
         return client({
-            method,
-            url: resource,
-            data,
-            headers: { },
-            params: params
-        }).then(req => {
-            return req.data
-        })
+                    method,
+                    url: resource,
+                    data,
+                    headers: { }
+                });
     },
 
     getAll() {

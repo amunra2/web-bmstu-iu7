@@ -15,4 +15,9 @@ namespace ServerING.DTO {
     public class UserDto : UserBaseDto {
         public int Id { get; set; }
     }
+
+    public class LoginDto {
+        public string Login { get; set;}
+        public string Password { get; set;}
+    }
 }

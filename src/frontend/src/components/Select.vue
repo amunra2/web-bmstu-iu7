@@ -1,6 +1,12 @@
 <template>
     <select class="select" :style="{fontSize}" v-model="selected">
-      <option v-for="option in options" :value="option" v-bind:key="option">{{option}}</option>
+      <option 
+        v-for="option in options" 
+        :value="option" 
+        v-bind:key="option"
+      >
+        {{option.name}}
+      </option>
     </select>
 </template>
 
@@ -9,18 +15,24 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Select",
-  components: {},
-  props: ['fontSize'],
   data() {
     return {
       selected: '',
-      options: [
-        'A',
-        'B',
-        'C'
-      ]
     }
-  }
+  },
+  components: {},
+  props: ['name', 'fontSize', 'options'],
+  computed: {
+    test: function () {
+      console.log("Select", this.options);
+    }
+  },
+  watch: {
+    selected: function() {
+      console.log(this.name, this.selected);
+      this.$emit(this.name, this.selected);
+    }
+  },
 });
 </script>
 
@@ -31,11 +43,10 @@ export default defineComponent({
     background-repeat: no-repeat;
     background-size: 1.5em 1.5em;
     background-position: right center;
-    /* background-clip: border-box; */
     border: none;
     border-bottom: 2px solid var(--cyan);;
-    width: 251px;
-    height: 35px;
+    /* width: 251px;
+    height: 35px; */
     filter: drop-shadow(0px 0px 10px var(--magenta));
     font: "Chakra Petch";
     color: var(--cyan);

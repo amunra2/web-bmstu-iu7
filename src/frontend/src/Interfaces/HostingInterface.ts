@@ -4,21 +4,22 @@ axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
 
-export interface User {
+export interface Hosting {
     id: Number,
-    Login: String,
-    Role: String
+    name: string,
+    pricePerMonth: Number,
+    subMonths: Number
 }
 
 const client = axios.create({
-    baseURL: 'http://localhost:5555/api/v1/users',
+    baseURL: 'http://localhost:5555/api/v1/hostings',
     validateStatus: function (status) {
         return status < 500;
     }
 })
 
 export default {
-    async execute(method: any, resource: any, data?: any) {
+    execute(method: any, resource: any, data?: any) {
         return client({
                     method,
                     url: resource,
@@ -27,20 +28,8 @@ export default {
                 });
     },
 
-    login (login: String, password: String) {
-        return this.execute('post', '/login', {login, password});
-    },
-
-    register (login: String, password: String) {
-        return this.execute('post', 'register', {login, password});
-    },
-
     getAll() {
         return this.execute('get', '/');
     },
-
-    async getFavorites() {
-        return await this.execute('get', '/');
-    }
 }
 

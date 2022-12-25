@@ -141,5 +141,27 @@ namespace ServerING.Controllers {
             var deletedFavorite = userService.DeleteFavoriteServer(userId, serverId);
             return deletedFavorite != null ? Ok(mapper.Map<FavoriteServerDto>(deletedFavorite)) : NotFound();
         }
+
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult Login(LoginDto loginDto) {
+            var result = userService.Login(loginDto);
+            return result != null ? Ok(mapper.Map<UserDto>(result)) : NotFound();
+        }
+
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(UserIdPasswordDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
+        public IActionResult Register(LoginDto loginDto) {
+            var userDto = new UserPasswordDto {
+                Login = loginDto.Login,
+                Password = loginDto.Password,
+                Role = "user"
+            };
+            
+            return Add(userDto);
+        }
     }
 }

@@ -15,6 +15,7 @@ using ServerING.ModelConverters;
 using Microsoft.AspNetCore.Cors;
 
 namespace ServerING.Controllers {
+    [EnableCors("MyPolicy")]
     [ApiController]
     [Route("/api/v1/servers")]
     public class ServerController : Controller {

@@ -49,12 +49,13 @@ export default defineComponent({
   },
   computed: {
     isInRole () {
-      return auth.getCurrentUser().Role;
+      return auth.getCurrentUser().role;
     }
   },
   methods: {
     setGuest: function() {
       console.log('guest')
+      console.log(auth.getCurrentUser())
       this.componentName = 'GuestNavbarMenu'
     },
     setUser: function() {
@@ -62,8 +63,8 @@ export default defineComponent({
       console.log('user')
       this.componentName = 'UserNavbarMenu'
     },
-    setAdmin: function() {
-      console.log(UserInterface.getAll());
+    setAdmin: async function() {
+      console.log(await UserInterface.getAll());
       console.log('admin')
       this.componentName = 'AdminNavbarMenu'
     },

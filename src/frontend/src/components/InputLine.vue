@@ -1,5 +1,6 @@
 <template>
-    <input v-model="data" class="input-line" :style="{fontSize}">
+    <input v-model="data" v-if="name == 'password'" type="password" class="input-line" :style="{fontSize}">
+    <input v-model="data" v-else class="input-line" :style="{fontSize}">
 </template>
 
 <script lang="ts">
@@ -20,10 +21,6 @@ export default defineComponent({
       this.$emit(this.name, this.data);
     }
   },
-  // created: function() { // почему не работает created?
-  //   console.log(this.name, this.data);
-  //   this.$emit(this.name, this.data);
-  // } 
 });
 </script>
 
@@ -31,9 +28,10 @@ export default defineComponent({
   .input-line {
     background: transparent;
     border: none;
-    border-bottom: 2px solid var(--cyan);;
-    width: 231px;
-    height: 35px;
+    border-bottom: 2px solid var(--cyan);
+    text-align: center;
+    /* width: 231px;
+    height: 35px; */
     filter: drop-shadow(0px 0px 10px var(--magenta));
     font: "Chakra Petch";
     color: var(--cyan);
