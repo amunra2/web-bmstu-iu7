@@ -1,8 +1,7 @@
 <template>
-    <div class="paging-middle">
-        <DropDownButton rotateAngle=90deg />
+    <div class="paging-last">
+        <DropDownButton v-on:click="$emit('prev-page')" rotateAngle=90deg />
         <BlueText><slot></slot></BlueText>
-        <DropDownButton rotateAngle=270deg />
     </div>
 </template>
 
@@ -12,7 +11,7 @@ import BlueText from "@/components/BlueText.vue"
 import DropDownButton from "@/components/DropDownButton.vue"
 
 export default defineComponent({
-    name: "PagingMiddle",
+    name: "PagingLast",
     components: {
         BlueText,
         DropDownButton
@@ -25,7 +24,7 @@ export default defineComponent({
 
 
 <style scoped>
-    .paging-middle {
+    .paging-last {
         display: flex;
         gap: 5px;
     }

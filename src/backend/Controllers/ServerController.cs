@@ -29,13 +29,15 @@ namespace ServerING.Controllers {
             this.serverConverters = serverConverters;
         }
 
+        [EnableCors("MyPolicy")]
         [HttpGet]
         public IActionResult GetAll(
             [FromQuery] ServerFilterDto filter,
             [FromQuery] ServerSortState? sortState,
-            [FromQuery] int? page
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize
         ) {
-            return Ok(mapper.Map<IEnumerable<ServerDto>>(serverService.GetAllServers(filter, sortState, page)));
+            return Ok(mapper.Map<IEnumerable<ServerDto>>(serverService.GetAllServers(filter, sortState, page, pageSize)));
         }
 
         [HttpPost]

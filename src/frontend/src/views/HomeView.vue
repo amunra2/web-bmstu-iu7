@@ -5,7 +5,7 @@
         Server List
       </BlueText>
       <ServerSearch style="margin-bottom: 20px; width: calc(100% - 74px);"/>
-      <ServerList mode='guest' />
+      <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='guest'/>
     </div>
   </NavBarView>
 </template>
@@ -25,9 +25,46 @@ export default defineComponent({
     ServerList,
     ServerSearch
   },
+  //data() {
+  //  return {
+  //    currentPage: {
+  //      num: 1,
+  //      isLast: false
+  //    }
+  //  }
+  //},
+  computed: {
+    currentPage() {
+      console.log(1)
+      if ("page" in this.$route.query) {
+        console.log(2)
+        const page = this.$route.query.page;
+
+        if (typeof page === 'string') {
+          console.log(3)
+          return { num: parseInt(page), isLast: false };
+        }
+      }
+      console.log(4)
+
+      return { num: 1, isLast: false };
+    }
+  },
+  //mounted() {
+  //  console.log(this.$route.params.page)
+  //  if ("page" in this.$route.query) {
+  //    console.log("page in")
+  //    const page = this.$route.query.page;
+
+  //    if (typeof page === 'string') {
+  //      console.log(page)
+  //      this.currentPage.num = parseInt(page);
+  //    }
+  //  }
+  //},
   methods: {
-    consoleInfo: function(event: Event){
-      console.log(event.timeStamp)
+    newPage(pageNumber: Number) {
+      this.$router.push({ path: '/', query: { page: pageNumber.toString() } })
     },
   },
 });

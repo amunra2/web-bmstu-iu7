@@ -29,7 +29,8 @@ namespace ServerING.Services {
             int userId,
             ServerFilterDto filter, 
             ServerSortState? sortState,
-            int? page
+            int? page,
+            int? pageSize
         );
         FavoriteServerBL AddFavoriteServer(int userId, int serverId);
         FavoriteServerBL DeleteFavoriteServer(int userId, int serverId);
@@ -128,7 +129,8 @@ namespace ServerING.Services {
             int userId,
             ServerFilterDto filter, 
             ServerSortState? sortState,
-            int? page
+            int? page,
+            int? pageSize
         ) {
             if (!IsExistById(userId))
                 throw new UserNotExistsException("No user with such id");
@@ -145,7 +147,7 @@ namespace ServerING.Services {
 
             // Пагинация
             if (page != null) {
-                servers = serverService.PaginationServers(servers, page.Value);
+                servers = serverService.PaginationServers(servers, page.Value, pageSize.Value);
             }
             
 

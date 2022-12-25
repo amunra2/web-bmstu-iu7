@@ -1,7 +1,7 @@
 <template>
     <div class="paging-first">
         <BlueText>1</BlueText>
-        <DropDownButton rotateAngle=270deg />
+        <DropDownButton v-on:click="$emit('next-page')" rotateAngle=270deg />
     </div>
 </template>
 

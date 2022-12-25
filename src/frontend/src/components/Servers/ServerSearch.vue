@@ -2,8 +2,8 @@
   <UpperBackground class="search">
     <FormFieldLine>Search by Name:</FormFieldLine>
     <FormFieldLine>Search by Game:</FormFieldLine>
-    <FormFieldLineDropDown> </FormFieldLineDropDown>
-    <FormFieldLineDropDown> </FormFieldLineDropDown>
+    <FormFieldSelect></FormFieldSelect>
+    <FormFieldSelect></FormFieldSelect>
   </UpperBackground>
 </template>
 
@@ -11,14 +11,14 @@
 import { defineComponent } from 'vue'
 import UpperBackground from "@/components/UpperBackground.vue"
 import FormFieldLine from "@/components/FormFieldLine.vue"
-import FormFieldLineDropDown from "@/components/FormFieldLineDropDown.vue"
+import FormFieldSelect from "@/components/FormFieldSelect.vue"
 
 export default defineComponent({
   name: "ServerSearch",
   components: {
     UpperBackground,
     FormFieldLine,
-    FormFieldLineDropDown
+    FormFieldSelect
   }
 })
 </script>

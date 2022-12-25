@@ -49,6 +49,7 @@ namespace ServerING.Controllers {
             }
         }
 
+        [EnableCors("MyPolicy")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PlatformDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]

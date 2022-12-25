@@ -1,7 +1,7 @@
 <template>
   <UpperBackground class="server-item">
     <PinkText class="item" fontSize="var(--middle-text)">
-      ServerNameLongLong
+      {{ server.name }}
     </PinkText>
     <BlueText class="item" fontSize="var(--little-text)">
       Platform
@@ -11,23 +11,24 @@
     </BlueText>
     <ServerMenu class="item" :mode="mode"/>
     <BlueText class="item" fontSize="var(--little-text)">
-      GameName
+      {{ server.gameName }}
     </BlueText>
     <BlueText class="item" fontSize="var(--middle-text)">
-      XBox
+      {{ platform.name }}
     </BlueText>
     <BlueText class="item" fontSize="var(--middle-text)">
-      1000
+      {{ server.rating }}
     </BlueText>
   </UpperBackground> 
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import UpperBackground from "@/components/UpperBackground.vue"
 import PinkText from "@/components/PinkText.vue"
 import BlueText from "@/components/BlueText.vue"
 import ServerMenu from "@/components/Servers/ServerMenu.vue"
+import PlatformInterface from "@/Interfaces/PlatformInterface"
 
 export default defineComponent({
   name: "ServerItem",
@@ -41,18 +42,19 @@ export default defineComponent({
     mode: {
       type: String,
       default: 'guest'
+    },
+    server: {
+      type: Object,
+      required: true
     }
   },
   data() {
     return {
-      server: {
-        id: 1,
-        name: 'ServerName',
-        gameName: 'Skyrim',
-        rating: 100,
-        platform: 'PC'
-      }
+      platform: '',
     }
+  },
+  mounted() {
+    PlatformInterface.getById(this.server.platformID).then(json => {this.platform = json})
   }
 })
 </script>
@@ -64,7 +66,7 @@ export default defineComponent({
   padding-left: 37px;
   padding-right: 37px;
   display: grid;
-  grid-template-columns: 2fr repeat(2, 1fr) 2fr;
+  grid-template-columns: 4fr 2.5fr 2fr 2fr;
   column-gap: 50px;
   width: 100%;
 }

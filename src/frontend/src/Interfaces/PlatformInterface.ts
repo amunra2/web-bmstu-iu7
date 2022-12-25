@@ -19,6 +19,8 @@ const client = axios.create({
 })
 
 export default {
+    name: "PlatformInterface",
+
     execute(method: any, resource: any, data?: any) {
         return client({
                     method,
@@ -29,7 +31,11 @@ export default {
     },
 
     getAll() {
-        return this.execute('get', '/');
+      return this.execute('get', '/');
+    },
+
+    async getById(id: Number) {
+        return await this.execute('get', `/${id}`)
     },
 }
 

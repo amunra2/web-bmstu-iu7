@@ -18,6 +18,7 @@ namespace ServerING.DTO {
 
     public class ServerDto : ServerDtoBase {
         public int Id { get; set; }
+        public int Rating{ get; set; }
     }
 
     public class ServerFilterDto {
