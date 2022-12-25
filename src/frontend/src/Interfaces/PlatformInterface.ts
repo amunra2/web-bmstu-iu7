@@ -19,7 +19,7 @@ const client = axios.create({
 })
 
 export default {
-    async execute(method: any, resource: any, data?: any) {
+    execute(method: any, resource: any, data?: any) {
         return client({
                     method,
                     url: resource,
