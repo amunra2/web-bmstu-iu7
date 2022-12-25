@@ -12,8 +12,10 @@ using ServerING.Models;
 using ServerING.ModelsBL;
 using ServerING.Services;
 using ServerING.Enums;
+using Microsoft.AspNetCore.Cors;
 
 namespace ServerING.Controllers {
+    [EnableCors("MyPolicy")]
     [ApiController]   
     [Route("/api/v1/users")]
     public class UserController : Controller {

@@ -78,6 +78,17 @@ namespace ServerING {
 
             // DTO converters
             services.AddDtoConverters(); // self
+
+            // CORS
+            services.AddCors(options =>{
+                options.AddPolicy(name: "MyPolicy",
+                    policy => {
+                        policy
+                            .WithOrigins("*")
+                            .WithHeaders("*")
+                            .WithMethods("*");
+                    });
+            });
         }
 
         // This method gets called by the runtime
@@ -101,6 +112,8 @@ namespace ServerING {
             app.UseRouting();
             app.UseAuthorization();
             // app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.UseStaticFiles(); // стили для админки
             app.UseCoreAdminCustomUrl("admin");
