@@ -45,7 +45,6 @@ export default defineComponent({
     }
   },
   mounted() {
-    console.log(ServerInterface.getAll(1, 4))
     ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json})
     ServerInterface.getAll(this.currentPage.num + 1, 4).then(json => {
       this.currentPage.isLast = (json.length == 0)

@@ -4,27 +4,21 @@ axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
 
-interface Server {
+export interface Platform {
     id: Number
     name: String
-    ip: String
-    gameName: String
-    rating: Number
-    status: Number
-    hostingId: Number
-    platformId: Number
-    countryId: Number
-    ownerId: Number
+    popularity: Number
+    cost: Number
 }
 
 const client = axios.create({
-    baseURL: 'http://localhost:5555/api/v1/servers',
+    baseURL: 'http://localhost:5555/api/v1/platforms',
 })
 
 export default {
-    name: "ServerInterface",
+    name: "PlatformInterface",
 
-    execute(method: any, resource: any, data?: any, params?: any) {
+    async execute(method: any, resource: any, data?: any, params?: any) {
         return client({
             method,
             url: resource,
@@ -36,8 +30,12 @@ export default {
         })
     },
 
-    getAll(page: number | null = null, pageSize: Number | null = null) {
-      return this.execute('get', '/', null, {page, pageSize});
+    getAll() {
+      return this.execute('get', '/');
+    },
+
+    async getById(id: Number) {
+        return await this.execute('get', `/${id}`)
     },
 }
 

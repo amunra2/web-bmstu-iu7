@@ -14,7 +14,7 @@
       {{ server.gameName }}
     </BlueText>
     <BlueText class="item" fontSize="var(--middle-text)">
-      {{ server.platformId }}
+      {{ platform.name }}
     </BlueText>
     <BlueText class="item" fontSize="var(--middle-text)">
       {{ server.rating }}
@@ -23,11 +23,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import UpperBackground from "@/components/UpperBackground.vue"
 import PinkText from "@/components/PinkText.vue"
 import BlueText from "@/components/BlueText.vue"
 import ServerMenu from "@/components/Servers/ServerMenu.vue"
+import PlatformInterface from "@/Interfaces/PlatformInterface"
 
 export default defineComponent({
   name: "ServerItem",
@@ -47,6 +48,14 @@ export default defineComponent({
       required: true
     }
   },
+  data() {
+    return {
+      platform: '',
+    }
+  },
+  mounted() {
+    PlatformInterface.getById(this.server.platformID).then(json => {this.platform = json})
+  }
 })
 </script>
 
@@ -57,7 +66,7 @@ export default defineComponent({
   padding-left: 37px;
   padding-right: 37px;
   display: grid;
-  grid-template-columns: 2fr repeat(2, 1fr) 2fr;
+  grid-template-columns: 4fr 2.5fr 2fr 2fr;
   column-gap: 50px;
   width: 100%;
 }

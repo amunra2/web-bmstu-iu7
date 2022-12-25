@@ -34,5 +34,9 @@ export default {
     async getAll() {
         return await this.execute('get', '/');
     },
+
+    async getFavorites() {
+        return await this.execute('get', '/');
+    }
 }
 
