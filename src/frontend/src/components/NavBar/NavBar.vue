@@ -10,7 +10,15 @@
         <Button v-on:click="setUser">User</Button>
         <Button v-on:click="setAdmin">Admin</Button>
     </div>
-    <component :is="componentName"/>
+    <div v-if="isInRole == 'user'">
+      <UserNavbarMenu />
+    </div>
+    <div v-else-if="isInRole == 'admin'">
+      <AdminNavbarMenu />
+    </div>
+    <div v-else>
+      <GuestNavbarMenu />
+    </div>
   </nav>
 </template>
 
@@ -21,6 +29,9 @@ import Button from '@/components/Button.vue'
 import GuestNavbarMenu from '@/components/NavBar/GuestNavbarMenu.vue'
 import UserNavbarMenu from '@/components/NavBar/UserNavbarMenu.vue'
 import AdminNavbarMenu from '@/components/NavBar/AdminNavbarMenu.vue'
+
+import auth from '@/authentificationService'
+import UserInterface from '@/Interfaces/UserInterface'
 
 export default defineComponent({
   name: "NavBar",
@@ -36,19 +47,26 @@ export default defineComponent({
       componentName: 'GuestNavbarMenu'
     }
   },
+  computed: {
+    isInRole () {
+      return auth.getCurrentUser().Role;
+    }
+  },
   methods: {
     setGuest: function() {
       console.log('guest')
       this.componentName = 'GuestNavbarMenu'
     },
     setUser: function() {
+      auth.logout()
       console.log('user')
       this.componentName = 'UserNavbarMenu'
     },
     setAdmin: function() {
+      console.log(UserInterface.getAll());
       console.log('admin')
       this.componentName = 'AdminNavbarMenu'
-    }
+    },
   }
 })
 </script>

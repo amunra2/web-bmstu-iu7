@@ -1,9 +1,9 @@
 import axios from "axios";
-import {BehaviorSubject} from "rxjs";
 
 axios.defaults.baseURL = 'http://localhost:5555/';
-
-const currentUserSubject = JSON.parse(String(localStorage.getItem("currentUser")));
+axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*';
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
 
 interface User {
     id: Number,
@@ -11,20 +11,28 @@ interface User {
     Role: String
 }
 
+const client = axios.create({
+    baseURL: 'http://localhost:5555/api/v1/users',
+})
+
 export default {
-    async login(login: String, password: String) {
-        await axios.post('/user/login/', {login, password});
-        if (login == "user" && password == "user") {
-            const user: User = {
-                id: 1,
-                Login: "user",
-                Role: "user"
-            }
+    async execute(method: any, resource: any, data?: any) {
+        return client({
+            method,
+            url: resource,
+            data,
+            headers: { }
+        }).then(req => {
+            return req.data
+        })
+    },
 
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            currentUserSubject.next(user);
-        }
-    }
+    login (login: String, password: String) {
+        return this.execute('post', '/loign', {login, password}) // что возвращать должен?
+    },
 
-    
+    async getAll() {
+        return await this.execute('get', '/');
+    },
 }
+

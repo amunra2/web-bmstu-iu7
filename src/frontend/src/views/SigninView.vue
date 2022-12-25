@@ -9,9 +9,19 @@
                 </router-link>
                 <PinkText fontSize="var(--large-text)">Sign In</PinkText>
             </UpperBackground>
-            <FormField>Login</FormField>
-            <FormField>Password</FormField>
-            <Button>Sign In</Button>
+
+            <form @submit.prevent="onSubmit">
+              <!-- <FormField v-model="login">Login</FormField>
+              <FormField v-model="password">Password</FormField> -->
+              <BlueText fontSize="var(--little-text)">Login</BlueText>
+              <InputLine @login="setLogin" name="login" fontSize="var(--tiny-text)"></InputLine>
+
+              <BlueText fontSize="var(--little-text)">Password</BlueText>
+              <InputLine @password="setPassword" name="password" fontSize="var(--tiny-text)"></InputLine>
+
+              <Button type="submit">Sign In</Button>
+            </form>
+
             <BlueText class="text" fontSize="var(--tiny-text)">
                 Don't have an account?
             </BlueText>
@@ -29,16 +39,38 @@ import UpperBackground from "@/components/UpperBackground.vue"
 import BlueText from "@/components/BlueText.vue"
 import PinkText from "@/components/PinkText.vue"
 import FormField from "@/components/FormField.vue"
+import InputLine from "@/components/InputLine.vue"
 import Button from "@/components/Button.vue"
+
+import auth from "@/authentificationService"
 
 export default defineComponent({
     name: "SignupView",
+    data () {
+      return {
+        login: '',
+        password: ''
+      }
+    },
     components: {
         UpperBackground,
         BlueText,
         PinkText,
         FormField,
         Button,
+        InputLine
+    },
+    methods: {
+      onSubmit() {
+        console.log("Test:", this.login, this.password);
+        auth.login(this.login, this.password);
+      },
+      setLogin(login : string) {
+        this.login = login;
+      },
+      setPassword(password : string) {
+        this.password = password;
+      }
     }
 })
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <input class="input-line" :style="{fontSize}">
+    <input v-model="data" class="input-line" :style="{fontSize}">
 </template>
 
 <script lang="ts">
@@ -7,8 +7,23 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "InputLine",
+  data () {
+    return {
+      data: ""
+    }
+  },
   components: {},
-  props: ['fontSize']
+  props: ['name', 'fontSize'],
+  watch: { 
+    data: function() {
+      // console.log(this.name, this.data);
+      this.$emit(this.name, this.data);
+    }
+  },
+  // created: function() { // почему не работает created?
+  //   console.log(this.name, this.data);
+  //   this.$emit(this.name, this.data);
+  // } 
 });
 </script>
 
