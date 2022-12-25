@@ -4,14 +4,15 @@ axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = '*';
 
-export interface User {
+export interface Platform {
     id: Number,
-    Login: String,
-    Role: String
+    name: string,
+    cost: Number,
+    popularity: Number
 }
 
 const client = axios.create({
-    baseURL: 'http://localhost:5555/api/v1/users',
+    baseURL: 'http://localhost:5555/api/v1/platforms',
     validateStatus: function (status) {
         return status < 500;
     }
@@ -25,14 +26,6 @@ export default {
                     data,
                     headers: { }
                 });
-    },
-
-    login (login: String, password: String) {
-        return this.execute('post', '/login', {login, password});
-    },
-
-    register (login: String, password: String) {
-        return this.execute('post', 'register', {login, password});
     },
 
     getAll() {

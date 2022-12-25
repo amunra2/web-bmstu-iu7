@@ -46,10 +46,11 @@ export default {
     },
 
     async register(login: String, password: String) {
-        //const result = await UserInterface.register(login, password); // использование метода (добавить!)
+        const result = await UserInterface.register(login, password); // использование метода (добавить!)
         
-        if (login != "user")
+        if (result.status == 200) {
             return true;
+        }
 
         return false;
     },

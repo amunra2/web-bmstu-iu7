@@ -82,6 +82,7 @@ export default defineComponent({
           });
           return;
         }
+        
         const result = await auth.register(this.login, this.password);
 
         if (result) {

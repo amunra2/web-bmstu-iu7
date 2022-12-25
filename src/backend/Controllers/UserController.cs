@@ -148,5 +148,19 @@ namespace ServerING.Controllers {
             var result = userService.Login(loginDto);
             return result != null ? Ok(mapper.Map<UserDto>(result)) : NotFound();
         }
+
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(UserIdPasswordDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
+        public IActionResult Register(LoginDto loginDto) {
+            var userDto = new UserPasswordDto {
+                Login = loginDto.Login,
+                Password = loginDto.Password,
+                Role = "user"
+            };
+            
+            return Add(userDto);
+        }
     }
 }
