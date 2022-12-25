@@ -10,19 +10,14 @@ import { defineComponent } from "vue";
 import Background from "@/components/Background.vue"
 import NavBar from "@/components/NavBar/NavBar.vue"
 
-import auth from "@/authentificationService"
-
 export default defineComponent({
   setup() {
-    auth.logout()
+    // auth.logout()
   },
   components: {
     Background,
     NavBar
   },
-  setup () {
-    // auth.logout();
-  }
 });
 </script>
 

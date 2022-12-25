@@ -54,7 +54,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    PlatformInterface.getById(this.server.platformID).then(json => {this.platform = json})
+    PlatformInterface.getById(this.server.platformID).then(json => {this.platform = json.data})
   }
 })
 </script>

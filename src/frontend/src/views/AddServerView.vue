@@ -2,7 +2,7 @@
   <NavBarView>
     <div class="container">
       <BlueText class="text" fontSize="var(--huge-text)">
-        Suggest Server
+        Add Server
       </BlueText>
 
       <UpperBackground class="center">
@@ -50,7 +50,7 @@
             </div>
           </div>
 
-          <Button type="submit">Suggest</Button>
+          <Button type="submit">Add</Button>
         </form>
       </UpperBackground>
     </div>
@@ -80,7 +80,7 @@ import {Server} from "@/Interfaces/ServerInterface"
 import router from '@/router';
 
 export default defineComponent({
-  name: "SuggestServer",
+  name: "AddServer",
   data () {
     return {
       name: '',
@@ -89,7 +89,6 @@ export default defineComponent({
       hostingId: null,
       platformId: null,
       countryId: null,
-      // options: [1, 2, 3],
       hostingOptions: [],
       platformOptions: [],
       countryOptions: [],
@@ -133,6 +132,8 @@ export default defineComponent({
       this.countryId = countryId;
     },
     async onSubmit () {
+      console.log("ServerSuggest: Work");
+
       if (this.name == "" || this.ip == "" || this.game == "" || !this.hostingId || !this.platformId || !this.countryId) {
         this.$notify({
           title: "Error",
@@ -147,7 +148,7 @@ export default defineComponent({
         ip: this.ip,
         gameName: this.game,
         rating: 0,
-        status: 1,
+        status: 0,
         platformId: this.platformId,
         countryId: this.countryId,
         hostingId: this.hostingId,
@@ -164,7 +165,7 @@ export default defineComponent({
         router.push("/");
         this.$notify({
           title: "Success",
-          text: "Server is Suggested",
+          text: "Server is Added",
         });
       }
       else {

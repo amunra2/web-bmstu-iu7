@@ -4,6 +4,7 @@ import SignupView from "@/views/SignupView.vue"
 import SigninView from "@/views/SigninView.vue"
 import ServerInfoView from "@/views/ServerInfoView.vue";
 import ServerSuggest from "@/views/SuggestServerView.vue"
+import ServerAdd from "@/views/AddServerView.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/server-suggest",
     name: "server-suggest",
     component: ServerSuggest,
+  },
+  {
+    path: "/server-add",
+    name: "server-add",
+    component: ServerAdd,
   },
 ];
 

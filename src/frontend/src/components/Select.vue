@@ -2,7 +2,7 @@
     <select class="select" :style="{fontSize}" v-model="selected">
       <option 
         v-for="option in options" 
-        :value="option" 
+        :value="option.id"
         v-bind:key="option"
       >
         {{option.name}}

@@ -45,18 +45,18 @@ export default defineComponent({
     }
   },
   mounted() {
-    ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json})
+    ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json.data})
     ServerInterface.getAll(this.currentPage.num + 1, 4).then(json => {
-      this.currentPage.isLast = (json.length == 0)
+      this.currentPage.isLast = (json.data.length == 0)
     })
   },
   methods: {
     nextPage() {
       console.log("next page")
       this.currentPage.num += 1
-      ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json})
+      ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json.data})
       ServerInterface.getAll(this.currentPage.num + 1, 4).then(json => {
-        this.currentPage.isLast = (json.length == 0)
+        this.currentPage.isLast = (json.data.length == 0)
       })
       this.$emit('new-page', this.currentPage.num)
     },
@@ -65,7 +65,7 @@ export default defineComponent({
       console.log("prev page")
       this.currentPage.num -=1
       this.currentPage.isLast = false
-      ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json})
+      ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json.data})
       this.$emit('new-page', this.currentPage.num )
     }
   }
