@@ -111,10 +111,11 @@ namespace ServerING.Controllers {
             int userId,
             [FromQuery] ServerFilterDto filter,
             [FromQuery] ServerSortState? sortState,
-            [FromQuery] int? page
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize
         )
         {
-            return Ok(mapper.Map<IEnumerable<ServerDto>>(userService.GetUserFavoriteServers(userId, filter, sortState, page)));
+            return Ok(mapper.Map<IEnumerable<ServerDto>>(userService.GetUserFavoriteServers(userId, filter, sortState, page, pageSize)));
         }
 
         [HttpPost("{userId}/favorites/{serverId}")]

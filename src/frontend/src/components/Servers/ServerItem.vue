@@ -1,7 +1,7 @@
 <template>
   <UpperBackground class="server-item">
     <PinkText class="item" fontSize="var(--middle-text)">
-      ServerNameLongLong
+      {{ server.name }}
     </PinkText>
     <BlueText class="item" fontSize="var(--little-text)">
       Platform
@@ -11,13 +11,13 @@
     </BlueText>
     <ServerMenu class="item" :mode="mode"/>
     <BlueText class="item" fontSize="var(--little-text)">
-      GameName
+      {{ server.gameName }}
     </BlueText>
     <BlueText class="item" fontSize="var(--middle-text)">
-      XBox
+      {{ server.platformId }}
     </BlueText>
     <BlueText class="item" fontSize="var(--middle-text)">
-      1000
+      {{ server.rating }}
     </BlueText>
   </UpperBackground> 
 </template>
@@ -41,19 +41,12 @@ export default defineComponent({
     mode: {
       type: String,
       default: 'guest'
+    },
+    server: {
+      type: Object,
+      required: true
     }
   },
-  data() {
-    return {
-      server: {
-        id: 1,
-        name: 'ServerName',
-        gameName: 'Skyrim',
-        rating: 100,
-        platform: 'PC'
-      }
-    }
-  }
 })
 </script>
 

@@ -22,7 +22,8 @@ namespace ServerING.Services {
         IEnumerable<ServerBL> GetAllServers(
             ServerFilterDto filter,
             ServerSortState? sortState,
-            int? page
+            int? page,
+            int? pageSize
         );
 
         public IEnumerable<Player> GetServerPlayers(int serverId);
@@ -37,7 +38,7 @@ namespace ServerING.Services {
 
         IEnumerable<ServerBL> FilterServers(IEnumerable<ServerBL> servers, ServerFilterDto filter);
         IEnumerable<ServerBL> SortServersByOption(IEnumerable<ServerBL> servers, ServerSortState sortOrder);
-        IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page);
+        IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page, int pageSize);
         IEnumerable<int> GetUserFavoriteServersIds(int userId);
 
         void UpdateServerRating(int serverId, int change);
@@ -68,7 +69,8 @@ namespace ServerING.Services {
         public IEnumerable<ServerBL> GetAllServers(
             ServerFilterDto filter, 
             ServerSortState? sortState,
-            int? page
+            int? page,
+            int? pageSize
         ) {
             var servers = mapper.Map<IEnumerable<ServerBL>>(serverRepository.GetAll());
 
@@ -82,7 +84,7 @@ namespace ServerING.Services {
 
             // Пагинация
             if (page != null) {
-                servers = PaginationServers(servers, page.Value);
+                servers = PaginationServers(servers, page.Value, pageSize.Value);
             }
             
             return servers;
@@ -216,8 +218,7 @@ namespace ServerING.Services {
             return filteredServers;
         }
 
-        public IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page) {
-            var pageSize = 10;
+        public IEnumerable<ServerBL> PaginationServers(IEnumerable<ServerBL> servers, int page, int pageSize) {
             var paginatedServers = servers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             return paginatedServers;
