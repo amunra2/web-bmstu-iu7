@@ -31,5 +31,9 @@ export default {
     getAll() {
         return this.execute('get', '/');
     },
+
+    getById(id: number) {
+        return this.execute('get', `/${id}`);
+    },
 }
 

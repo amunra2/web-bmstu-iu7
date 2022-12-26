@@ -2,7 +2,7 @@
   <NavBarView>
     <div class="container">
       <BlueText class="text" fontSize="var(--huge-text)">
-        ServerNameLongLong
+        {{server.name}}
       </BlueText>
 
       <UpperBackground class="center">
@@ -15,19 +15,19 @@
               Ip
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              127.0.0.1
+              {{server.ip}}
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Game
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              Skyrim
+              {{server.gameName}}
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Rating
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              1000
+              {{server.rating}}
             </BlueText>
           </div>
 
@@ -39,19 +39,19 @@
               Name
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              Heroku
+              {{hosting.name}}
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Price per Month
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              30$
+              {{hosting.pricePerMonth}}$
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Month Number
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              50
+              {{hosting.subMonths}}
             </BlueText>
           </div>
 
@@ -63,19 +63,19 @@
               Name
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              PC
+              {{platform.name}}
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Popularity
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              100
+              {{platform.popularity}}
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Average Cost
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              500$
+              {{platform.cost}}$
             </BlueText>
           </div>
 
@@ -87,19 +87,19 @@
               Name
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              Russia
+              {{country.name}}
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Level of Interest
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              1000
+              {{country.levelOfInterest}}
             </BlueText>
             <BlueText fontSize="var(--tiny-text)">
               Players Number
             </BlueText>
             <BlueText fontSize="var(--middle-text)">
-              100
+              {{country.overallPlayers}}
             </BlueText>
           </div>
         </div>
@@ -109,26 +109,9 @@
           Players
       </BlueText>
 
-      <div class="player-column">
-        <div class="player-row">
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-        </div>
-
-        <div class="player-row">
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-        </div>
-
-        <div class="player-row">
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
-          <PlayerItem></PlayerItem>
+      <div class="player-row">
+        <div v-for="player in players" v-bind:key="player">
+          <PlayerItem v-bind:playerBase="player"></PlayerItem>
         </div>
       </div>
     </div>
@@ -144,8 +127,53 @@ import PinkText from "@/components/PinkText.vue";
 import UpperBackground from "@/components/UpperBackground.vue";
 import PlayerItem from "@/components/PlayerItem.vue";
 
+import HostingInterface from "@/Interfaces/HostingInterface"
+import PlatformInterface from "@/Interfaces/PlatformInterface"
+import CountryInterface from "@/Interfaces/CountryInterface"
+import ServerInterface from "@/Interfaces/ServerInterface"
+import auth from "@/authentificationService"
+
 export default defineComponent({
   name: "ServerInfoView",
+  data () {
+    return {
+      server: {
+        id: 1,
+        name: '',
+        ip: '',
+        gameName: '',
+        hostingID: 0,
+        platformID: 0,
+        countryID: 0,
+      },
+      platform: {
+        name: '',
+        cost: 0,
+        popularity: 0,
+      },
+      hosting: {
+        name: '',
+        pricePerMonth: 0,
+        subMonths: 0,
+      },
+      country: {
+        name: '',
+        levelOfInterest: 0,
+        overallPlayers: 0,
+      },
+      players: []
+    }
+  },
+  async mounted () {
+    this.server.id = Number(this.$route.params.id);
+    this.server = await (await ServerInterface.getById(this.server.id)).data;
+    this.platform = await (await PlatformInterface.getById(this.server.platformID)).data;
+    this.hosting = await (await HostingInterface.getById(this.server.hostingID)).data;
+    this.country = await (await CountryInterface.getById(this.server.countryID)).data;
+    this.players = await (await ServerInterface.getPlayers(this.server.id)).data;
+
+    console.log("Players", this.players);
+  },
   components: {
     NavBarView,
     PinkText,
@@ -204,14 +232,17 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   gap: 30px;
+  width: 90%;
   padding: 10px;
+  overflow: auto;
 }
 
 .player-column {
   display: flex;
   flex-direction: column;
+  width: 90%;
   gap: 10px;
-  overflow: auto;
+  overflow: scroll;
   max-height: 330px;
 }
 </style>

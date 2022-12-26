@@ -26,7 +26,7 @@ namespace ServerING.Services {
             int? pageSize
         );
 
-        public IEnumerable<Player> GetServerPlayers(int serverId);
+        public IEnumerable<PlayerBL> GetServerPlayers(int serverId);
 
         Server GetServerByName(string name);
         ServerBL GetServerByIP(string ip);
@@ -150,11 +150,11 @@ namespace ServerING.Services {
         }
 
 
-        public IEnumerable<Player> GetServerPlayers(int serverId) {
+        public IEnumerable<PlayerBL> GetServerPlayers(int serverId) {
             if (!IsExistById(serverId))
                 throw new ServerNotExistsException("No server with such id");
 
-            return serverRepository.GetPlayersByServerID(serverId);
+            return mapper.Map<IEnumerable<PlayerBL>>(serverRepository.GetPlayersByServerID(serverId));
         }
 
 

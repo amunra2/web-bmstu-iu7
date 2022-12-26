@@ -45,12 +45,16 @@ export default {
         return this.execute('get', `/${id}`);
     },
 
-    post (server: Server) {
+    post(server: Server) {
         return this.execute('post', '/', server, null);
     },
 
-    put (id: number, server: Server) {
+    put(id: number, server: Server) {
         return this.execute('put', `/${id}`, server, null);
-    }
+    },
+
+    getPlayers(id: number) {
+        return this.execute('get', `/${id}/players`);
+    },
 }
 

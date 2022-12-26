@@ -24,7 +24,7 @@ const routes: Array<RouteRecordRaw> = [
     component: SigninView,
   },
   {
-    path: "/server-info",
+    path: "/server-info/:id",
     name: "server-info",
     component: ServerInfoView,
   },

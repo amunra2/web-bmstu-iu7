@@ -3,9 +3,9 @@
     <img src="../assets/img/user-logo.svg" height="100"/>
 
     <div class="component-column">
-      <PinkText fontSize="var(--little-text)">PlayerNameLong</PinkText>
-      <BlueText fontSize="var(--tiny-text)">23 hours</BlueText>
-      <BlueText fontSize="var(--tiny-text)">01.01.2022</BlueText>
+      <PinkText fontSize="var(--little-text)">{{player.nickname}}</PinkText>
+      <BlueText fontSize="var(--tiny-text)">{{player.hoursPlayed}} hours</BlueText>
+      <BlueText fontSize="var(--tiny-text)">{{date}}</BlueText>
     </div>
   </UpperBackground>
 </template>
@@ -19,10 +19,29 @@ import PinkText from "@/components/PinkText.vue";
 
 export default defineComponent({
   name: "PlayerItem",
+  data () {
+    return {
+      player: {
+        nickname: '',
+        hoursPlayed: 0,
+        lastPlayed: ''
+      }
+    }
+  },
   components: {
     UpperBackground,
     BlueText,
     PinkText,
+  },
+  props: ['playerBase'],
+  mounted() {
+    this.player = this.playerBase;
+    console.log(this.date);
+  },
+  computed: {
+    date() {
+      return (new Date(this.player.lastPlayed)).toLocaleDateString();
+    }
   }
 })
 </script>
