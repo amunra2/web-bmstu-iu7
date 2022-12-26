@@ -12,7 +12,7 @@
       </div>
             
       <ServerSearch style="margin-bottom: 20px; width: calc(100% - 74px);"/>
-      <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='guest'/>
+      <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='admin'/>
     </div>
   </NavBarView>
 </template>
