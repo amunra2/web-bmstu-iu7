@@ -8,6 +8,7 @@ import ServerAdd from "@/views/AddServerView.vue"
 import ServerUpdate from "@/views/UpdateServerView.vue"
 import FavoriteServers from "@/views/FavoriteServersView.vue"
 import MyServers from "@/views/MyServersView.vue"
+import ServersControl from "@/views/ServersControlView.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -51,9 +52,9 @@ const routes: Array<RouteRecordRaw> = [
     component: FavoriteServers,
   },
   {
-    path: "/:id/my-servers",
-    name: "my-servers",
-    component: MyServers,
+    path: "/servers-control",
+    name: "servers-contol",
+    component: ServersControl,
   },
 ];
 
