@@ -1,6 +1,6 @@
 <template>
     <div v-if="this.mode === 'guest'" class="guest">
-      <router-link style="text-decoration: none" :to="redirectLink">
+      <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
       </router-link>
     </div>
@@ -8,7 +8,7 @@
       <div class="one-center">
         <ServerStar style="height: 70%"/>
       </div>
-      <router-link style="text-decoration: none" :to="redirectLink">
+      <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
       </router-link>
     </div>
@@ -16,20 +16,22 @@
       <div class="one-center">
         <ServerStatus state="rejected"/>
       </div>
-      <router-link style="text-decoration: none" :to="redirectLink">
+      <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
       </router-link>
     </div>
     <div v-else-if="this.mode === 'admin'" class="guest">
-      <Button style="height: 70%; width: 200px">Update</Button>
-      <Button style="height: 70%; width: 200px">Delete</Button>
+      <router-link style="text-decoration: none" :to="updateRedirectLink">
+        <Button style="height: 100%; width: 200px">Update</Button>
+      </router-link>
+      <Button @click="deleteServer" style="height: 50%; width: 200px">Delete</Button>
     </div>
     <div v-else-if="this.mode === 'admin-suggest'" class="guest">
       <div class="two-center">
         <ServerButton />
         <ServerButton :accept="false" />
       </div>
-      <router-link style="text-decoration: none" :to="redirectLink">
+      <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
       </router-link>
     </div>
@@ -41,6 +43,8 @@ import Button from "@/components/Button.vue"
 import ServerStatus from "@/components/Servers/ServerStatus.vue"
 import ServerStar from "@/components/Servers/ServerStar.vue"
 import ServerButton from "@/components/Servers/ServerButton.vue"
+
+import ServerInterface from "@/Interfaces/ServerInterface"
 
 
 export default defineComponent({
@@ -62,12 +66,30 @@ export default defineComponent({
     }
   },
   computed: {
-    redirectLink() {
+    infoRedirectLink() {
       return `/server-info/${this.serverId}`;
-    }
+    },
+    updateRedirectLink() {
+      return `/server-update/${this.serverId}`;
+    },
   },
   mounted() {
-    console.log("ServerMenu", this.serverId, this.redirectLink);
+    // console.log("ServerMenu", this.serverId, this.redirectLink);
+  },
+  methods: {
+    async deleteServer () {
+      console.log("ServerDelete", this.serverId);
+
+      const result = await ServerInterface.delete(this.serverId);
+
+      if (result.status == 200) {
+        this.$router.go(0);
+        this.$notify({
+          title: "Success",
+          text: "Server Deleted",
+        });
+      }
+    }
   }
 })
 </script>

@@ -56,5 +56,9 @@ export default {
     getPlayers(id: number) {
         return this.execute('get', `/${id}/players`);
     },
+
+    delete(id: number) {
+        return this.execute('delete', `/${id}`);
+    }
 }
 

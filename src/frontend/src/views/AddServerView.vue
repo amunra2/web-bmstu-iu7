@@ -162,7 +162,7 @@ export default defineComponent({
       console.log(result.status);
 
       if (result.status == 200) {
-        router.push("/");
+        router.push("/servers-control");
         this.$notify({
           title: "Success",
           text: "Server is Added",

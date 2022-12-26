@@ -50,7 +50,7 @@
             </div>
           </div>
 
-          <Button type="submit">Add</Button>
+          <Button type="submit">Update</Button>
         </form>
       </UpperBackground>
     </div>
@@ -163,7 +163,7 @@ export default defineComponent({
       console.log("Update Status:", result.status);
 
       if (result.status == 200) {
-        router.push("/");
+        router.push("/servers-control");
         this.$notify({
           title: "Success",
           text: "Server is Updated",
