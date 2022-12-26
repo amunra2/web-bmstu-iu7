@@ -37,8 +37,8 @@ export default {
         })
     },
 
-    getAll(page: number | null = null, pageSize: Number | null = null) {
-      return this.execute('get', '/', null, {page, pageSize});
+    getAll(Name: string, Game: string, page: number | null = null, pageSize: Number | null = null) {
+      return this.execute('get', '/', null, {Name, Game, page, pageSize});
     },
 
     getById(id: number) {

@@ -36,26 +36,52 @@ export default defineComponent({
     initPage: {
       type: Object,
       default: { num: 1, isLast: false}
+    },
+    initName: {
+      type: String,
+      default: ''
+    },
+    initGame: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
       servers: [],
-      currentPage: this.initPage
+      currentPage: this.initPage,
+    }
+  },
+  watch: {
+    initName: function() {
+      console.log("what")
+      ServerInterface.getAll(this.initName, this.currentPage.num, 4).then(json => {this.servers = json.data})
+      ServerInterface.getAll(this.initName, this.currentPage.num + 1, 4).then(json => {
+        this.currentPage.isLast = (json.data.length == 0)
+      })
+    },
+
+    initGame: function() {
+      console.log("what")
+      ServerInterface.getAll(this.initName, this.initGame, this.currentPage.num, 4).then(json => {this.servers = json.data})
+      ServerInterface.getAll(this.initName, this.initGame, this.currentPage.num + 1, 4).then(json => {
+        this.currentPage.isLast = (json.data.length == 0)
+      })
     }
   },
   mounted() {
-    ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json.data})
-    ServerInterface.getAll(this.currentPage.num + 1, 4).then(json => {
+    ServerInterface.getAll(this.initName, this.initGame, this.currentPage.num, 4).then(json => {this.servers = json.data})
+    ServerInterface.getAll(this.initName, this.initGame, this.currentPage.num + 1, 4).then(json => {
       this.currentPage.isLast = (json.data.length == 0)
     })
   },
   methods: {
     nextPage() {
+      console.log(this.initName)
       console.log("next page")
       this.currentPage.num += 1
-      ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json.data})
-      ServerInterface.getAll(this.currentPage.num + 1, 4).then(json => {
+      ServerInterface.getAll(this.initName, this.initGame, this.currentPage.num, 4).then(json => {this.servers = json.data})
+      ServerInterface.getAll(this.initName, this.initGame, this.currentPage.num + 1, 4).then(json => {
         this.currentPage.isLast = (json.data.length == 0)
       })
       this.$emit('new-page', this.currentPage.num)
@@ -65,7 +91,7 @@ export default defineComponent({
       console.log("prev page")
       this.currentPage.num -=1
       this.currentPage.isLast = false
-      ServerInterface.getAll(this.currentPage.num, 4).then(json => {this.servers = json.data})
+      ServerInterface.getAll(this.initName, this.initGame, this.currentPage.num, 4).then(json => {this.servers = json.data})
       this.$emit('new-page', this.currentPage.num )
     }
   }

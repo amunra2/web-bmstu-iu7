@@ -17,7 +17,7 @@ export default defineComponent({
   props: ['name', 'fontSize'],
   watch: { 
     data: function() {
-      // console.log(this.name, this.data);
+      console.log(this.name, this.data);
       this.$emit(this.name, this.data);
     }
   },
