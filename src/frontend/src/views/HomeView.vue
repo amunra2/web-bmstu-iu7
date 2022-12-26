@@ -5,7 +5,8 @@
         Server List
       </BlueText>
       <ServerSearch style="margin-bottom: 20px; width: calc(100% - 74px);"/>
-      <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='guest'/>
+      <ServerList v-if="isNotGuest" v-bind:initPage="currentPage" v-on:new-page="newPage" mode='user-star'/>
+      <ServerList v-else v-bind:initPage="currentPage" v-on:new-page="newPage" mode='guest'/>
     </div>
   </NavBarView>
 </template>
@@ -16,6 +17,7 @@ import NavBarView from "@/views/NavBarView.vue"
 import BlueText from "@/components/BlueText.vue"
 import ServerList from "@/components/Servers/ServerList.vue"
 import ServerSearch from "@/components/Servers/ServerSearch.vue"
+import auth from "@/authentificationService"
 
 export default defineComponent({
   name: "HomeView",
@@ -48,6 +50,9 @@ export default defineComponent({
       console.log(4)
 
       return { num: 1, isLast: false };
+    },
+    isNotGuest() {
+      return auth.getCurrentUser().role != "guest";
     }
   },
   //mounted() {

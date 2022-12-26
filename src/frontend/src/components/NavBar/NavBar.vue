@@ -5,11 +5,11 @@
         ServerING
       </BlueText>
     </router-link>
-    <div style="display: flex; gap: 20px">
+    <!-- <div style="display: flex; gap: 20px">
         <Button v-on:click="setGuest">Guest</Button>
         <Button v-on:click="setUser">User</Button>
         <Button v-on:click="setAdmin">Admin</Button>
-    </div>
+    </div> -->
     <div v-if="isInRole == 'user'">
       <UserNavbarMenu />
     </div>

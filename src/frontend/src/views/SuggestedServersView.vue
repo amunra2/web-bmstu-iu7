@@ -2,10 +2,10 @@
   <NavBarView>
     <div class="container">
       <BlueText class="text" fontSize="var(--huge-text)">
-        Favorite Servers
+        Suggested Servers
       </BlueText>
       <ServerSearch style="margin-bottom: 20px; width: calc(100% - 74px);"/>
-      <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='user-star'/>
+      <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='admin-suggest'/>
     </div>
   </NavBarView>
 </template>
