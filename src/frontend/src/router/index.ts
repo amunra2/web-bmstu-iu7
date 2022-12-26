@@ -5,6 +5,7 @@ import SigninView from "@/views/SigninView.vue"
 import ServerInfoView from "@/views/ServerInfoView.vue";
 import ServerSuggest from "@/views/SuggestServerView.vue"
 import ServerAdd from "@/views/AddServerView.vue"
+import ServerUpdate from "@/views/UpdateServerView.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -36,6 +37,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/server-add",
     name: "server-add",
     component: ServerAdd,
+  },
+  {
+    path: "/server-update/:id",
+    name: "server-update",
+    component: ServerUpdate,
   },
 ];
 

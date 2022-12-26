@@ -4,13 +4,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 
 export default defineComponent({
   name: "InputLine",
   data () {
     return {
-      data: ""
+      data: "",
     }
   },
   components: {},
@@ -21,6 +21,10 @@ export default defineComponent({
       this.$emit(this.name, this.data);
     }
   },
+  // mounted () {
+  //   this.data = this.setData;
+  //   console.log("Input Get:", this.setData);
+  // },
 });
 </script>
 
