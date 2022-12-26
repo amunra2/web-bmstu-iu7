@@ -31,7 +31,7 @@
             </BlueText>
           </div>
 
-          <div class="container-column">
+          <div v-if="isNotGuest" class="container-column">
             <PinkText fontSize="var(--middle-text)">
               Hosting
             </PinkText>
@@ -55,7 +55,7 @@
             </BlueText>
           </div>
 
-          <div class="container-column">
+          <div v-if="isNotGuest" class="container-column">
             <PinkText fontSize="var(--middle-text)">
               Platform
             </PinkText>
@@ -79,7 +79,7 @@
             </BlueText>
           </div>
 
-          <div class="container-column">
+          <div v-if="isNotGuest" class="container-column">
             <PinkText fontSize="var(--middle-text)">
               Country
             </PinkText>
@@ -105,11 +105,11 @@
         </div>
       </UpperBackground>
 
-      <BlueText class="text" fontSize="var(--large-text)">
+      <BlueText v-if="isNotGuest" class="text" fontSize="var(--large-text)">
           Players
       </BlueText>
 
-      <div class="player-row">
+      <div v-if="isNotGuest" class="player-row">
         <div v-for="player in players" v-bind:key="player">
           <PlayerItem v-bind:playerBase="player"></PlayerItem>
         </div>
@@ -164,6 +164,11 @@ export default defineComponent({
       players: []
     }
   },
+  computed: {
+    isNotGuest() {
+      return auth.getCurrentUser().role != "guest";
+    }
+  },
   async mounted () {
     this.server.id = Number(this.$route.params.id);
     this.server = await (await ServerInterface.getById(this.server.id)).data;
@@ -172,7 +177,7 @@ export default defineComponent({
     this.country = await (await CountryInterface.getById(this.server.countryID)).data;
     this.players = await (await ServerInterface.getPlayers(this.server.id)).data;
 
-    console.log("Players", this.players);
+    console.log("role", this.isNotGuest);
   },
   components: {
     NavBarView,
