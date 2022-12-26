@@ -1,18 +1,24 @@
 <template>
     <div v-if="this.mode === 'guest'" class="guest">
-      <Button style="height: 70%; width: 200px">Info</Button>
+      <router-link style="text-decoration: none" :to="redirectLink">
+        <Button style="height: 70%; width: 200px">Info</Button>
+      </router-link>
     </div>
     <div v-else-if="this.mode === 'user-star'" class="user-star">
       <div class="one-center">
         <ServerStar style="height: 70%"/>
       </div>
-      <Button style="height: 70%; width: 200px">Info</Button>
+      <router-link style="text-decoration: none" :to="redirectLink">
+        <Button style="height: 70%; width: 200px">Info</Button>
+      </router-link>
     </div>
     <div v-else-if="this.mode === 'user-status'" class="user-star">
       <div class="one-center">
         <ServerStatus state="rejected"/>
       </div>
-      <Button style="height: 70%; width: 200px">Info</Button>
+      <router-link style="text-decoration: none" :to="redirectLink">
+        <Button style="height: 70%; width: 200px">Info</Button>
+      </router-link>
     </div>
     <div v-else-if="this.mode === 'admin'" class="guest">
       <Button style="height: 70%; width: 200px">Update</Button>
@@ -23,7 +29,9 @@
         <ServerButton />
         <ServerButton :accept="false" />
       </div>
-      <Button style="height: 70%; width: 200px">Info</Button>
+      <router-link style="text-decoration: none" :to="redirectLink">
+        <Button style="height: 70%; width: 200px">Info</Button>
+      </router-link>
     </div>
 </template>
 
@@ -47,7 +55,19 @@ export default defineComponent({
     mode: {
       type: String,
       default: 'guest'
+    },
+    serverId: {
+      type: Number,
+      default: 0
     }
+  },
+  computed: {
+    redirectLink() {
+      return `/server-info/${this.serverId}`;
+    }
+  },
+  mounted() {
+    console.log("ServerMenu", this.serverId, this.redirectLink);
   }
 })
 </script>
