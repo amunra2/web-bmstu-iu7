@@ -4,6 +4,13 @@
     <InputLine @serverName="setName" name="serverName"/>
     <BlueText fontSize="var(--little-text)">Search by Game:</BlueText>
     <InputLine @gameName="setGame" name="gameName"/>
+    <BlueText fontSize="var(--little-text)">Platform:</BlueText>
+    <Select
+      @platform="setPlatform" 
+      name="platform" 
+      v-bind:options="platformOptions" 
+      fontSize="var(--tiny-text)"
+    />
   </UpperBackground>
 </template>
 
@@ -12,19 +19,27 @@ import { defineComponent } from 'vue'
 import UpperBackground from "@/components/UpperBackground.vue"
 import BlueText from "@/components/BlueText.vue"
 import InputLine from "@/components/InputLine.vue"
+import Select from "@/components/Select.vue"
+import PlatformInterface from "@/Interfaces/PlatformInterface"
 
 export default defineComponent({
   name: "ServerSearch",
   components: {
     UpperBackground,
     BlueText,
-    InputLine
+    InputLine,
+    Select
   },
   data() {
     return {
       serverName: '',
-      gameName: ''
+      gameName: '',
+      platformId: null,
+      platformOptions: [],
     }
+  },
+  mounted () {
+    PlatformInterface.getAll().then(json => {this.platformOptions = json.data});
   },
   methods: {
     setName(name: string) {
@@ -37,6 +52,12 @@ export default defineComponent({
       console.log('new name')
       this.gameName = game
       this.$emit('game-input', this.gameName)
+    },
+
+    setPlatform(platformId: any) {
+      this.platformId = platformId;
+      console.log(this.platformId)
+      this.$emit('platform-input', this.platformId)
     },
   }
 })

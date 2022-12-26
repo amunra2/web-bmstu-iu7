@@ -7,10 +7,12 @@
       <ServerSearch
         v-on:name-input="newName"
         v-on:game-input="newGame"
+        v-on:platform-input="newPlatform"
         style="margin-bottom: 20px; width: calc(100% - 74px);"/>
       <ServerList 
         v-bind:initName="serverName"
         v-bind:initGame="gameName"
+        v-bind:initPlatformId="platformId"
         v-bind:initPage="currentPage"
         v-on:new-page="newPage"
         mode='guest'/>
@@ -36,7 +38,8 @@ export default defineComponent({
   data() {
     return {
       serverName: '',
-      gameName: ''
+      gameName: '',
+      platformId: 0
     }
   },
   computed: {
@@ -71,6 +74,12 @@ export default defineComponent({
       this.gameName = game
       console.log("game") 
       console.log(this.gameName) 
+    },
+
+    newPlatform(platformId: number ) {
+      this.platformId = platformId
+      console.log("game") 
+      console.log(this.platformId) 
     },
   },
 });
