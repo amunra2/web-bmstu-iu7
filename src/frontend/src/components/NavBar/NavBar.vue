@@ -60,8 +60,7 @@ export default defineComponent({
     },
     setUser: function() {
       auth.logout()
-      console.log('user')
-      this.componentName = 'UserNavbarMenu'
+      location.reload()
     },
     setAdmin: async function() {
       console.log(await UserInterface.getAll());

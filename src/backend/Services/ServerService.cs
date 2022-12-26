@@ -173,7 +173,11 @@ namespace ServerING.Services {
                 filteredServers = filteredServers.Where(s => s.Name.Contains(filter.Name));
             }
 
-            if (filter.PlatformID != null) {
+            if (!String.IsNullOrEmpty(filter.Game)) {
+                filteredServers = filteredServers.Where(s => s.GameName.Contains(filter.Game));
+            }
+
+            if (filter.PlatformID != null && filter.PlatformID != 0) {
                 filteredServers = filteredServers.Where(s => s.PlatformID == filter.PlatformID);
             }
 
