@@ -17,6 +17,8 @@ import BlueText from "@/components/BlueText.vue"
 import ServerList from "@/components/Servers/ServerList.vue"
 import ServerSearch from "@/components/Servers/ServerSearch.vue"
 
+import auth from "@/authentificationService"
+
 export default defineComponent({
   name: "HomeView",
   components: {
@@ -64,7 +66,7 @@ export default defineComponent({
   //},
   methods: {
     newPage(pageNumber: Number) {
-      this.$router.push({ path: '/', query: { page: pageNumber.toString() } })
+      this.$router.push({ path: `/${auth.getCurrentUser().id}/my-servers`, query: { page: pageNumber.toString() } })
     },
   },
 });

@@ -64,7 +64,7 @@ export default defineComponent({
   //},
   methods: {
     newPage(pageNumber: Number) {
-      this.$router.push({ path: '/', query: { page: pageNumber.toString() } })
+      this.$router.push({ path: '/servers-suggested', query: { page: pageNumber.toString() } })
     },
   },
 });
