@@ -16,7 +16,7 @@
         v-bind:initPlatformId="platformId"
         v-bind:initPage="currentPage"
         v-on:new-page="newPage"
-        mode='user-star'
+        mode='favorite'
       />
       <!-- <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='user-star'/> -->
     </div>

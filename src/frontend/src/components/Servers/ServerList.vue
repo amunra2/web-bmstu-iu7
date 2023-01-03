@@ -21,6 +21,7 @@ import ServerItem from "@/components/Servers/ServerItem.vue"
 import Paging from "@/components/Paging/Paging.vue"
 
 import ServerInterface from "@/Interfaces/ServerInterface"
+import UserInterface from "@/Interfaces/UserInterface"
 import auth from "@/authentificationService"
 
 export default defineComponent({
@@ -104,12 +105,18 @@ export default defineComponent({
       }
 
       console.log(this.ownerId);
-
-
       ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num, 4).then(json => {this.servers = json.data});
       ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num + 1, 4).then(json => {
         this.currentPage.isLast = (json.data.length == 0)
       });
+
+      if (this.mode == "favorite") {
+        const userId = auth.getCurrentUser().id;
+        UserInterface.getAllFavorites(userId, this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data});
+        UserInterface.getAllFavorites(userId, this.initName, this.initGame, this.initPlatformId, this.currentPage.num + 1, 4).then(json => {
+          this.currentPage.isLast = (json.data.length == 0)
+        });
+      }
     }
   }
 })

@@ -4,7 +4,7 @@
         <Button style="height: 70%; width: 200px">Info</Button>
       </router-link>
     </div>
-    <div v-else-if="this.mode === 'user-star'" class="user-star">
+    <div v-else-if="this.mode === 'user-star' || this.mode === 'favorite'" class="user-star">
       <div class="one-center">
         <ServerStar :serverId="serverId" style="height: 70%"/>
       </div>

@@ -38,13 +38,13 @@ export default defineComponent({
     
     addFavoriteServer() {
       const userId = auth.getCurrentUser().id;
-      console.log("AddFavoriteServer:", userId, this.serverId);
+      // console.log("AddFavoriteServer:", userId, this.serverId);
       UserInterface.addFavoriteServer(userId, this.serverId);
     },
 
     deleteFavoriteServer() {
       const userId = auth.getCurrentUser().id;
-      console.log("DeleteFavoriteServer:", userId, this.serverId);
+      // console.log("DeleteFavoriteServer:", userId, this.serverId);
       UserInterface.deleteFavoriteServer(userId, this.serverId);
     },
 
