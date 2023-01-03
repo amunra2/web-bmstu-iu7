@@ -42,9 +42,14 @@ export default {
         Game: string, 
         PlatformId: number | null = null,
         OwnerId: number | null = null, // !
+        status: number | null = null,
         page: number | null = null, 
         pageSize: Number | null = null) {
-      return this.execute('get', '/', null, {Name, Game, PlatformId, page, pageSize, OwnerId});
+      return this.execute('get', '/', null, {Name, Game, PlatformId, page, pageSize, OwnerId, status});
+    },
+
+    patchServer(serverId: number, status: string) {
+        return this.execute('patch', `/${serverId}`, {status});
     },
 
     getById(id: number) {

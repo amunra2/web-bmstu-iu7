@@ -30,8 +30,8 @@
     </div>
     <div v-else-if="this.mode === 'admin-suggest'" class="guest">
       <div class="two-center">
-        <ServerButton />
-        <ServerButton :accept="false" />
+        <ServerButton @click="acceptServer" />
+        <ServerButton @click="rejectServer" :accept="false" />
       </div>
       <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
@@ -95,7 +95,17 @@ export default defineComponent({
           text: "Server Deleted",
         });
       }
-    }
+    },
+
+    acceptServer() {
+      console.log("Accept Server");
+      ServerInterface.patchServer(this.serverId, "Accepted").then(res => {console.log(res)});
+    },
+
+    rejectServer() {
+      console.log("Reject Server");
+      ServerInterface.patchServer(this.serverId, "Rejected");
+    },
   }
 })
 </script>

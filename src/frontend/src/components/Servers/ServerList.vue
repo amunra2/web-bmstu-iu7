@@ -56,6 +56,7 @@ export default defineComponent({
       servers: [],
       currentPage: this.initPage,
       ownerId: null,
+      status: Number
     }
   },
   watch: {
@@ -105,10 +106,17 @@ export default defineComponent({
       }
 
       console.log(this.ownerId);
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num, 4).then(json => {this.servers = json.data});
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num + 1, 4).then(json => {
+      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, 0, this.currentPage.num, 4).then(json => {this.servers = json.data});
+      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, 0, this.currentPage.num + 1, 4).then(json => {
         this.currentPage.isLast = (json.data.length == 0)
       });
+
+      if (this.mode == "admin-suggest") {
+        ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, 1, this.currentPage.num, 4).then(json => {this.servers = json.data; console.log(json.data)});
+        ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, 1, this.currentPage.num + 1, 4).then(json => {
+          this.currentPage.isLast = (json.data.length == 0)
+        });
+      }
 
       if (this.mode == "favorite") {
         const userId = auth.getCurrentUser().id;
