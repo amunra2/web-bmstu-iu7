@@ -39,8 +39,20 @@ export default {
         return this.execute('get', '/');
     },
 
-    async getFavorites() {
-        return await this.execute('get', '/');
-    }
+    getFavorites() {
+        return this.execute('get', '/');
+    },
+
+    addFavoriteServer(userId: number, serverId: number) {
+        return this.execute('post', `/${userId}/favorites/${serverId}`, {serverId, userId});
+    },
+
+    deleteFavoriteServer(userId: number, serverId: number) {
+        return this.execute('delete', `/${userId}/favorites/${serverId}`);
+    },
+
+    getFavoriteServer(userId: number, serverId: number) {
+        return this.execute('get', `/${userId}/favorites/${serverId}`, {serverId, userId});
+    },
 }
 

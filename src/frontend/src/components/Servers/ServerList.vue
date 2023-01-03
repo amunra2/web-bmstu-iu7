@@ -81,10 +81,11 @@ export default defineComponent({
       console.log(this.initName)
       console.log("next page")
       this.currentPage.num += 1
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num, 4).then(json => {this.servers = json.data})
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num + 1, 4).then(json => {
-        this.currentPage.isLast = (json.data.length == 0)
-      })
+      // ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num, 4).then(json => {this.servers = json.data})
+      // ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num + 1, 4).then(json => {
+      //   this.currentPage.isLast = (json.data.length == 0)
+      // })
+      this.getServers();
       this.$emit('new-page', this.currentPage.num)
     },
 
@@ -92,7 +93,8 @@ export default defineComponent({
       console.log("prev page")
       this.currentPage.num -=1
       this.currentPage.isLast = false
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
+      // ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
+      this.getServers();
       this.$emit('new-page', this.currentPage.num )
     },
 

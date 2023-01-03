@@ -6,7 +6,7 @@
     </div>
     <div v-else-if="this.mode === 'user-star'" class="user-star">
       <div class="one-center">
-        <ServerStar style="height: 70%"/>
+        <ServerStar :serverId="serverId" style="height: 70%"/>
       </div>
       <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
