@@ -12,7 +12,7 @@
           v-on:next-page="nextPage"
           v-on:prev-page="prevPage"
           class="for-list"/>
-  {{ currentPage}}
+  {{ currentPage }}
 </template>
 
 <script lang="ts">
@@ -21,6 +21,7 @@ import ServerItem from "@/components/Servers/ServerItem.vue"
 import Paging from "@/components/Paging/Paging.vue"
 
 import ServerInterface from "@/Interfaces/ServerInterface"
+import auth from "@/authentificationService"
 
 export default defineComponent({
   name: "ServerList",
@@ -47,52 +48,41 @@ export default defineComponent({
     },
     initPlatformId: {
       default: null
-    }
+    },
   },
   data() {
     return {
       servers: [],
       currentPage: this.initPage,
+      ownerId: null,
     }
   },
   watch: {
     initName: function() {
       console.log("what")
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num + 1, 4).then(json => {
-        this.currentPage.isLast = (json.data.length == 0)
-      })
+      this.getServers();
     },
 
     initGame: function() {
       console.log("what")
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num + 1, 4).then(json => {
-        this.currentPage.isLast = (json.data.length == 0)
-      })
+      this.getServers();
     },
 
     initPlatformId: function() {
       console.log("what")
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num + 1, 4).then(json => {
-        this.currentPage.isLast = (json.data.length == 0)
-      })
+      this.getServers();
     }
   },
   mounted() {
-    ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
-    ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num + 1, 4).then(json => {
-      this.currentPage.isLast = (json.data.length == 0)
-    })
+    this.getServers();
   },
   methods: {
     nextPage() {
       console.log(this.initName)
       console.log("next page")
       this.currentPage.num += 1
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
-      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num + 1, 4).then(json => {
+      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num, 4).then(json => {this.servers = json.data})
+      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num + 1, 4).then(json => {
         this.currentPage.isLast = (json.data.length == 0)
       })
       this.$emit('new-page', this.currentPage.num)
@@ -104,6 +94,20 @@ export default defineComponent({
       this.currentPage.isLast = false
       ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.currentPage.num, 4).then(json => {this.servers = json.data})
       this.$emit('new-page', this.currentPage.num )
+    },
+
+    getServers() {
+      if (this.mode == "user-status") {
+        this.ownerId = auth.getCurrentUser().id;
+      }
+
+      console.log(this.ownerId);
+
+
+      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num, 4).then(json => {this.servers = json.data});
+      ServerInterface.getAll(this.initName, this.initGame, this.initPlatformId, this.ownerId, this.currentPage.num + 1, 4).then(json => {
+        this.currentPage.isLast = (json.data.length == 0)
+      });
     }
   }
 })

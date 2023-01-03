@@ -9,7 +9,7 @@
     <BlueText class="item" fontSize="var(--little-text)">
       Rating
     </BlueText>
-    <ServerMenu class="item" :serverId="server.id" :mode="mode"/>
+    <ServerMenu class="item" :serverStatus="server.status" :serverId="server.id" :mode="mode"/>
     <BlueText class="item" fontSize="var(--little-text)">
       {{ server.gameName }}
     </BlueText>

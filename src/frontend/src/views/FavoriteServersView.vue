@@ -57,7 +57,7 @@ export default defineComponent({
           return { num: parseInt(page), isLast: false };
         }
       }
-      console.log(4)
+      console.log(4);
 
       return { num: 1, isLast: false };
     }

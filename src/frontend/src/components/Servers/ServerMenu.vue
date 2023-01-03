@@ -14,7 +14,9 @@
     </div>
     <div v-else-if="this.mode === 'user-status'" class="user-star">
       <div class="one-center">
-        <ServerStatus state="rejected"/>
+        <ServerStatus v-if="serverStatus == 'Accepted'" state="accepted"/>
+        <ServerStatus v-else-if="serverStatus == 'Pending'" state="pending"/>
+        <ServerStatus v-else-if="serverStatus == 'Rejected'" state="rejected"/>
       </div>
       <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
@@ -61,6 +63,10 @@ export default defineComponent({
       default: 'guest'
     },
     serverId: {
+      type: Number,
+      default: 0
+    },
+    serverStatus: {
       type: Number,
       default: 0
     }
