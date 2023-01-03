@@ -34,6 +34,7 @@ export default defineComponent({
     logout () {
       auth.logout();
       this.$router.push("/");
+      location.reload();
     },
     
   }
