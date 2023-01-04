@@ -34,6 +34,7 @@ namespace ServerING.Services {
         );
         FavoriteServerBL AddFavoriteServer(int userId, int serverId);
         FavoriteServerBL DeleteFavoriteServer(int userId, int serverId);
+        FavoriteServerBL GetFavoriteByServerAndUserId(int userId, int serverId);
 
         UsersViewModel ParseUsers(IEnumerable<User> parsedUsers, string login, int page, UserSortState sortOrder);
         User ValidateUser(LoginViewModel model);
@@ -62,6 +63,11 @@ namespace ServerING.Services {
 
         private bool IsFavoriteExist(int userId, int serverId) {
             return userRepository.GetFavoriteServerByUserAndServerId(userId, serverId) != null;
+        }
+
+
+        public FavoriteServerBL GetFavoriteByServerAndUserId(int userId, int serverId) {
+            return mapper.Map<FavoriteServerBL>(userRepository.GetFavoriteServerByUserAndServerId(userId, serverId));
         }
 
 

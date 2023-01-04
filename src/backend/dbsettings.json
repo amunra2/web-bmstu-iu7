@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Port=5432;Database=servering; User Id=postgres;Password=postgres",
+    "DefaultConnection": "Server=localhost;Port=5432;Database=web_db; User Id=amunra23;Password=postgres",
     "MSSqlServerConnection": "Server=(localdb)\\mssqllocaldb;Database=ServerINGmsSql_PPO;Trusted_Connection=True;"
   },
 

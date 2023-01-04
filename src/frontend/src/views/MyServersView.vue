@@ -11,8 +11,23 @@
         </router-link>
       </div>
             
-      <ServerSearch style="margin-bottom: 20px; width: calc(100% - 74px);"/>
-      <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='guest'/>
+      <ServerSearch
+        v-on:name-input="newName"
+        v-on:game-input="newGame"
+        v-on:platform-input="newPlatform"
+        style="margin-bottom: 20px; width: calc(100% - 74px);"
+      />
+
+      <ServerList
+        v-bind:initName="serverName"
+        v-bind:initGame="gameName"
+        v-bind:initPlatformId="platformId"
+        v-bind:initPage="currentPage"
+        v-on:new-page="newPage"
+        mode='user-status'
+      />
+
+      <!-- <ServerList v-bind:initPage="currentPage" v-on:new-page="newPage" mode='guest'/> -->
     </div>
   </NavBarView>
 </template>
@@ -36,14 +51,13 @@ export default defineComponent({
     ServerSearch,
     Button,
   },
-  //data() {
-  //  return {
-  //    currentPage: {
-  //      num: 1,
-  //      isLast: false
-  //    }
-  //  }
-  //},
+  data() {
+    return {
+      serverName: '',
+      gameName: '',
+      platformId: 0
+    }
+  },
   computed: {
     currentPage() {
       console.log(1)
@@ -76,6 +90,24 @@ export default defineComponent({
   methods: {
     newPage(pageNumber: Number) {
       this.$router.push({ path: `/${auth.getCurrentUser().id}/my-servers`, query: { page: pageNumber.toString() } })
+    },
+
+    newName(name: string) {
+      this.serverName = name
+      console.log("Server") 
+      console.log(this.serverName) 
+    },
+
+    newGame(game: string) {
+      this.gameName = game
+      console.log("game") 
+      console.log(this.gameName) 
+    },
+
+    newPlatform(platformId: number ) {
+      this.platformId = platformId
+      console.log("game") 
+      console.log(this.platformId) 
     },
   },
 });

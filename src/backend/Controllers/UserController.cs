@@ -118,6 +118,14 @@ namespace ServerING.Controllers {
             return Ok(mapper.Map<IEnumerable<ServerDto>>(userService.GetUserFavoriteServers(userId, filter, sortState, page, pageSize)));
         }
 
+        [HttpGet("{userId}/favorites/{serverId}")]
+        [ProducesResponseType(typeof(FavoriteServerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult GetFavoriteByServerAndUserId(int userId, int serverId) {
+            var favServer = mapper.Map<FavoriteServerDto>(userService.GetFavoriteByServerAndUserId(userId, serverId));
+            return favServer != null ? Ok(favServer) : NotFound();
+        }
+
         [HttpPost("{userId}/favorites/{serverId}")]
         [ProducesResponseType(typeof(FavoriteServerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]

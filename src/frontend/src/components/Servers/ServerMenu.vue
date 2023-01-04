@@ -4,9 +4,9 @@
         <Button style="height: 70%; width: 200px">Info</Button>
       </router-link>
     </div>
-    <div v-else-if="this.mode === 'user-star'" class="user-star">
+    <div v-else-if="this.mode === 'user-star' || this.mode === 'favorite'" class="user-star">
       <div class="one-center">
-        <ServerStar style="height: 70%"/>
+        <ServerStar :serverId="serverId" style="height: 70%"/>
       </div>
       <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
@@ -14,7 +14,9 @@
     </div>
     <div v-else-if="this.mode === 'user-status'" class="user-star">
       <div class="one-center">
-        <ServerStatus state="rejected"/>
+        <ServerStatus v-if="serverStatus == 'Accepted'" state="accepted"/>
+        <ServerStatus v-else-if="serverStatus == 'Pending'" state="pending"/>
+        <ServerStatus v-else-if="serverStatus == 'Rejected'" state="rejected"/>
       </div>
       <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
@@ -28,8 +30,8 @@
     </div>
     <div v-else-if="this.mode === 'admin-suggest'" class="guest">
       <div class="two-center">
-        <ServerButton />
-        <ServerButton :accept="false" />
+        <ServerButton @click="acceptServer" />
+        <ServerButton @click="rejectServer" :accept="false" />
       </div>
       <router-link style="text-decoration: none" :to="infoRedirectLink">
         <Button style="height: 70%; width: 200px">Info</Button>
@@ -63,6 +65,10 @@ export default defineComponent({
     serverId: {
       type: Number,
       default: 0
+    },
+    serverStatus: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
@@ -89,7 +95,17 @@ export default defineComponent({
           text: "Server Deleted",
         });
       }
-    }
+    },
+
+    acceptServer() {
+      console.log("Accept Server");
+      ServerInterface.patchServer(this.serverId, "Accepted").then(res => {console.log(res)});
+    },
+
+    rejectServer() {
+      console.log("Reject Server");
+      ServerInterface.patchServer(this.serverId, "Rejected");
+    },
   }
 })
 </script>
