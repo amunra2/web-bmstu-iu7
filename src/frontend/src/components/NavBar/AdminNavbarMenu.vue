@@ -33,8 +33,7 @@ export default defineComponent({
   methods: {
     logout () {
       auth.logout();
-      this.$router.push("/");
-      location.reload();
+      this.$router.push({ path: '/' })
     },
     
   }

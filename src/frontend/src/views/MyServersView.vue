@@ -7,7 +7,7 @@
         </BlueText>
 
         <router-link style="text-decoration: none" to="/server-suggest">
-          <Button style="height: 50%; width: 250px">Suggest</Button>
+          <Button style="height: 50%; width: 250px;">Suggest</Button>
         </router-link>
       </div>
             
@@ -39,6 +39,8 @@ import BlueText from "@/components/BlueText.vue"
 import ServerList from "@/components/Servers/ServerList.vue"
 import ServerSearch from "@/components/Servers/ServerSearch.vue"
 import Button from "@/components/Button.vue"
+
+import auth from "@/authentificationService"
 
 export default defineComponent({
   name: "HomeView",
@@ -87,7 +89,7 @@ export default defineComponent({
   //},
   methods: {
     newPage(pageNumber: Number) {
-      this.$router.push({ path: '/', query: { page: pageNumber.toString() } })
+      this.$router.push({ path: `/${auth.getCurrentUser().id}/my-servers`, query: { page: pageNumber.toString() } })
     },
 
     newName(name: string) {
@@ -134,7 +136,9 @@ export default defineComponent({
   display: grid;
   grid-template-columns: 5fr 1fr;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   gap: 10px;
 }
+
 </style>

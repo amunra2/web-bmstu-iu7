@@ -1,9 +1,9 @@
 <template>
   <UpperBackground class="search">
     <BlueText fontSize="var(--little-text)">Search by Name:</BlueText>
-    <InputLine @serverName="setName" name="serverName" fontSize="var(--tiny-text)" />
+    <InputLine @serverName="setName" name="serverName" fontSize="var(--little-text)"/>
     <BlueText fontSize="var(--little-text)">Search by Game:</BlueText>
-    <InputLine @gameName="setGame" name="gameName" fontSize="var(--tiny-text)" />
+    <InputLine @gameName="setGame" name="gameName" fontSize="var(--little-text)"/>
     <BlueText fontSize="var(--little-text)">Platform:</BlueText>
     <Select
       @platform="setPlatform" 
