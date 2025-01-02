@@ -12,8 +12,10 @@ using ServerING.Models;
 using ServerING.ModelsBL;
 using ServerING.Services;
 using ServerING.Enums;
+using Microsoft.AspNetCore.Cors;
 
 namespace ServerING.Controllers {
+    [EnableCors("MyPolicy")]
     [ApiController]   
     [Route("/api/v1/users")]
     public class UserController : Controller {
@@ -109,10 +111,19 @@ namespace ServerING.Controllers {
             int userId,
             [FromQuery] ServerFilterDto filter,
             [FromQuery] ServerSortState? sortState,
-            [FromQuery] int? page
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize
         )
         {
-            return Ok(mapper.Map<IEnumerable<ServerDto>>(userService.GetUserFavoriteServers(userId, filter, sortState, page)));
+            return Ok(mapper.Map<IEnumerable<ServerDto>>(userService.GetUserFavoriteServers(userId, filter, sortState, page, pageSize)));
+        }
+
+        [HttpGet("{userId}/favorites/{serverId}")]
+        [ProducesResponseType(typeof(FavoriteServerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult GetFavoriteByServerAndUserId(int userId, int serverId) {
+            var favServer = mapper.Map<FavoriteServerDto>(userService.GetFavoriteByServerAndUserId(userId, serverId));
+            return favServer != null ? Ok(favServer) : NotFound();
         }
 
         [HttpPost("{userId}/favorites/{serverId}")]
@@ -137,6 +148,28 @@ namespace ServerING.Controllers {
         {
             var deletedFavorite = userService.DeleteFavoriteServer(userId, serverId);
             return deletedFavorite != null ? Ok(mapper.Map<FavoriteServerDto>(deletedFavorite)) : NotFound();
+        }
+
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        public IActionResult Login(LoginDto loginDto) {
+            var result = userService.Login(loginDto);
+            return result != null ? Ok(mapper.Map<UserDto>(result)) : NotFound();
+        }
+
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(UserIdPasswordDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
+        public IActionResult Register(LoginDto loginDto) {
+            var userDto = new UserPasswordDto {
+                Login = loginDto.Login,
+                Password = loginDto.Password,
+                Role = "user"
+            };
+            
+            return Add(userDto);
         }
     }
 }

@@ -10,8 +10,10 @@ using ServerING.Services;
 using ServerING.ModelConverters;
 using AutoMapper;
 using ServerING.ModelsBL;
+using Microsoft.AspNetCore.Cors;
 
 namespace ServerING.Controllers {
+    [EnableCors("MyPolicy")]
     [ApiController]
     [Route("/api/v1/platforms")]
     public class PlatformController : Controller {
@@ -47,6 +49,7 @@ namespace ServerING.Controllers {
             }
         }
 
+        [EnableCors("MyPolicy")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PlatformDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]

@@ -12,8 +12,10 @@ using System.Linq;
 using ServerING.Enums;
 using AutoMapper;
 using ServerING.ModelConverters;
+using Microsoft.AspNetCore.Cors;
 
 namespace ServerING.Controllers {
+    [EnableCors("MyPolicy")]
     [ApiController]
     [Route("/api/v1/servers")]
     public class ServerController : Controller {
@@ -27,13 +29,15 @@ namespace ServerING.Controllers {
             this.serverConverters = serverConverters;
         }
 
+        [EnableCors("MyPolicy")]
         [HttpGet]
         public IActionResult GetAll(
             [FromQuery] ServerFilterDto filter,
             [FromQuery] ServerSortState? sortState,
-            [FromQuery] int? page
+            [FromQuery] int? page,
+            [FromQuery] int? pageSize
         ) {
-            return Ok(mapper.Map<IEnumerable<ServerDto>>(serverService.GetAllServers(filter, sortState, page)));
+            return Ok(mapper.Map<IEnumerable<ServerDto>>(serverService.GetAllServers(filter, sortState, page, pageSize)));
         }
 
         [HttpPost]

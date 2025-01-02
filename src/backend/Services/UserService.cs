@@ -17,6 +17,8 @@ namespace ServerING.Services {
         UserBL UpdateUser(int id, UserBL user);
         UserBL DeleteUser(int id);
 
+        UserBL Login(LoginDto loginDto);
+
         UserBL GetUserByID(int id);
         IEnumerable<UserBL> GetAllUsers();
 
@@ -27,11 +29,12 @@ namespace ServerING.Services {
             int userId,
             ServerFilterDto filter, 
             ServerSortState? sortState,
-            int? page
+            int? page,
+            int? pageSize
         );
         FavoriteServerBL AddFavoriteServer(int userId, int serverId);
         FavoriteServerBL DeleteFavoriteServer(int userId, int serverId);
-
+        FavoriteServerBL GetFavoriteByServerAndUserId(int userId, int serverId);
 
         UsersViewModel ParseUsers(IEnumerable<User> parsedUsers, string login, int page, UserSortState sortOrder);
         User ValidateUser(LoginViewModel model);
@@ -63,8 +66,30 @@ namespace ServerING.Services {
         }
 
 
+        public FavoriteServerBL GetFavoriteByServerAndUserId(int userId, int serverId) {
+            return mapper.Map<FavoriteServerBL>(userRepository.GetFavoriteServerByUserAndServerId(userId, serverId));
+        }
+
+
         private bool IsExistById(int id) {
             return userRepository.GetByID(id) != null;
+        }
+
+        public UserBL Login(LoginDto loginDto) {
+            UserBL user = GetUserByLogin(loginDto.Login);
+
+            if (user == null) {
+                Console.WriteLine("User: no such user");
+                return null;
+            }
+
+            if (user.Password == loginDto.Password) {
+                return user;
+            }
+            else {
+                Console.WriteLine("User: wrong password");
+                return null;
+            }
         }
         
         public UserBL AddUser(UserBL user) {
@@ -110,7 +135,8 @@ namespace ServerING.Services {
             int userId,
             ServerFilterDto filter, 
             ServerSortState? sortState,
-            int? page
+            int? page,
+            int? pageSize
         ) {
             if (!IsExistById(userId))
                 throw new UserNotExistsException("No user with such id");
@@ -127,7 +153,7 @@ namespace ServerING.Services {
 
             // Пагинация
             if (page != null) {
-                servers = serverService.PaginationServers(servers, page.Value);
+                servers = serverService.PaginationServers(servers, page.Value, pageSize.Value);
             }
             
 

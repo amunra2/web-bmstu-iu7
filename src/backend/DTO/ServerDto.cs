@@ -18,10 +18,12 @@ namespace ServerING.DTO {
 
     public class ServerDto : ServerDtoBase {
         public int Id { get; set; }
+        public int Rating{ get; set; }
     }
 
     public class ServerFilterDto {
         public string Name {get; set;}
+        public string Game {get; set;}
         public int? PlatformID {get; set;}
         public ServerStatus? Status {get; set;}
         public int? OwnerID { get; set; }

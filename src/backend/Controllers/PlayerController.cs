@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ using ServerING.ModelsBL;
 using ServerING.Services;
 
 namespace ServerING.Controllers {
+    [EnableCors("MyPolicy")]
     [ApiController]   
     [Route("/api/v1/players")]
     public class PlayerController : Controller {
